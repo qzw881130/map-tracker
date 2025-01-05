@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { StyleSheet, Dimensions, Platform, View, Text } from 'react-native';
-import MapView, { Polyline, Marker, Camera } from 'react-native-maps';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import MapView, { Polyline, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +9,8 @@ import {
   Button,
   ButtonText,
   Text as GText,
+  VStack,
+  HStack,
   Select,
   SelectTrigger,
   SelectInput,
@@ -17,9 +19,6 @@ import {
   SelectContent,
   SelectDragIndicator,
   SelectItem,
-  VStack,
-  HStack,
-  Pressable,
 } from '@gluestack-ui/themed';
 
 const ACTIVITY_TYPES = [
@@ -446,9 +445,11 @@ export default function HomeScreen() {
         style={styles.map}
         region={region}
         onRegionChangeComplete={setRegion}
-        showsUserLocation={true}
-        followsUserLocation={isTracking}
+        showsUserLocation
+        userLocationAnnotationTitle=""
+        followsUserLocation={false}
         onUserLocationChange={handleLocationChange}
+        mapType="standard"
       >
         {/* 显示起点和终点标记 */}
         <Marker
