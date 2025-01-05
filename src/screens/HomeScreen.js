@@ -239,6 +239,7 @@ export default function HomeScreen() {
       }
 
       let location = await Location.getCurrentPositionAsync({});
+      console.log(`location.coords===`, location.coords);
       setLocation(location);
       
       // 设置初始地图区域为当前位置
@@ -410,6 +411,25 @@ export default function HomeScreen() {
     }
   };
 
+  // 添加定位到当前位置的函数
+  const handleLocateCurrentPosition = async () => {
+    try {
+      let location = await Location.getCurrentPositionAsync({});
+      if (location && mapRef.current) {
+        const newRegion = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+          latitudeDelta: region.latitudeDelta,
+          longitudeDelta: region.longitudeDelta,
+        };
+        mapRef.current.animateToRegion(newRegion, 300);
+        setRegion(newRegion);
+      }
+    } catch (error) {
+      console.log('Error getting current location:', error);
+    }
+  };
+
   // 如果位置和区域都没有准备好，显示加载状态
   if (!location || !region) {
     return (
@@ -477,6 +497,15 @@ export default function HomeScreen() {
             style={styles.zoomButton}
           >
             <ButtonText fontSize={16} color="$black" style={styles.buttonText}>−</ButtonText>
+          </Button>
+          <Button
+            size="sm"
+            variant="solid"
+            bg="$white"
+            onPress={handleLocateCurrentPosition}
+            style={styles.zoomButton}
+          >
+            <ButtonText fontSize={14} color="$black" style={styles.buttonText}>⌖</ButtonText>
           </Button>
         </VStack>
       </Box>
