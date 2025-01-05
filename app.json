@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Map-tracker",
-    "slug": "Map-tracker",
+    "slug": "MapTracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.512.png",
