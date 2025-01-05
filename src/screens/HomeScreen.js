@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { StyleSheet, Dimensions, Platform, View, Text } from 'react-native';
-import MapView, { Polyline, Marker } from 'react-native-maps';
+import MapView, { Polyline, Marker, Camera } from 'react-native-maps';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -102,6 +102,7 @@ const MOCK_HISTORY_DATA = [
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const mapRef = useRef(null);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [isTracking, setIsTracking] = useState(false);
@@ -111,7 +112,7 @@ export default function HomeScreen() {
   const [startTime, setStartTime] = useState(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationIndex, setSimulationIndex] = useState(0);
-  const [region, setRegion] = useState(INITIAL_REGION);
+  const [region, setRegion] = useState(null);
   const [activityHistory, setActivityHistory] = useState([]);
 
   useEffect(() => {
@@ -237,19 +238,16 @@ export default function HomeScreen() {
         return;
       }
 
-      try {
-        let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-      } catch (error) {
-        console.log('Error getting location:', error);
-        // 使用默认位置
-        setLocation({
-          coords: {
-            latitude: INITIAL_REGION.latitude,
-            longitude: INITIAL_REGION.longitude,
-          }
-        });
-      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      
+      // 设置初始地图区域为当前位置
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      });
     })();
   }, []);
 
@@ -350,42 +348,73 @@ export default function HomeScreen() {
 
   // 添加缩放控制函数
   const handleZoomIn = () => {
-    // if (mapRef.current) {
-    //   const newRegion = {
-    //     latitude: region.latitude,
-    //     longitude: region.longitude,
-    //     latitudeDelta: region.latitudeDelta / 2,
-    //     longitudeDelta: region.longitudeDelta / 2,
-    //   };
-    //   mapRef.current.animateToRegion(newRegion, 300);
-    //   setRegion(newRegion);
-    // }
+    if (mapRef.current) {
+      const newRegion = {
+        ...region,
+        latitudeDelta: region.latitudeDelta / 2,
+        longitudeDelta: region.longitudeDelta / 2,
+      };
+      mapRef.current.animateToRegion(newRegion, 300);
+      setRegion(newRegion);
+    }
   };
 
   const handleZoomOut = () => {
-    // if (mapRef.current) {
-    //   const newRegion = {
-    //     latitude: region.latitude,
-    //     longitude: region.longitude,
-    //     latitudeDelta: region.latitudeDelta * 2,
-    //     longitudeDelta: region.longitudeDelta * 2,
-    //   };
-    //   mapRef.current.animateToRegion(newRegion, 300);
-    //   setRegion(newRegion);
-    // }
+    if (mapRef.current) {
+      const newRegion = {
+        ...region,
+        latitudeDelta: region.latitudeDelta * 2,
+        longitudeDelta: region.longitudeDelta * 2,
+      };
+      mapRef.current.animateToRegion(newRegion, 300);
+      setRegion(newRegion);
+    }
   };
 
-  const handleResetZoom = () => {
-    // if (mapRef.current) {
-    //   mapRef.current.animateToRegion(INITIAL_REGION, 300);
-    //   setRegion(INITIAL_REGION);
-    // }
+  const handleLocationChange = (event) => {
+    if (isTracking && event.nativeEvent.coordinate) {
+      const { latitude, longitude } = event.nativeEvent.coordinate;
+      const newCoordinate = {
+        latitude,
+        longitude,
+        timestamp: new Date().getTime()
+      };
+
+      setRouteCoordinates(prev => [...prev, newCoordinate]);
+
+      // 更新当前速度
+      if (routeCoordinates.length > 0) {
+        const lastCoord = routeCoordinates[routeCoordinates.length - 1];
+        const distance = calculateDistance(
+          lastCoord.latitude,
+          lastCoord.longitude,
+          latitude,
+          longitude
+        );
+        const timeDiff = (newCoordinate.timestamp - lastCoord.timestamp) / 1000; // 转换为秒
+        if (timeDiff > 0) {
+          const speed = (distance / timeDiff) * 3.6; // 转换为 km/h
+          setCurrentSpeed(speed);
+        }
+      }
+
+      // 更新地图区域以跟随用户
+      if (mapRef.current) {
+        setRegion({
+          latitude,
+          longitude,
+          latitudeDelta: region.latitudeDelta,
+          longitudeDelta: region.longitudeDelta,
+        });
+      }
+    }
   };
 
-  if (!location) {
+  // 如果位置和区域都没有准备好，显示加载状态
+  if (!location || !region) {
     return (
       <Box flex={1} justifyContent="center" alignItems="center">
-        <GText>{errorMsg || '加载中...'}</GText>
+        <GText>获取位置信息中...</GText>
       </Box>
     );
   }
@@ -393,9 +422,13 @@ export default function HomeScreen() {
   return (
     <Box flex={1}>
       <MapView
+        ref={mapRef}
         style={styles.map}
-        initialRegion={INITIAL_REGION}
+        region={region}
         onRegionChangeComplete={setRegion}
+        showsUserLocation={true}
+        followsUserLocation={isTracking}
+        onUserLocationChange={handleLocationChange}
       >
         {/* 显示起点和终点标记 */}
         <Marker
@@ -419,6 +452,35 @@ export default function HomeScreen() {
         )}
       </MapView>
 
+      {/* 缩放控制按钮 */}
+      <Box
+        position="absolute"
+        right={4}
+        top="50%"
+        style={{ transform: [{ translateY: -50 }] }}
+      >
+        <VStack space={2}>
+          <Button
+            size="sm"
+            variant="solid"
+            bg="$white"
+            onPress={handleZoomIn}
+            style={styles.zoomButton}
+          >
+            <ButtonText fontSize={16} color="$black" style={styles.buttonText}>+</ButtonText>
+          </Button>
+          <Button
+            size="sm"
+            variant="solid"
+            bg="$white"
+            onPress={handleZoomOut}
+            style={styles.zoomButton}
+          >
+            <ButtonText fontSize={16} color="$black" style={styles.buttonText}>−</ButtonText>
+          </Button>
+        </VStack>
+      </Box>
+
       {isTracking && (
         <View
           style={{
@@ -439,67 +501,6 @@ export default function HomeScreen() {
           </View>
         </View>
       )}
-
-      {/* 缩放控制按钮 */}
-      <Box 
-        position="absolute" 
-        left={4} 
-        top="20%" 
-        borderRadius="lg" 
-        shadow={2}
-        style={{
-          elevation: 5,
-          zIndex: 1000,
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        }}
-      >
-        <VStack space={2} p={2}>
-          <Pressable
-            onPress={handleZoomIn}
-            borderRadius="md"
-            alignItems="center"
-            justifyContent="center"
-            style={{
-              minWidth: 48,
-              minHeight: 48,
-              padding: 16,
-              backgroundColor: 'rgba(0, 122, 255, 0.7)', // iOS 蓝色带透明度
-            }}
-          >
-            <GText color="$white" size="$3xl" bold>+</GText>
-          </Pressable>
-          
-          <Pressable
-            onPress={handleZoomOut}
-            borderRadius="md"
-            alignItems="center"
-            justifyContent="center"
-            style={{
-              minWidth: 48,
-              minHeight: 48,
-              padding: 16,
-              backgroundColor: 'rgba(0, 122, 255, 0.7)',
-            }}
-          >
-            <GText color="$white" size="$3xl" bold>−</GText>
-          </Pressable>
-
-          <Pressable
-            onPress={handleResetZoom}
-            borderRadius="md"
-            alignItems="center"
-            justifyContent="center"
-            style={{
-              minWidth: 48,
-              minHeight: 48,
-              padding: 16,
-              backgroundColor: 'rgba(142, 142, 147, 0.7)', // iOS 灰色带透明度
-            }}
-          >
-            <GText color="$white" size="$2xl" bold>⟲</GText>
-          </Pressable>
-        </VStack>
-      </Box>
 
       {/* 底部控制面板 */}
       <Box
@@ -559,7 +560,31 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    width: '100%',
+    height: '100%',
+  },
+  zoomButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  buttonText: {
+    lineHeight: 16,
+    textAlign: 'center',
+    width: '100%',
+    paddingLeft: 0,
+    paddingRight: 0,
   },
 });
