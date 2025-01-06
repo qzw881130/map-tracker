@@ -49,8 +49,23 @@ export default function HomeScreen() {
 
         // 获取当前位置
         const currentLocation = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High
+          accuracy: Location.Accuracy.BestForNavigation,
+          maximumAge: 1000, // 最多使用1秒前的缓存
         });
+
+        // 检查位置精度
+        if (currentLocation.coords.accuracy > 10) {
+          console.log('等待更高精度的位置信息...');
+          // 尝试再次获取更精确的位置
+          const preciseLocation = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.BestForNavigation,
+            maximumAge: 0, // 不使用缓存
+          });
+          
+          if (preciseLocation.coords.accuracy <= 10) {
+            currentLocation = preciseLocation;
+          }
+        }
 
         // 立即更新当前位置
         setCurrentLocation({
@@ -63,8 +78,8 @@ export default function HomeScreen() {
         setRegion({
           latitude: currentLocation.coords.latitude,
           longitude: currentLocation.coords.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: 0.002, // 缩小显示范围，提供更详细的视图
+          longitudeDelta: 0.002,
         });
 
         // 请求后台位置权限
@@ -89,19 +104,15 @@ export default function HomeScreen() {
 
         // 配置位置追踪选项
         const locationOptions = {
-          accuracy: Location.Accuracy.High,
-          distanceInterval: 10,
-          timeInterval: 3000,
-          mayShowUserSettingsDialog: false,
+          accuracy: Location.Accuracy.BestForNavigation,
+          distanceInterval: 5, // 每5米更新一次
+          timeInterval: 1000, // 每秒更新一次
+          mayShowUserSettingsDialog: true, // 允许显示系统设置对话框
           activityType: Location.ActivityType.Fitness,
           foregroundService: {
             notificationTitle: "运动轨迹记录中",
             notificationBody: "正在记录您的运动轨迹",
           },
-          // 添加额外的过滤条件
-          deferredUpdatesInterval: 3000,
-          deferredUpdatesDistance: 10,
-          pausesUpdatesAutomatically: true,
         };
 
         // 开启位置监听
@@ -110,7 +121,7 @@ export default function HomeScreen() {
           (newLocation) => {
             // 检查位置精度
             const accuracy = newLocation.coords.accuracy;
-            if (accuracy > 20) {
+            if (accuracy > 10) { // 降低精度阈值到10米
               console.log('位置精度过低:', accuracy);
               return;
             }
@@ -128,7 +139,7 @@ export default function HomeScreen() {
               };
 
               setRouteCoordinates(prev => {
-                // 检查与上一个点的距离
+                // 检查与上一个点的距离和时间
                 if (prev.length > 0) {
                   const lastPoint = prev[prev.length - 1];
                   const distance = calculateDistance(
@@ -137,9 +148,13 @@ export default function HomeScreen() {
                     latitude,
                     longitude
                   );
+                  const timeDiff = (newCoordinate.timestamp - lastPoint.timestamp) / 1000;
                   
-                  // 如果距离太小，不添加新点
-                  if (distance < 5) { // 小于5米不记录
+                  // 使用更严格的过滤条件
+                  if (distance < 2 || // 小于2米不记录
+                      distance > 50 || // 如果突然移动超过50米，可能是漂移
+                      (timeDiff < 1 && distance < 5)) { // 1秒内移动小于5米
+                    console.log('过滤掉可能的漂移点:', {distance, timeDiff});
                     return prev;
                   }
                 }
@@ -148,26 +163,27 @@ export default function HomeScreen() {
 
               // 更新当前速度
               if (speed !== null && speed !== undefined) {
-                // 使用设备提供的速度（转换为km/h）
-                setCurrentSpeed(speed * 3.6);
-              } else {
-                // 如果没有速度数据，使用距离计算
-                if (routeCoordinates.length > 0) {
-                  const lastPoint = routeCoordinates[routeCoordinates.length - 1];
-                  const distance = calculateDistance(
-                    lastPoint.latitude,
-                    lastPoint.longitude,
-                    latitude,
-                    longitude
-                  );
-                  const timeDiff = (newCoordinate.timestamp - lastPoint.timestamp) / 1000;
-                  if (timeDiff > 0) {
-                    const calculatedSpeed = (distance / timeDiff) * 3.6;
-                    // 使用简单的移动平均来平滑速度
-                    setCurrentSpeed(prev => (prev * 0.7 + calculatedSpeed * 0.3));
+                // 使用设备提供的速度（转换为km/h）并应用平滑
+                setCurrentSpeed(prev => {
+                  const newSpeed = speed * 3.6;
+                  // 如果速度变化太大，可能是异常值
+                  if (Math.abs(newSpeed - prev) > 10) {
+                    return prev;
                   }
-                }
+                  // 使用加权移动平均来平滑速度
+                  return prev * 0.7 + newSpeed * 0.3;
+                });
               }
+            }
+
+            // 更新地图视图以跟随用户
+            if (mapRef.current) {
+              mapRef.current.animateToRegion({
+                latitude,
+                longitude,
+                latitudeDelta: 0.002,
+                longitudeDelta: 0.002,
+              }, 1000);
             }
           }
         );
