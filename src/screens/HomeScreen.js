@@ -113,6 +113,7 @@ export default function HomeScreen() {
   const [simulationIndex, setSimulationIndex] = useState(0);
   const [region, setRegion] = useState(null);
   const [activityHistory, setActivityHistory] = useState([]);
+  const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {
     let locationSubscription = null;
@@ -372,40 +373,44 @@ export default function HomeScreen() {
   };
 
   const handleLocationChange = (event) => {
-    if (isTracking && event.nativeEvent.coordinate) {
+    if (event.nativeEvent.coordinate) {
       const { latitude, longitude } = event.nativeEvent.coordinate;
-      const newCoordinate = {
-        latitude,
-        longitude,
-        timestamp: new Date().getTime()
-      };
-
-      setRouteCoordinates(prev => [...prev, newCoordinate]);
-
-      // 更新当前速度
-      if (routeCoordinates.length > 0) {
-        const lastCoord = routeCoordinates[routeCoordinates.length - 1];
-        const distance = calculateDistance(
-          lastCoord.latitude,
-          lastCoord.longitude,
-          latitude,
-          longitude
-        );
-        const timeDiff = (newCoordinate.timestamp - lastCoord.timestamp) / 1000; // 转换为秒
-        if (timeDiff > 0) {
-          const speed = (distance / timeDiff) * 3.6; // 转换为 km/h
-          setCurrentSpeed(speed);
-        }
-      }
-
-      // 更新地图区域以跟随用户
-      if (mapRef.current) {
-        setRegion({
+      setCurrentLocation({ latitude, longitude });
+      
+      if (isTracking) {
+        const newCoordinate = {
           latitude,
           longitude,
-          latitudeDelta: region.latitudeDelta,
-          longitudeDelta: region.longitudeDelta,
-        });
+          timestamp: new Date().getTime()
+        };
+
+        setRouteCoordinates(prev => [...prev, newCoordinate]);
+
+        // 更新当前速度
+        if (routeCoordinates.length > 0) {
+          const lastCoord = routeCoordinates[routeCoordinates.length - 1];
+          const distance = calculateDistance(
+            lastCoord.latitude,
+            lastCoord.longitude,
+            latitude,
+            longitude
+          );
+          const timeDiff = (newCoordinate.timestamp - lastCoord.timestamp) / 1000;
+          if (timeDiff > 0) {
+            const speed = (distance / timeDiff) * 3.6;
+            setCurrentSpeed(speed);
+          }
+        }
+
+        // 更新地图区域以跟随用户
+        if (mapRef.current) {
+          setRegion({
+            latitude,
+            longitude,
+            latitudeDelta: region.latitudeDelta,
+            longitudeDelta: region.longitudeDelta,
+          });
+        }
       }
     }
   };
@@ -472,6 +477,27 @@ export default function HomeScreen() {
           />
         )}
       </MapView>
+
+      {/* 坐标显示浮层 */}
+      {currentLocation && (
+        <Box
+          position="absolute"
+          left={12}
+          top={15}
+          bg="rgba(0, 0, 0, 0.7)"
+          borderRadius={8}
+          p={3}
+        >
+          <VStack space={1}>
+            <Text style={styles.coordText}>
+              纬度: {currentLocation.latitude.toFixed(6)}
+            </Text>
+            <Text style={styles.coordText}>
+              经度: {currentLocation.longitude.toFixed(6)}
+            </Text>
+          </VStack>
+        </Box>
+      )}
 
       {/* 缩放控制按钮 */}
       <Box
@@ -592,6 +618,11 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+  },
+  coordText: {
+    color: 'white',
+    fontSize: 13,
+    fontFamily: 'monospace',
   },
   zoomButton: {
     width: 40,
