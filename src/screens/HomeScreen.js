@@ -30,75 +30,6 @@ const ACTIVITY_TYPES = [
   { label: '其他', value: 'others' },
 ];
 
-const INITIAL_REGION = {
-  latitude: 40.451916,  // 怀来县龙道萄泊园小区的大致坐标
-  longitude: 115.517180,
-  latitudeDelta: 0.01,  // 缩放级别，数值越小越详细
-  longitudeDelta: 0.01,
-};
-
-// 模拟运动的路径点（更密集的点以形成平滑的轨迹）
-const SIMULATION_POINTS = [
-  { latitude: 40.451916, longitude: 115.517180 }, // 起点
-  { latitude: 40.452100, longitude: 115.517300 },
-  { latitude: 40.452300, longitude: 115.517500 },
-  { latitude: 40.452500, longitude: 115.517800 },
-  { latitude: 40.452700, longitude: 115.518000 },
-  { latitude: 40.452900, longitude: 115.518200 },
-  { latitude: 40.453000, longitude: 115.518500 },
-  { latitude: 40.453200, longitude: 115.518700 },
-  { latitude: 40.453300, longitude: 115.518900 },
-  { latitude: 40.453500, longitude: 115.519200 },
-  { latitude: 40.453700, longitude: 115.519400 },
-  { latitude: 40.453800, longitude: 115.519600 },
-  { latitude: 40.454000, longitude: 115.520000 }, // 终点
-];
-
-const MOCK_HISTORY_DATA = [
-  {
-    id: '1',
-    type: 'hiking',
-    startTime: '2025-01-05T07:30:00Z',
-    endTime: '2025-01-05T08:45:00Z',
-    distance: 5.2,
-    duration: 4500,
-    averageSpeed: 4.16,
-    coordinates: [
-      { latitude: 40.417832, longitude: 115.498945 },
-      { latitude: 40.451916, longitude: 115.517180 },
-      { latitude: 40.452300, longitude: 115.517500 },
-    ]
-  },
-  {
-    id: '2',
-    type: 'running',
-    startTime: '2025-01-04T14:20:00Z',
-    endTime: '2025-01-04T15:10:00Z',
-    distance: 8.4,
-    duration: 3000,
-    averageSpeed: 10.08,
-    coordinates: [
-      { latitude: 40.417832, longitude: 115.498945 },
-      { latitude: 40.451916, longitude: 115.517180 },
-      { latitude: 40.452300, longitude: 115.517500 },
-    ]
-  },
-  {
-    id: '3',
-    type: 'cycling',
-    startTime: '2025-01-03T09:00:00Z',
-    endTime: '2025-01-03T10:30:00Z',
-    distance: 25.6,
-    duration: 5400,
-    averageSpeed: 17.07,
-    coordinates: [
-      { latitude: 40.417832, longitude: 115.498945 },
-      { latitude: 40.451916, longitude: 115.517180 },
-      { latitude: 40.452300, longitude: 115.517500 },
-    ]
-  }
-];
-
 export default function HomeScreen() {
   const navigation = useNavigation();
   const mapRef = useRef(null);
@@ -109,10 +40,7 @@ export default function HomeScreen() {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [currentSpeed, setCurrentSpeed] = useState(0);
   const [startTime, setStartTime] = useState(null);
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [simulationIndex, setSimulationIndex] = useState(0);
   const [region, setRegion] = useState(null);
-  const [activityHistory, setActivityHistory] = useState([]);
   const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {
@@ -148,7 +76,7 @@ export default function HomeScreen() {
       }
     };
 
-    if (isTracking && !isSimulating) {
+    if (isTracking) {
       startLocationUpdates();
     }
 
@@ -165,70 +93,6 @@ export default function HomeScreen() {
     //   mapRef.current.animateToRegion(INITIAL_REGION, 1000);
     // }
   }, []);
-
-  useEffect(() => {
-    let simulationInterval;
-    if (isTracking && isSimulating) {
-      simulationInterval = setInterval(() => {
-        if (simulationIndex < SIMULATION_POINTS.length - 1) {
-          const currentPoint = SIMULATION_POINTS[simulationIndex];
-          const nextPoint = SIMULATION_POINTS[simulationIndex + 1];
-          
-          // 计算模拟速度（km/h）
-          const distance = calculateDistance(
-            currentPoint.latitude,
-            currentPoint.longitude,
-            nextPoint.latitude,
-            nextPoint.longitude
-          );
-          const speed = distance * 3.6; // 转换为 km/h
-          
-          setCurrentSpeed(speed);
-          setRouteCoordinates(prev => [...prev, currentPoint]);
-          setSimulationIndex(prev => prev + 1);
-          
-          // 计算总距离
-          const totalDistance = calculateTotalDistance([...routeCoordinates, currentPoint]);
-          
-          // 输出日志信息
-          console.log(`
-====== 运动状态更新 ======
-时间: ${new Date().toLocaleTimeString()}
-当前位置: 
-  - 纬度: ${currentPoint.latitude.toFixed(6)}
-  - 经度: ${currentPoint.longitude.toFixed(6)}
-距离起点: ${totalDistance.toFixed(2)} 公里
-当前速度: ${speed.toFixed(1)} km/h
-======================
-          `);
-          
-          // 更新地图视角
-          // mapRef.current?.animateToRegion({
-          //   latitude: currentPoint.latitude,
-          //   longitude: currentPoint.longitude,
-          //   latitudeDelta: 0.005,
-          //   longitudeDelta: 0.005,
-          // }, 1000);
-        } else {
-          // 模拟结束，输出总结信息
-          const finalDistance = calculateTotalDistance(routeCoordinates);
-          console.log(`
-====== 运动结束 ======
-总距离: ${finalDistance.toFixed(2)} 公里
-平均速度: ${(finalDistance / (routeCoordinates.length * 2 / 3600)).toFixed(1)} km/h
-====================
-          `);
-          clearInterval(simulationInterval);
-          handleStopTracking();
-        }
-      }, 2000); // 每2秒更新一次
-    }
-    return () => {
-      if (simulationInterval) {
-        clearInterval(simulationInterval);
-      }
-    };
-  }, [isTracking, isSimulating, simulationIndex, routeCoordinates]);
 
   useEffect(() => {
     (async () => {
@@ -260,8 +124,6 @@ export default function HomeScreen() {
     setIsTracking(true);
     setStartTime(new Date());
     setRouteCoordinates([]);
-    setSimulationIndex(0);
-    // setIsSimulating(true); // 开启模拟模式
   };
 
   const handleStopTracking = async () => {
@@ -456,18 +318,7 @@ export default function HomeScreen() {
         onUserLocationChange={handleLocationChange}
         mapType="standard"
       >
-        {/* 显示起点和终点标记 */}
-        <Marker
-          coordinate={SIMULATION_POINTS[0]}
-          title="起点"
-          pinColor="green"
-        />
-        <Marker
-          coordinate={SIMULATION_POINTS[SIMULATION_POINTS.length - 1]}
-          title="终点"
-          pinColor="red"
-        />
-        
+
         {/* 显示运动轨迹 */}
         {routeCoordinates.length > 0 && (
           <Polyline
