@@ -20,7 +20,6 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from '@gluestack-ui/themed';
-import { Alert, Linking } from 'react-native';
 import { ACTIVITY_TYPES } from '../config/activityTypes';
 
 export default function HomeScreen() {

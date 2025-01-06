@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Box,
@@ -28,12 +28,15 @@ export default function HistoryScreen({ navigation }) {
   const loadActivities = async () => {
     try {
       setIsLoading(true);
-      const storedActivities = await AsyncStorage.getItem('activities');
-      if (storedActivities) {
-        setActivities(JSON.parse(storedActivities));
+      const jsonValue = await AsyncStorage.getItem('activities');
+      if (jsonValue != null) {
+        const loadedActivities = JSON.parse(jsonValue);
+        // 按时间倒序排序
+        loadedActivities.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+        setActivities(loadedActivities);
       }
-    } catch (error) {
-      console.error('Error loading activities:', error);
+    } catch (e) {
+      console.error('Error loading activities:', e);
     } finally {
       setIsLoading(false);
     }
@@ -53,39 +56,38 @@ export default function HistoryScreen({ navigation }) {
   const formatDuration = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
     if (hours > 0) {
-      return `${hours}小时${minutes}分钟`;
+      return `${hours}小时${minutes}分`;
     }
-    return `${minutes}分钟`;
+    if (minutes > 0) {
+      return `${minutes}分${remainingSeconds}秒`;
+    }
+    return `${remainingSeconds}秒`;
   };
 
   const renderItem = ({ item }) => (
     <Pressable
       onPress={() => navigation.navigate('ActivityDetail', { activity: item })}
-      mb={3}
+      mb="$3"
     >
       <Box
         bg="$white"
+        p="$4"
         borderRadius="$xl"
-        p={4}
-        shadow={3}
-        style={{
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-          elevation: 3,
-        }}
+        shadowColor="$gray400"
+        shadowOffset={{ width: 0, height: 2 }}
+        shadowOpacity={0.25}
+        shadowRadius={3.84}
+        elevation={5}
       >
-        <VStack space={3}>
+        <VStack space="$2">
           <HStack justifyContent="space-between" alignItems="center">
             <Box
               bg="$blue100"
-              px={3}
-              py={1}
+              px="$3"
+              py="$1"
               borderRadius="$lg"
             >
               <Text size="$md" bold color="$blue600">
@@ -94,27 +96,25 @@ export default function HistoryScreen({ navigation }) {
             </Box>
             <Text size="$sm" color="$gray500">{formatDate(item.startTime)}</Text>
           </HStack>
-          
-          <HStack space={6} px={1}>
-            <VStack space={1} flex={1}>
-              <Text size="$sm" color="$gray500">距离</Text>
-              <HStack space={1} alignItems="baseline">
-                <Text size="$xl" bold color="$gray800">{item.distance.toFixed(1)}</Text>
-                <Text size="$sm" color="$gray600">km</Text>
-              </HStack>
+
+          <HStack justifyContent="space-between" mt="$2">
+            <VStack alignItems="center" space="$1">
+              <Text size="$lg" bold color="$gray800">
+                {(item.distance / 1000).toFixed(2)}
+              </Text>
+              <Text size="$sm" color="$gray500">公里</Text>
             </VStack>
-            
-            <VStack space={1} flex={1}>
+            <VStack alignItems="center" space="$1">
+              <Text size="$lg" bold color="$gray800">
+                {formatDuration(item.duration)}
+              </Text>
               <Text size="$sm" color="$gray500">时长</Text>
-              <Text size="$lg" bold color="$gray800">{formatDuration(item.duration)}</Text>
             </VStack>
-            
-            <VStack space={1} flex={1}>
-              <Text size="$sm" color="$gray500">配速</Text>
-              <HStack space={1} alignItems="baseline">
-                <Text size="$xl" bold color="$gray800">{item.averageSpeed.toFixed(1)}</Text>
-                <Text size="$sm" color="$gray600">km/h</Text>
-              </HStack>
+            <VStack alignItems="center" space="$1">
+              <Text size="$lg" bold color="$gray800">
+                {item.averageSpeed.toFixed(1)}
+              </Text>
+              <Text size="$sm" color="$gray500">平均速度</Text>
             </VStack>
           </HStack>
         </VStack>
@@ -132,7 +132,7 @@ export default function HistoryScreen({ navigation }) {
         <FlatList
           data={activities}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.startTime.toString()}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => (
@@ -149,5 +149,6 @@ export default function HistoryScreen({ navigation }) {
 const styles = StyleSheet.create({
   listContainer: {
     flexGrow: 1,
+    padding: 16,
   },
 });

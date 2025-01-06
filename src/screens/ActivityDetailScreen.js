@@ -35,79 +35,98 @@ const formatDuration = (seconds) => {
   return `${remainingSeconds}秒`;
 };
 
-const getInitialRegion = () => {
-  if (!activity.coordinates || activity.coordinates.length === 0) {
-    return null;
-  }
-
-  // 计算路线的边界
-  let minLat = activity.coordinates[0].latitude;
-  let maxLat = activity.coordinates[0].latitude;
-  let minLng = activity.coordinates[0].longitude;
-  let maxLng = activity.coordinates[0].longitude;
-
-  activity.coordinates.forEach(coord => {
-    minLat = Math.min(minLat, coord.latitude);
-    maxLat = Math.max(maxLat, coord.latitude);
-    minLng = Math.min(minLng, coord.longitude);
-    maxLng = Math.max(maxLng, coord.longitude);
-  });
-
-  // 计算中心点
-  const centerLat = (minLat + maxLat) / 2;
-  const centerLng = (minLng + maxLng) / 2;
-
-  // 计算合适的缩放级别
-  const latDelta = (maxLat - minLat) * 4; // 增加 300% 的边距
-  const lngDelta = (maxLng - minLng) * 4;
-
-  // 确保最小缩放级别
-  return {
-    latitude: centerLat,
-    longitude: centerLng,
-    latitudeDelta: Math.max(latDelta, 0.005),
-    longitudeDelta: Math.max(lngDelta, 0.005),
-  };
+// 默认地图区域（深圳）
+const DEFAULT_REGION = {
+  latitude: 22.5431,
+  longitude: 114.0579,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05,
 };
 
 export default function ActivityDetailScreen({ route }) {
   const { activity } = route.params;
 
-  const initialRegion = getInitialRegion();
+  const getInitialRegion = () => {
+    if (!activity.coordinates || activity.coordinates.length === 0) {
+      return DEFAULT_REGION;
+    }
 
-  if (!initialRegion) {
-    return (
-      <Box flex={1} justifyContent="center" alignItems="center">
-        <Text size="$md">没有找到轨迹数据</Text>
-      </Box>
-    );
-  }
+    // 计算路线的边界
+    let minLat = activity.coordinates[0].latitude;
+    let maxLat = activity.coordinates[0].latitude;
+    let minLng = activity.coordinates[0].longitude;
+    let maxLng = activity.coordinates[0].longitude;
+
+    activity.coordinates.forEach(coord => {
+      minLat = Math.min(minLat, coord.latitude);
+      maxLat = Math.max(maxLat, coord.latitude);
+      minLng = Math.min(minLng, coord.longitude);
+      maxLng = Math.max(maxLng, coord.longitude);
+    });
+
+    // 计算中心点
+    const centerLat = (minLat + maxLat) / 2;
+    const centerLng = (minLng + maxLng) / 2;
+
+    // 计算合适的缩放级别
+    const latDelta = (maxLat - minLat) * 4;
+    const lngDelta = (maxLng - minLng) * 4;
+
+    return {
+      latitude: centerLat,
+      longitude: centerLng,
+      latitudeDelta: Math.max(latDelta, 0.005),
+      longitudeDelta: Math.max(lngDelta, 0.005),
+    };
+  };
+
+  const initialRegion = getInitialRegion();
+  const hasTrackData = activity.coordinates && activity.coordinates.length > 0;
 
   return (
     <ScrollView flex={1} bg="$gray50">
-      <Box height={300}>
+      <Box height={300} mb="$4">
         <MapView
           style={styles.map}
           initialRegion={initialRegion}
         >
-          <Marker
-            coordinate={activity.coordinates[0]}
-            title="起点"
-            pinColor="green"
-          />
-          <Marker
-            coordinate={activity.coordinates[activity.coordinates.length - 1]}
-            title="终点"
-            pinColor="red"
-          />
-          <Polyline
-            coordinates={activity.coordinates}
-            strokeColor="#007AFF"
-            strokeWidth={4}
-          />
+          {hasTrackData && (
+            <Polyline
+              coordinates={activity.coordinates}
+              strokeColor="#007AFF"
+              strokeWidth={4}
+            />
+          )}
+          {hasTrackData && (
+            <Marker
+              coordinate={activity.coordinates[0]}
+              title="起点"
+              pinColor="green"
+            />
+          )}
+          {hasTrackData && (
+            <Marker
+              coordinate={activity.coordinates[activity.coordinates.length - 1]}
+              title="终点"
+              pinColor="red"
+            />
+          )}
         </MapView>
+        {!hasTrackData && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            justifyContent="center"
+            alignItems="center"
+            bg="rgba(255, 255, 255, 0.8)"
+          >
+            <Text size="$md" color="$gray600">未记录轨迹数据</Text>
+          </Box>
+        )}
       </Box>
-
       <Box p={4}>
         <VStack space={4}>
           <Box
@@ -182,6 +201,12 @@ export default function ActivityDetailScreen({ route }) {
                     {getActivityLabel(activity.type)}
                   </Text>
                 </HStack>
+                {!hasTrackData && (
+                  <HStack justifyContent="space-between">
+                    <Text size="$sm" color="$gray500">备注</Text>
+                    <Text size="$sm" color="$gray800">此活动未记录轨迹数据</Text>
+                  </HStack>
+                )}
               </VStack>
             </VStack>
           </Box>
