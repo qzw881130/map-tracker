@@ -49,7 +49,7 @@ export default function HomeScreen() {
 
         // 获取当前位置
         const currentLocation = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.BestForNavigation
+          accuracy: Location.Accuracy.High
         });
 
         // 立即更新当前位置
@@ -89,7 +89,7 @@ export default function HomeScreen() {
 
         // 配置位置追踪选项
         const locationOptions = {
-          accuracy: Location.Accuracy.BestForNavigation,
+          accuracy: Location.Accuracy.High,
           distanceInterval: 10,
           timeInterval: 3000,
           mayShowUserSettingsDialog: false,
