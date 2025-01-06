@@ -260,7 +260,7 @@ export default function HomeScreen() {
     setStartTime(new Date());
     setRouteCoordinates([]);
     setSimulationIndex(0);
-    setIsSimulating(true); // 开启模拟模式
+    // setIsSimulating(true); // 开启模拟模式
   };
 
   const handleStopTracking = async () => {
@@ -274,7 +274,7 @@ export default function HomeScreen() {
   const handleSaveActivity = async () => {
     if (routeCoordinates.length < 2) {
       console.log('No valid activity to save');
-      return;
+      // return;
     }
 
     const activity = {
