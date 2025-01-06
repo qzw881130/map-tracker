@@ -8,15 +8,7 @@ import {
   HStack,
   Pressable,
 } from '@gluestack-ui/themed';
-
-const ACTIVITY_TYPES = [
-  { value: 'walking_dog', label: '遛狗' },
-  { value: 'cycling', label: '骑车' },
-  { value: 'running', label: '跑步' },
-  { value: 'hiking', label: '爬山' },
-  { value: 'skating', label: '滑冰' },
-  { value: 'others', label: '其他' },
-];
+import { ACTIVITY_TYPES, getActivityLabel } from '../config/activityTypes';
 
 export default function HistoryScreen({ navigation }) {
   const [activities, setActivities] = useState([]);
@@ -97,7 +89,7 @@ export default function HistoryScreen({ navigation }) {
               borderRadius="$lg"
             >
               <Text size="$md" bold color="$blue600">
-                {ACTIVITY_TYPES.find(t => t.value === item.type)?.label || '?'}
+                {getActivityLabel(item.type)}
               </Text>
             </Box>
             <Text size="$sm" color="$gray500">{formatDate(item.startTime)}</Text>

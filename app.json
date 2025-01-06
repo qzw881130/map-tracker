@@ -17,7 +17,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.qianzhiwei5921.Maptracker",
       "infoPlist": {
-        "buildNumber": "7",
+        "buildNumber": "8",
         "UIBackgroundModes": [
           "location",
           "fetch"

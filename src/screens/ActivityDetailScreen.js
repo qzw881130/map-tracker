@@ -8,78 +8,70 @@ import {
   HStack,
   ScrollView,
 } from '@gluestack-ui/themed';
+import { getActivityLabel } from '../config/activityTypes';
 
-const ACTIVITY_TYPES = [
-  { value: 'walking_dog', label: '遛狗' },
-  { value: 'cycling', label: '骑车' },
-  { value: 'running', label: '跑步' },
-  { value: 'hiking', label: '爬山' },
-  { value: 'skating', label: '滑冰' },
-  { value: 'others', label: '其他' },
-];
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const formatDuration = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}小时${minutes}分${remainingSeconds}秒`;
+  }
+  if (minutes > 0) {
+    return `${minutes}分${remainingSeconds}秒`;
+  }
+  return `${remainingSeconds}秒`;
+};
+
+const getInitialRegion = () => {
+  if (!activity.coordinates || activity.coordinates.length === 0) {
+    return null;
+  }
+
+  // 计算路线的边界
+  let minLat = activity.coordinates[0].latitude;
+  let maxLat = activity.coordinates[0].latitude;
+  let minLng = activity.coordinates[0].longitude;
+  let maxLng = activity.coordinates[0].longitude;
+
+  activity.coordinates.forEach(coord => {
+    minLat = Math.min(minLat, coord.latitude);
+    maxLat = Math.max(maxLat, coord.latitude);
+    minLng = Math.min(minLng, coord.longitude);
+    maxLng = Math.max(maxLng, coord.longitude);
+  });
+
+  // 计算中心点
+  const centerLat = (minLat + maxLat) / 2;
+  const centerLng = (minLng + maxLng) / 2;
+
+  // 计算合适的缩放级别
+  const latDelta = (maxLat - minLat) * 4; // 增加 300% 的边距
+  const lngDelta = (maxLng - minLng) * 4;
+
+  // 确保最小缩放级别
+  return {
+    latitude: centerLat,
+    longitude: centerLng,
+    latitudeDelta: Math.max(latDelta, 0.005),
+    longitudeDelta: Math.max(lngDelta, 0.005),
+  };
+};
 
 export default function ActivityDetailScreen({ route }) {
   const { activity } = route.params;
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const formatDuration = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (hours > 0) {
-      return `${hours}小时${minutes}分${remainingSeconds}秒`;
-    }
-    if (minutes > 0) {
-      return `${minutes}分${remainingSeconds}秒`;
-    }
-    return `${remainingSeconds}秒`;
-  };
-
-  const getInitialRegion = () => {
-    if (!activity.coordinates || activity.coordinates.length === 0) {
-      return null;
-    }
-
-    // 计算路线的边界
-    let minLat = activity.coordinates[0].latitude;
-    let maxLat = activity.coordinates[0].latitude;
-    let minLng = activity.coordinates[0].longitude;
-    let maxLng = activity.coordinates[0].longitude;
-
-    activity.coordinates.forEach(coord => {
-      minLat = Math.min(minLat, coord.latitude);
-      maxLat = Math.max(maxLat, coord.latitude);
-      minLng = Math.min(minLng, coord.longitude);
-      maxLng = Math.max(maxLng, coord.longitude);
-    });
-
-    // 计算中心点
-    const centerLat = (minLat + maxLat) / 2;
-    const centerLng = (minLng + maxLng) / 2;
-
-    // 计算合适的缩放级别
-    const latDelta = (maxLat - minLat) * 4; // 增加 300% 的边距
-    const lngDelta = (maxLng - minLng) * 4;
-
-    // 确保最小缩放级别
-    return {
-      latitude: centerLat,
-      longitude: centerLng,
-      latitudeDelta: Math.max(latDelta, 0.005),
-      longitudeDelta: Math.max(lngDelta, 0.005),
-    };
-  };
 
   const initialRegion = getInitialRegion();
 
@@ -133,7 +125,7 @@ export default function ActivityDetailScreen({ route }) {
                   borderRadius="$lg"
                 >
                   <Text size="$md" bold color="$blue600">
-                    {ACTIVITY_TYPES.find(t => t.value === activity.type)?.label || activity.type}
+                    {getActivityLabel(activity.type)}
                   </Text>
                 </Box>
                 <Text size="$sm" color="$gray500">{formatDate(activity.startTime)}</Text>
@@ -187,7 +179,7 @@ export default function ActivityDetailScreen({ route }) {
                 <HStack justifyContent="space-between">
                   <Text size="$sm" color="$gray500">运动类型</Text>
                   <Text size="$sm" color="$gray800">
-                    {ACTIVITY_TYPES.find(t => t.value === activity.type)?.label || activity.type}
+                    {getActivityLabel(activity.type)}
                   </Text>
                 </HStack>
               </VStack>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Dimensions, Platform } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, Platform, Alert, Linking } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,15 +21,7 @@ import {
   SelectItem,
 } from '@gluestack-ui/themed';
 import { Alert, Linking } from 'react-native';
-
-const ACTIVITY_TYPES = [
-  { label: '遛狗', value: 'walking_dog' },
-  { label: '骑车', value: 'cycling' },
-  { label: '跑步', value: 'running' },
-  { label: '爬山', value: 'hiking' },
-  { label: '滑冰', value: 'skating' },
-  { label: '其他', value: 'others' },
-];
+import { ACTIVITY_TYPES } from '../config/activityTypes';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
