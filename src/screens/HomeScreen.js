@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, Platform } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +20,7 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from '@gluestack-ui/themed';
+import { Alert, Linking } from 'react-native';
 
 const ACTIVITY_TYPES = [
   { label: '遛狗', value: 'walking_dog' },
@@ -48,44 +49,151 @@ export default function HomeScreen() {
     
     const startLocationUpdates = async () => {
       try {
-        locationSubscription = await Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.High,
-            distanceInterval: 1, // 每移动1米更新一次
-            timeInterval: 1000, // 每秒更新一次
+        // 请求前台位置权限
+        const foregroundStatus = await Location.requestForegroundPermissionsAsync();
+        if (foregroundStatus.status !== 'granted') {
+          setErrorMsg('需要位置权限来记录运动轨迹');
+          return;
+        }
+
+        // 获取当前位置
+        const currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.BestForNavigation
+        });
+
+        // 立即更新当前位置
+        setCurrentLocation({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          timestamp: new Date().getTime()
+        });
+
+        setLocation(currentLocation);
+        setRegion({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        });
+
+        // 请求后台位置权限
+        const backgroundStatus = await Location.requestBackgroundPermissionsAsync();
+        if (backgroundStatus.status !== 'granted') {
+          console.log('后台位置权限未授予，应用在后台时可能无法正常工作');
+          // 显示提示给用户
+          Alert.alert(
+            '提示',
+            '未获得后台位置权限，这将导致应用在后台时无法记录运动轨迹。建议在系统设置中开启后台定位权限。',
+            [
+              { text: '稍后再说', style: 'cancel' },
+              { 
+                text: '去设置', 
+                onPress: () => {
+                  Linking.openSettings();
+                }
+              }
+            ]
+          );
+        }
+
+        // 配置位置追踪选项
+        const locationOptions = {
+          accuracy: Location.Accuracy.BestForNavigation,
+          distanceInterval: 10,
+          timeInterval: 3000,
+          mayShowUserSettingsDialog: false,
+          activityType: Location.ActivityType.Fitness,
+          foregroundService: {
+            notificationTitle: "运动轨迹记录中",
+            notificationBody: "正在记录您的运动轨迹",
           },
+          // 添加额外的过滤条件
+          deferredUpdatesInterval: 3000,
+          deferredUpdatesDistance: 10,
+          pausesUpdatesAutomatically: true,
+        };
+
+        // 开启位置监听
+        locationSubscription = await Location.watchPositionAsync(
+          locationOptions,
           (newLocation) => {
-            const { latitude, longitude } = newLocation.coords;
-            setRouteCoordinates(prev => [...prev, { latitude, longitude }]);
+            // 检查位置精度
+            const accuracy = newLocation.coords.accuracy;
+            if (accuracy > 20) {
+              console.log('位置精度过低:', accuracy);
+              return;
+            }
+
+            const { latitude, longitude, speed } = newLocation.coords;
             
-            // 计算实时速度（使用最后两个点）
-            if (routeCoordinates.length > 0) {
-              const lastPoint = routeCoordinates[routeCoordinates.length - 1];
-              const speed = calculateDistance(
-                lastPoint.latitude,
-                lastPoint.longitude,
+            // 如果正在追踪，添加新的坐标点
+            if (isTracking) {
+              const newCoordinate = {
                 latitude,
-                longitude
-              ) * 3600; // 转换为 km/h
-              setCurrentSpeed(speed);
+                longitude,
+                timestamp: new Date().getTime(),
+                accuracy,
+                speed: speed || 0,
+              };
+
+              setRouteCoordinates(prev => {
+                // 检查与上一个点的距离
+                if (prev.length > 0) {
+                  const lastPoint = prev[prev.length - 1];
+                  const distance = calculateDistance(
+                    lastPoint.latitude,
+                    lastPoint.longitude,
+                    latitude,
+                    longitude
+                  );
+                  
+                  // 如果距离太小，不添加新点
+                  if (distance < 5) { // 小于5米不记录
+                    return prev;
+                  }
+                }
+                return [...prev, newCoordinate];
+              });
+
+              // 更新当前速度
+              if (speed !== null && speed !== undefined) {
+                // 使用设备提供的速度（转换为km/h）
+                setCurrentSpeed(speed * 3.6);
+              } else {
+                // 如果没有速度数据，使用距离计算
+                if (routeCoordinates.length > 0) {
+                  const lastPoint = routeCoordinates[routeCoordinates.length - 1];
+                  const distance = calculateDistance(
+                    lastPoint.latitude,
+                    lastPoint.longitude,
+                    latitude,
+                    longitude
+                  );
+                  const timeDiff = (newCoordinate.timestamp - lastPoint.timestamp) / 1000;
+                  if (timeDiff > 0) {
+                    const calculatedSpeed = (distance / timeDiff) * 3.6;
+                    // 使用简单的移动平均来平滑速度
+                    setCurrentSpeed(prev => (prev * 0.7 + calculatedSpeed * 0.3));
+                  }
+                }
+              }
             }
           }
         );
       } catch (error) {
-        console.error('Error starting location updates:', error);
+        console.error('位置更新错误:', error);
+        setErrorMsg('无法获取位置信息: ' + error.message);
       }
     };
 
-    if (isTracking) {
-      startLocationUpdates();
-    }
+    startLocationUpdates();
 
     return () => {
       if (locationSubscription) {
         locationSubscription.remove();
       }
     };
-  }, [isTracking]);
+  }, []);
 
   useEffect(() => {
     // 当地图引用可用时，移动到指定位置
@@ -235,17 +343,28 @@ export default function HomeScreen() {
   };
 
   const handleLocationChange = (event) => {
+    console.log('handleLocationChange event:', event.nativeEvent);
+    
     if (event.nativeEvent.coordinate) {
-      const { latitude, longitude } = event.nativeEvent.coordinate;
-      setCurrentLocation({ latitude, longitude });
+      const { latitude, longitude, heading } = event.nativeEvent.coordinate;
+      console.log('New coordinates:', { latitude, longitude, heading });
       
+      // 更新当前位置
+      setCurrentLocation({
+        latitude,
+        longitude,
+        heading: heading || 0,
+        timestamp: new Date().getTime()
+      });
+      
+      // 如果正在追踪，添加到路径中
       if (isTracking) {
         const newCoordinate = {
           latitude,
           longitude,
-          timestamp: new Date().getTime()
+          timestamp: new Date().getTime(),
+          heading: heading || 0
         };
-
         setRouteCoordinates(prev => [...prev, newCoordinate]);
 
         // 更新当前速度
@@ -274,6 +393,8 @@ export default function HomeScreen() {
           });
         }
       }
+    } else {
+      console.log('No coordinate in event:', event.nativeEvent);
     }
   };
 
@@ -305,6 +426,8 @@ export default function HomeScreen() {
     );
   }
 
+  console.log('currentLocation===', currentLocation)
+
   return (
     <Box flex={1}>
       <MapView
@@ -312,13 +435,11 @@ export default function HomeScreen() {
         style={styles.map}
         region={region}
         onRegionChangeComplete={setRegion}
-        showsUserLocation
-        userLocationAnnotationTitle=""
+        showsUserLocation={false}
         followsUserLocation={false}
         onUserLocationChange={handleLocationChange}
         mapType="standard"
       >
-
         {/* 显示运动轨迹 */}
         {routeCoordinates.length > 0 && (
           <Polyline
@@ -327,25 +448,48 @@ export default function HomeScreen() {
             strokeWidth={4}
           />
         )}
+
+        {/* 显示当前位置 */}
+        {currentLocation && (
+          <Marker
+            coordinate={{
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+            }}
+          >
+            <View style={styles.markerContainer}>
+              <View style={styles.markerOuter}>
+                <View style={styles.markerInner} />
+              </View>
+              <View style={styles.markerPulse} />
+            </View>
+          </Marker>
+        )}
       </MapView>
 
       {/* 坐标显示浮层 */}
       {currentLocation && (
         <Box
           position="absolute"
-          left={12}
-          top={15}
-          bg="rgba(0, 0, 0, 0.7)"
-          borderRadius={8}
-          p={3}
+          left="$3"
+          top="$3"
+          bg="$backgroundLight800"
+          borderRadius="$md"
+          p="$3"
+          style={styles.coordOverlay}
         >
-          <VStack space={1}>
-            <Text style={styles.coordText}>
+          <VStack space="$2">
+            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
               纬度: {currentLocation.latitude.toFixed(6)}
-            </Text>
-            <Text style={styles.coordText}>
+            </GText>
+            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
               经度: {currentLocation.longitude.toFixed(6)}
-            </Text>
+            </GText>
+            {currentSpeed > 0 && (
+              <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                速度: {currentSpeed.toFixed(1)} km/h
+              </GText>
+            )}
           </VStack>
         </Box>
       )}
@@ -470,10 +614,24 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  coordOverlay: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    minWidth: 200,
+  },
   coordText: {
-    color: 'white',
-    fontSize: 13,
-    fontFamily: 'monospace',
+    fontSize: 14,
+    fontFamily: Platform.select({
+      ios: 'Menlo',
+      android: 'monospace'
+    }),
+    textAlign: 'left',
   },
   zoomButton: {
     width: 40,
@@ -498,5 +656,36 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingLeft: 0,
     paddingRight: 0,
+  },
+  markerContainer: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  markerOuter: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0, 122, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  markerInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#007AFF',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  markerPulse: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 122, 255, 0.3)',
   },
 });
