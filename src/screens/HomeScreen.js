@@ -396,11 +396,6 @@ export default function HomeScreen() {
                 title="起点"
                 pinColor="green"
               />
-              {/* <Marker
-                coordinate={routeCoordinates[routeCoordinates.length - 1]}
-                title="当前位置"
-                pinColor="red"
-              /> */}
             </>
           )}
         </MapView>
