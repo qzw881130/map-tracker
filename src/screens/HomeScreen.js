@@ -93,7 +93,7 @@ export default function HomeScreen() {
       }
     };
 
-    startLocationUpdates();
+    if(isTracking) startLocationUpdates();
     return () => {
       if (locationSubscription) {
         locationSubscription.remove();
@@ -307,19 +307,38 @@ export default function HomeScreen() {
   // 添加定位到当前位置的函数
   const handleLocateCurrentPosition = async () => {
     try {
-      let location = await Location.getCurrentPositionAsync({});
+      // 使用高精度定位
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.BestForNavigation,
+        maximumAge: 1000, // 最多使用1秒前的缓存位置
+      });
+
       if (location && mapRef.current) {
+        console.log('获取到新位置:', location.coords);
         const newRegion = {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: region.latitudeDelta,
-          longitudeDelta: region.longitudeDelta,
+          latitudeDelta: 0.002, // 放大一点以便更清楚地看到位置
+          longitudeDelta: 0.002,
         };
-        mapRef.current.animateToRegion(newRegion, 300);
+
+        // 更新当前位置状态
+        setCurrentLocation(location.coords);
+        
+        // 使用动画移动到新位置
+        mapRef.current.animateToRegion(newRegion, 500);
         setRegion(newRegion);
+      } else {
+        console.warn('无法获取位置或地图未准备好');
+        Alert.alert('定位失败', '无法获取当前位置，请确保已开启定位服务');
       }
     } catch (error) {
-      console.log('Error getting current location:', error);
+      console.error('获取当前位置时出错:', error);
+      Alert.alert(
+        '定位错误',
+        '获取位置信息失败：' + (error.message || '未知错误'),
+        [{ text: '确定' }]
+      );
     }
   };
 
@@ -355,8 +374,8 @@ export default function HomeScreen() {
           showsCompass={true}
           showsScale={true}
           onRegionChangeComplete={(newRegion) => {
-            console.log('地图区域更新:', newRegion);
-            setRegion(newRegion);
+            // console.log('地图区域更新:', newRegion);
+            // setRegion(newRegion);
           }}
           onError={(error) => {
             console.error('地图错误:', error);
@@ -377,18 +396,18 @@ export default function HomeScreen() {
                 title="起点"
                 pinColor="green"
               />
-              <Marker
+              {/* <Marker
                 coordinate={routeCoordinates[routeCoordinates.length - 1]}
                 title="当前位置"
                 pinColor="red"
-              />
+              /> */}
             </>
           )}
         </MapView>
       )}
 
       {/* 坐标显示浮层 */}
-      {currentLocation && (
+      {region && (
         <Box
           position="absolute"
           left="$3"
@@ -400,16 +419,29 @@ export default function HomeScreen() {
         >
           <VStack space="$2">
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-              纬度: {currentLocation.latitude.toFixed(6)}
+              中心点纬度: {region.latitude.toFixed(6)}
             </GText>
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-              经度: {currentLocation.longitude.toFixed(6)}
+              中心点经度: {region.longitude.toFixed(6)}
             </GText>
+            {currentLocation && (
+              <>
+                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                  当前纬度: {currentLocation.latitude.toFixed(6)}
+                </GText>
+                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                  当前经度: {currentLocation.longitude.toFixed(6)}
+                </GText>
+              </>
+            )}
             {currentSpeed > 0 && (
               <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
                 速度: {currentSpeed.toFixed(1)} km/h
               </GText>
             )}
+            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                是否追踪: {isTracking ? '是' : '否'}
+              </GText>
           </VStack>
         </Box>
       )}

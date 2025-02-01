@@ -89,6 +89,10 @@ export default function ActivityDetailScreen({ route }) {
         <MapView
           style={styles.map}
           initialRegion={initialRegion}
+          showsUserLocation={false}
+          showsMyLocationButton={false}
+          showsCompass={true}
+          showsScale={true}
         >
           {hasTrackData && (
             <Polyline
@@ -101,6 +105,7 @@ export default function ActivityDetailScreen({ route }) {
             <Marker
               coordinate={activity.coordinates[0]}
               title="起点"
+              description={`${activity.coordinates[0].latitude.toFixed(6)}, ${activity.coordinates[0].longitude.toFixed(6)}`}
               pinColor="green"
             />
           )}
@@ -108,6 +113,7 @@ export default function ActivityDetailScreen({ route }) {
             <Marker
               coordinate={activity.coordinates[activity.coordinates.length - 1]}
               title="终点"
+              description={`${activity.coordinates[activity.coordinates.length - 1].latitude.toFixed(6)}, ${activity.coordinates[activity.coordinates.length - 1].longitude.toFixed(6)}`}
               pinColor="red"
             />
           )}
@@ -124,6 +130,28 @@ export default function ActivityDetailScreen({ route }) {
             bg="rgba(255, 255, 255, 0.8)"
           >
             <Text size="$md" color="$gray600">未记录轨迹数据</Text>
+          </Box>
+        )}
+        
+        {/* 坐标信息浮层 */}
+        {hasTrackData && (
+          <Box
+            position="absolute"
+            left="$3"
+            top="$3"
+            bg="$backgroundLight800"
+            borderRadius="$md"
+            p="$3"
+            opacity={0.9}
+          >
+            <VStack space="$2">
+              <Text color="$textLight50" fontWeight="$medium" size="$xs">
+                起点: {activity.coordinates[0].latitude.toFixed(6)}, {activity.coordinates[0].longitude.toFixed(6)}
+              </Text>
+              <Text color="$textLight50" fontWeight="$medium" size="$xs">
+                终点: {activity.coordinates[activity.coordinates.length - 1].latitude.toFixed(6)}, {activity.coordinates[activity.coordinates.length - 1].longitude.toFixed(6)}
+              </Text>
+            </VStack>
           </Box>
         )}
       </Box>
