@@ -16,6 +16,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.qianzhiwei5921.Maptracker",
+      "config": {
+        "googleMapsApiKey": "AIzaSyAzYCc9aWqEi8h2H-0Az4jte-0AKU-lPMY"
+      },
       "infoPlist": {
         "buildNumber": "11",
         "UIBackgroundModes": [
@@ -35,6 +38,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAzYCc9aWqEi8h2H-0Az4jte-0AKU-lPMY"
+        }
       },
       "permissions": [
         "ACCESS_COARSE_LOCATION",

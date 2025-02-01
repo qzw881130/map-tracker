@@ -40,6 +40,7 @@ export default function HomeScreen() {
     
     const startLocationUpdates = async () => {
       try {
+        console.log('正在请求位置权限...');
         // 请求前台位置权限
         const foregroundStatus = await Location.requestForegroundPermissionsAsync();
         if (foregroundStatus.status !== 'granted') {
@@ -47,160 +48,58 @@ export default function HomeScreen() {
           return;
         }
 
+        console.log('位置权限已获取，正在获取当前位置...');
         // 获取当前位置
         const currentLocation = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.BestForNavigation,
-          maximumAge: 1000, // 最多使用1秒前的缓存
+          accuracy: Location.Accuracy.Balanced,
         });
 
-        // 检查位置精度
-        if (currentLocation.coords.accuracy > 10) {
-          console.log('等待更高精度的位置信息...');
-          // 尝试再次获取更精确的位置
-          const preciseLocation = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.BestForNavigation,
-            maximumAge: 0, // 不使用缓存
-          });
-          
-          if (preciseLocation.coords.accuracy <= 10) {
-            currentLocation = preciseLocation;
-          }
-        }
-
-        // 立即更新当前位置
-        setCurrentLocation({
+        console.log('当前位置:', currentLocation);
+        
+        // 设置初始地图区域
+        const initialRegion = {
           latitude: currentLocation.coords.latitude,
           longitude: currentLocation.coords.longitude,
-          timestamp: new Date().getTime()
-        });
-
-        setLocation(currentLocation);
-        setRegion({
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-          latitudeDelta: 0.002, // 缩小显示范围，提供更详细的视图
-          longitudeDelta: 0.002,
-        });
-
-        // 请求后台位置权限
-        const backgroundStatus = await Location.requestBackgroundPermissionsAsync();
-        if (backgroundStatus.status !== 'granted') {
-          console.log('后台位置权限未授予，应用在后台时可能无法正常工作');
-          // 显示提示给用户
-          Alert.alert(
-            '提示',
-            '未获得后台位置权限，这将导致应用在后台时无法记录运动轨迹。建议在系统设置中开启后台定位权限。',
-            [
-              { text: '稍后再说', style: 'cancel' },
-              { 
-                text: '去设置', 
-                onPress: () => {
-                  Linking.openSettings();
-                }
-              }
-            ]
-          );
-        }
-
-        // 配置位置追踪选项
-        const locationOptions = {
-          accuracy: Location.Accuracy.BestForNavigation,
-          distanceInterval: 5, // 每5米更新一次
-          timeInterval: 1000, // 每秒更新一次
-          mayShowUserSettingsDialog: true, // 允许显示系统设置对话框
-          activityType: Location.ActivityType.Fitness,
-          foregroundService: {
-            notificationTitle: "运动轨迹记录中",
-            notificationBody: "正在记录您的运动轨迹",
-          },
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
         };
-
-        // 开启位置监听
+        console.log('设置初始地图区域:', initialRegion);
+        setRegion(initialRegion);
+        setCurrentLocation(currentLocation.coords);
+        
+        // 开始监听位置更新
         locationSubscription = await Location.watchPositionAsync(
-          locationOptions,
-          (newLocation) => {
-            // 检查位置精度
-            const accuracy = newLocation.coords.accuracy;
-            if (accuracy > 10) { // 降低精度阈值到10米
-              console.log('位置精度过低:', accuracy);
-              return;
-            }
-
-            const { latitude, longitude, speed } = newLocation.coords;
-            
-            // 如果正在追踪，添加新的坐标点
+          {
+            accuracy: Location.Accuracy.BestForNavigation,
+            timeInterval: 1000,
+            distanceInterval: 1,
+          },
+          (location) => {
+            console.log('位置更新:', location);
             if (isTracking) {
-              const newCoordinate = {
-                latitude,
-                longitude,
-                timestamp: new Date().getTime(),
-                accuracy,
-                speed: speed || 0,
+              const newCoords = {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
               };
-
-              setRouteCoordinates(prev => {
-                // 检查与上一个点的距离和时间
-                if (prev.length > 0) {
-                  const lastPoint = prev[prev.length - 1];
-                  const distance = calculateDistance(
-                    lastPoint.latitude,
-                    lastPoint.longitude,
-                    latitude,
-                    longitude
-                  );
-                  const timeDiff = (newCoordinate.timestamp - lastPoint.timestamp) / 1000;
-                  
-                  // 使用更严格的过滤条件
-                  if (distance < 2 || // 小于2米不记录
-                      distance > 50 || // 如果突然移动超过50米，可能是漂移
-                      (timeDiff < 1 && distance < 5)) { // 1秒内移动小于5米
-                    console.log('过滤掉可能的漂移点:', {distance, timeDiff});
-                    return prev;
-                  }
-                }
-                return [...prev, newCoordinate];
-              });
-
-              // 更新当前速度
-              if (speed !== null && speed !== undefined) {
-                // 使用设备提供的速度（转换为km/h）并应用平滑
-                setCurrentSpeed(prev => {
-                  const newSpeed = speed * 3.6;
-                  // 如果速度变化太大，可能是异常值
-                  if (Math.abs(newSpeed - prev) > 10) {
-                    return prev;
-                  }
-                  // 使用加权移动平均来平滑速度
-                  return prev * 0.7 + newSpeed * 0.3;
-                });
-              }
-            }
-
-            // 更新地图视图以跟随用户
-            if (mapRef.current) {
-              mapRef.current.animateToRegion({
-                latitude,
-                longitude,
-                latitudeDelta: 0.002,
-                longitudeDelta: 0.002,
-              }, 1000);
+              setRouteCoordinates(prevCoords => [...prevCoords, newCoords]);
+              setCurrentLocation(location.coords);
+              setCurrentSpeed(location.coords.speed || 0);
             }
           }
         );
       } catch (error) {
-        console.error('位置更新错误:', error);
-        setErrorMsg('无法获取位置信息: ' + error.message);
+        console.error('位置服务错误:', error);
+        setErrorMsg('获取位置信息时出错：' + error.message);
       }
     };
 
     startLocationUpdates();
-
     return () => {
       if (locationSubscription) {
         locationSubscription.remove();
       }
     };
-  }, []);
+  }, [isTracking]);
 
   useEffect(() => {
     // 当地图引用可用时，移动到指定位置
@@ -437,42 +336,56 @@ export default function HomeScreen() {
 
   return (
     <Box flex={1}>
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        region={region}
-        onRegionChangeComplete={setRegion}
-        showsUserLocation={false}
-        followsUserLocation={false}
-        onUserLocationChange={handleLocationChange}
-        mapType="standard"
-      >
-        {/* 显示运动轨迹 */}
-        {routeCoordinates.length > 0 && (
-          <Polyline
-            coordinates={routeCoordinates}
-            strokeColor="#007AFF"
-            strokeWidth={4}
-          />
-        )}
-
-        {/* 显示当前位置 */}
-        {currentLocation && (
-          <Marker
-            coordinate={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-            }}
-          >
-            <View style={styles.markerContainer}>
-              <View style={styles.markerOuter}>
-                <View style={styles.markerInner} />
-              </View>
-              <View style={styles.markerPulse} />
-            </View>
-          </Marker>
-        )}
-      </MapView>
+      {errorMsg ? (
+        <Box flex={1} justifyContent="center" alignItems="center">
+          <GText>{errorMsg}</GText>
+        </Box>
+      ) : !region ? (
+        <Box flex={1} justifyContent="center" alignItems="center">
+          <GText>正在加载地图...</GText>
+        </Box>
+      ) : (
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={region}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
+          followsUserLocation={true}
+          showsCompass={true}
+          showsScale={true}
+          onRegionChangeComplete={(newRegion) => {
+            console.log('地图区域更新:', newRegion);
+            setRegion(newRegion);
+          }}
+          onError={(error) => {
+            console.error('地图错误:', error);
+            setErrorMsg('地图加载失败：' + error.nativeEvent.error);
+          }}
+        >
+          {routeCoordinates.length > 0 && (
+            <Polyline
+              coordinates={routeCoordinates}
+              strokeColor="#FF0000"
+              strokeWidth={3}
+            />
+          )}
+          {routeCoordinates.length > 0 && (
+            <>
+              <Marker
+                coordinate={routeCoordinates[0]}
+                title="起点"
+                pinColor="green"
+              />
+              <Marker
+                coordinate={routeCoordinates[routeCoordinates.length - 1]}
+                title="当前位置"
+                pinColor="red"
+              />
+            </>
+          )}
+        </MapView>
+      )}
 
       {/* 坐标显示浮层 */}
       {currentLocation && (
