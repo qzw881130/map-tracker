@@ -428,7 +428,7 @@ export default function HomeScreen() {
 
   // 处理地图区域变化
   const handleRegionChange = (newRegion) => {
-    console.log('地图区域变化 (手动)', newRegion);
+    // console.log('地图区域变化 (手动)', newRegion);
     // 当用户手动移动地图时，禁止自动更新
     if (!isTracking) {
       setAllowMapUpdate(false);
