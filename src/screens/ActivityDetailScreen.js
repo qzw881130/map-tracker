@@ -37,12 +37,11 @@ const formatDuration = (seconds) => {
 };
 
 // 格式化距离显示
-const formatDistance = (distanceInKm) => {
-  const distanceInM = distanceInKm * 1000;
+const formatDistance = (distanceInM) => {
   if (distanceInM < 1000) {
     return `${distanceInM.toFixed(0)}米`;
   } else {
-    return `${distanceInKm.toFixed(2)}公里`;
+    return `${(distanceInM / 1000).toFixed(2)}公里`;
   }
 };
 
@@ -175,7 +174,9 @@ export default function ActivityDetailScreen({ route }) {
                 <VStack space={1} flex={1}>
                   <Text size="$sm" color="$gray500">总距离</Text>
                   <HStack space={1} alignItems="baseline">
-                    <Text size="$2xl" bold color="$gray800">{formatDistance(activity.distance)}</Text>
+                    <Text size="$2xl" bold color="$gray800">
+                      {formatDistance(activity.distance)}
+                    </Text>
                   </HStack>
                 </VStack>
 
