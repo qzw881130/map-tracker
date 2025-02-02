@@ -21,6 +21,7 @@ import {
   SelectItem,
 } from '@gluestack-ui/themed';
 import { ACTIVITY_TYPES } from '../config/activityTypes';
+import { getAmapKey } from '../config/keys';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -41,8 +42,8 @@ export default function HomeScreen() {
       try {
         // 初始化高德地图
         await init({
-          ios: "921d5466c750d870d6bd6bfa9c38b968",
-          android: "4ce30c5ae67e32aae75ab759e4d6c419"
+          ios: getAmapKey(),
+          android: getAmapKey(),
         });
         console.log('高德地图初始化成功');
 
