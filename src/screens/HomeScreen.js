@@ -103,8 +103,8 @@ export default function HomeScreen() {
         watchId = Geolocation.watchPosition(
           location => {
             const coords = location.coords || location;
-            // 提高精度要求，降低到10米
-            if (!coords.accuracy || coords.accuracy > 10) {
+            // 提高精度要求到20米
+            if (!coords.accuracy || coords.accuracy > 20) {
               console.log('位置精度不足，忽略此次更新:', coords.accuracy);
               return;
             }
@@ -200,14 +200,37 @@ export default function HomeScreen() {
     };
   }, [isTracking]);
 
-  const handleStartTracking = () => {
-    if (!activityType) {
-      alert('请选择运动类型');
-      return;
+  const handleStartTracking = async () => {
+    try {
+      if (!activityType) {
+        alert('请选择运动类型');
+        return;
+      }
+
+      // 重置路径坐标
+      setRouteCoordinates([]);
+      // 重置开始时间
+      setStartTime(new Date());
+      // 开启追踪模式
+      setIsTracking(true);
+      // 允许地图自动更新
+      setAllowMapUpdate(true);
+      
+      // 如果有当前位置，立即将地图移动到当前位置
+      if (currentLocation && mapRef.current) {
+        console.log('开始追踪，移动地图到当前位置:', currentLocation);
+        mapRef.current.animateToRegion({
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          latitudeDelta: region.latitudeDelta,
+          longitudeDelta: region.longitudeDelta,
+        }, 1000);
+      }
+      
+    } catch (error) {
+      console.error('开始追踪时出错:', error);
+      setErrorMsg('开始追踪时出错：' + error.message);
     }
-    setIsTracking(true);
-    setStartTime(new Date());
-    setRouteCoordinates([]);
   };
 
   const handleStopTracking = async () => {
