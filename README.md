@@ -28,3 +28,4 @@
 
 ## Links
 - [高德地图开发者平台](https://console.amap.com/dev/key/app)
+- [react-native-amap-geolocation](https://github.com/qiuxiang/react-native-amap-geolocation)
