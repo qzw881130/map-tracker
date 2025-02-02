@@ -18,5 +18,13 @@
    ```bash
     npm start --device
    ```
+## Technologies
+* react-native-maps 实现地图展现
+* react-native-amap-geolocation 使用高德地图SDK实现定位
 
+## Troubleshooting
+* expo-location 不适用于中国，定位偏差过大
+
+
+## Links
 - [高德地图开发者平台](https://console.amap.com/dev/key/app)
