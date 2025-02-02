@@ -53,6 +53,16 @@ export default function HistoryScreen({ navigation }) {
     });
   };
 
+  // 格式化距离显示
+  const formatDistance = (distanceInM) => {
+    const distanceInKm = distanceInM / 1000; // 将米转换为公里
+    if (distanceInM < 1000) {
+      return `${distanceInM.toFixed(0)}米`;
+    } else {
+      return `${distanceInKm.toFixed(2)}公里`;
+    }
+  };
+
   const formatDuration = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -100,9 +110,9 @@ export default function HistoryScreen({ navigation }) {
           <HStack justifyContent="space-between" mt="$2">
             <VStack alignItems="center" space="$1">
               <Text size="$lg" bold color="$gray800">
-                {(item.distance / 1000).toFixed(2)}
+                {formatDistance(item.distance)}
               </Text>
-              <Text size="$sm" color="$gray500">公里</Text>
+              <Text size="$sm" color="$gray500">距离</Text>
             </VStack>
             <VStack alignItems="center" space="$1">
               <Text size="$lg" bold color="$gray800">
