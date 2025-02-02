@@ -34,6 +34,7 @@ export default function HomeScreen() {
   const [startTime, setStartTime] = useState(null);
   const [region, setRegion] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [allowMapUpdate, setAllowMapUpdate] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -88,6 +89,7 @@ export default function HomeScreen() {
     
     const startLocationUpdates = async () => {
       try {
+        console.log('开始位置更新，追踪状态:', isTracking);
         // 配置定位
         if (Geolocation.setLocationMode) {
           await Geolocation.setLocationMode('Device_Sensors');  // 仅使用GPS
@@ -100,8 +102,6 @@ export default function HomeScreen() {
         // 开始监听位置更新
         watchId = Geolocation.watchPosition(
           location => {
-            if (!isTracking) return;
-              
             const coords = location.coords || location;
             // 提高精度要求，降低到10米
             if (!coords.accuracy || coords.accuracy > 10) {
@@ -109,53 +109,69 @@ export default function HomeScreen() {
               return;
             }
 
-            console.log('位置更新:', coords);
-            const newCoords = {
-              latitude: coords.latitude,
-              longitude: coords.longitude,
-              timestamp: new Date().getTime(),
-              accuracy: coords.accuracy,
-            };
-
+            console.log('位置更新:', coords, '追踪状态:', isTracking, '允许地图更新:', allowMapUpdate);
+            
+            // 更新当前位置
             setCurrentLocation({
               latitude: coords.latitude,
               longitude: coords.longitude,
               accuracy: coords.accuracy,
               speed: coords.speed || 0,
             });
+
+            // 只在追踪模式下处理速度和路径更新
+            if (isTracking) {
+              const newCoords = {
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+                timestamp: new Date().getTime(),
+                accuracy: coords.accuracy,
+              };
             
-            // 只在速度大于0.5米/秒时更新速度显示
-            const currentSpeed = coords.speed || 0;
-            if (currentSpeed > 0.5) {
-              setCurrentSpeed(currentSpeed * 3.6);
-            } else {
-              setCurrentSpeed(0);
-            }
-
-            // 检查与上一个点的距离
-            setRouteCoordinates(prevCoords => {
-              if (prevCoords.length === 0) return [newCoords];
-              
-              const lastCoord = prevCoords[prevCoords.length - 1];
-              const distance = calculateDistance(
-                lastCoord.latitude,
-                lastCoord.longitude,
-                newCoords.latitude,
-                newCoords.longitude
-              );
-
-              // 增加距离和时间阈值
-              const timeDiff = (newCoords.timestamp - lastCoord.timestamp) / 1000; // 转换为秒
-              const speed = distance / timeDiff * 3.6; // 转换为km/h
-
-              // 如果距离小于10米或速度小于1km/h，不记录新点
-              if (distance < 0.01 || speed < 1) {
-                console.log('位置变化太小或速度太慢，忽略此次更新', {distance, speed});
-                return prevCoords;
+              // 只在速度大于0.5米/秒时更新速度显示
+              const currentSpeed = coords.speed || 0;
+              if (currentSpeed > 0.5) {
+                setCurrentSpeed(currentSpeed * 3.6);
+              } else {
+                setCurrentSpeed(0);
               }
 
-              return [...prevCoords, newCoords];
-            });
+              // 检查与上一个点的距离
+              setRouteCoordinates(prevCoords => {
+                if (prevCoords.length === 0) return [newCoords];
+                
+                const lastCoord = prevCoords[prevCoords.length - 1];
+                const distance = calculateDistance(
+                  lastCoord.latitude,
+                  lastCoord.longitude,
+                  newCoords.latitude,
+                  newCoords.longitude
+                );
+
+                // 增加距离和时间阈值
+                const timeDiff = (newCoords.timestamp - lastCoord.timestamp) / 1000; // 转换为秒
+                const speed = distance / timeDiff * 3.6; // 转换为km/h
+
+                // 如果距离小于10米或速度小于1km/h，不记录新点
+                if (distance < 0.01 || speed < 1) {
+                  console.log('位置变化太小或速度太慢，忽略此次更新', {distance, speed});
+                  return prevCoords;
+                }
+
+                // 更新地图区域以跟随用户
+                if (mapRef.current && allowMapUpdate) {
+                  console.log('更新地图区域 (自动)');
+                  mapRef.current.animateToRegion({
+                    latitude: coords.latitude,
+                    longitude: coords.longitude,
+                    latitudeDelta: region.latitudeDelta,
+                    longitudeDelta: region.longitudeDelta,
+                  }, 1000);
+                }
+
+                return [...prevCoords, newCoords];
+              });
+            }
           },
           error => {
             console.error('位置更新错误:', error);
@@ -174,9 +190,10 @@ export default function HomeScreen() {
       }
     };
 
-    if(isTracking) startLocationUpdates();
+    startLocationUpdates();
 
     return () => {
+      console.log('清理位置更新');
       if (watchId !== null) {
         Geolocation.clearWatch(watchId);
       }
@@ -386,6 +403,23 @@ export default function HomeScreen() {
     }
   };
 
+  // 处理地图区域变化
+  const handleRegionChange = (newRegion) => {
+    console.log('地图区域变化 (手动)', newRegion);
+    // 当用户手动移动地图时，禁止自动更新
+    if (!isTracking) {
+      setAllowMapUpdate(false);
+    }
+  };
+
+  // 处理地图区域变化结束
+  const handleRegionChangeComplete = (newRegion) => {
+    console.log('地图区域变化完成 (手动)', newRegion);
+    if (!isTracking) {
+      setRegion(newRegion);
+    }
+  };
+
   // 如果位置和区域都没有准备好，显示加载状态
   if (!location || !region) {
     return (
@@ -412,19 +446,12 @@ export default function HomeScreen() {
           ref={mapRef}
           style={styles.map}
           initialRegion={region}
+          onRegionChange={handleRegionChange}
+          onRegionChangeComplete={handleRegionChangeComplete}
           showsUserLocation={true}
-          showsMyLocationButton={true}
-          followsUserLocation={true}
+          followsUserLocation={false}
           showsCompass={true}
           showsScale={true}
-          onRegionChangeComplete={(newRegion) => {
-            // console.log('地图区域更新:', newRegion);
-            // setRegion(newRegion);
-          }}
-          onError={(error) => {
-            console.error('地图错误:', error);
-            setErrorMsg('地图加载失败：' + error.nativeEvent.error);
-          }}
         >
           {routeCoordinates.length > 0 && (
             <Polyline
