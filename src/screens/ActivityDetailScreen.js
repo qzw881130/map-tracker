@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import {
@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from '@gluestack-ui/themed';
 import { getActivityLabel } from '../config/activityTypes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -51,36 +52,18 @@ export default function ActivityDetailScreen({ route }) {
       return DEFAULT_REGION;
     }
 
-    // 计算路线的边界
-    let minLat = activity.coordinates[0].latitude;
-    let maxLat = activity.coordinates[0].latitude;
-    let minLng = activity.coordinates[0].longitude;
-    let maxLng = activity.coordinates[0].longitude;
-
-    activity.coordinates.forEach(coord => {
-      minLat = Math.min(minLat, coord.latitude);
-      maxLat = Math.max(maxLat, coord.latitude);
-      minLng = Math.min(minLng, coord.longitude);
-      maxLng = Math.max(maxLng, coord.longitude);
-    });
-
-    // 计算中心点
-    const centerLat = (minLat + maxLat) / 2;
-    const centerLng = (minLng + maxLng) / 2;
-
-    // 计算合适的缩放级别
-    const latDelta = (maxLat - minLat) * 4;
-    const lngDelta = (maxLng - minLng) * 4;
-
+    // 使用轨迹的第一个点作为地图中心
+    const firstCoord = activity.coordinates[0];
     return {
-      latitude: centerLat,
-      longitude: centerLng,
-      latitudeDelta: Math.max(latDelta, 0.005),
-      longitudeDelta: Math.max(lngDelta, 0.005),
+      latitude: firstCoord.latitude,
+      longitude: firstCoord.longitude,
+      latitudeDelta: 0.002,
+      longitudeDelta: 0.002,
     };
   };
 
-  const initialRegion = getInitialRegion();
+  const [initialRegion] = useState(getInitialRegion());
+
   const hasTrackData = activity.coordinates && activity.coordinates.length > 0;
 
   return (

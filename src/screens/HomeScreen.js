@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Dimensions, Platform, Alert, Linking } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
+import { init, Geolocation } from 'react-native-amap-geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -36,91 +36,101 @@ export default function HomeScreen() {
   const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {
-    let locationSubscription = null;
+    (async () => {
+      try {
+        // 初始化高德地图
+        await init({
+          ios: "921d5466c750d870d6bd6bfa9c38b968",
+          android: "4ce30c5ae67e32aae75ab759e4d6c419"
+        });
+        console.log('高德地图初始化成功');
+
+        // 获取当前位置
+        Geolocation.getCurrentPosition(
+          position => {
+            console.log('获取到位置:', position);
+            const coords = position.coords || position;
+            
+            setLocation(coords);
+            setCurrentLocation({
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              accuracy: coords.accuracy,
+              speed: coords.speed || 0,
+            });
+            
+            setRegion({
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              latitudeDelta: 0.002,
+              longitudeDelta: 0.002,
+            });
+          },
+          error => {
+            console.error('Error getting location:', error);
+            setErrorMsg('Error getting location: ' + error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+          }
+        );
+      } catch (error) {
+        console.error('Error getting location:', error);
+        setErrorMsg('Error getting location: ' + error.message);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    let watchId = null;
     
     const startLocationUpdates = async () => {
       try {
-        console.log('正在请求位置权限...');
-        // 请求前台位置权限
-        const foregroundStatus = await Location.requestForegroundPermissionsAsync();
-        if (foregroundStatus.status !== 'granted') {
-          setErrorMsg('需要位置权限来记录运动轨迹');
-          return;
+        // 配置定位
+        if (Geolocation.setLocationMode) {
+          await Geolocation.setLocationMode('Device_Sensors');  // 仅使用GPS
+          await Geolocation.setDistanceFilter(10);  // 增加到10米
+          await Geolocation.setGpsFirstTimeout(3000);
+          await Geolocation.setInterval(2000);
+          await Geolocation.setDesiredAccuracy('HightAccuracy');
         }
 
-        // 尝试获取高精度位置作为起点
-        console.log('正在获取高精度起始位置...');
-        let startLocation = null;
-        for (let i = 0; i < 3; i++) {
-          const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.BestForNavigation,
-            maximumAge: 0,
-          });
-          
-          if (location.coords.accuracy && location.coords.accuracy <= 10) {
-            startLocation = location;
-            break;
-          }
-          await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-
-        if (!startLocation) {
-          console.warn('无法获取高精度位置，使用最后一次获取的位置');
-          startLocation = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.BestForNavigation,
-          });
-        }
-
-        console.log('获取到起始位置:', startLocation);
-        
-        // 设置初始地图区域
-        const initialRegion = {
-          latitude: startLocation.coords.latitude,
-          longitude: startLocation.coords.longitude,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
-        };
-        setRegion(initialRegion);
-        setCurrentLocation(startLocation.coords);
-
-        // 如果正在追踪，设置起点
-        if (isTracking) {
-          console.log('设置起始点:', startLocation.coords);
-          setRouteCoordinates([{
-            latitude: startLocation.coords.latitude,
-            longitude: startLocation.coords.longitude,
-            timestamp: new Date().getTime(),
-            accuracy: startLocation.coords.accuracy,
-          }]);
-        }
-        
         // 开始监听位置更新
-        locationSubscription = await Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.BestForNavigation,
-            timeInterval: 2000,        // 2秒更新一次
-            distanceInterval: 5,       // 最小5米才更新
-            mayShowUserSettingsDialog: true,  // 提示用户开启位置服务
-          },
-          (location) => {
+        watchId = Geolocation.watchPosition(
+          location => {
             if (!isTracking) return;
-            
-            // 检查位置精度
-            if (!location.coords.accuracy || location.coords.accuracy > 15) {
-              console.log('位置精度不足，忽略此次更新:', location.coords.accuracy);
+              
+            const coords = location.coords || location;
+            // 提高精度要求，降低到10米
+            if (!coords.accuracy || coords.accuracy > 10) {
+              console.log('位置精度不足，忽略此次更新:', coords.accuracy);
               return;
             }
 
-            console.log('位置更新:', location);
+            console.log('位置更新:', coords);
             const newCoords = {
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
+              latitude: coords.latitude,
+              longitude: coords.longitude,
               timestamp: new Date().getTime(),
-              accuracy: location.coords.accuracy,
+              accuracy: coords.accuracy,
             };
 
-            setCurrentLocation(location.coords);
-            setCurrentSpeed(location.coords.speed ? location.coords.speed * 3.6 : 0);
+            setCurrentLocation({
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+              accuracy: coords.accuracy,
+              speed: coords.speed || 0,
+            });
+            
+            // 只在速度大于0.5米/秒时更新速度显示
+            const currentSpeed = coords.speed || 0;
+            if (currentSpeed > 0.5) {
+              setCurrentSpeed(currentSpeed * 3.6);
+            } else {
+              setCurrentSpeed(0);
+            }
 
             // 检查与上一个点的距离
             setRouteCoordinates(prevCoords => {
@@ -134,15 +144,28 @@ export default function HomeScreen() {
                 newCoords.longitude
               );
 
-              // 如果距离太小（小于5米）且时间间隔小于5秒，不记录新点
-              if (distance < 0.005 && 
-                  (newCoords.timestamp - lastCoord.timestamp) < 5000) {
-                console.log('位置变化太小或时间间隔太短，忽略此次更新');
+              // 增加距离和时间阈值
+              const timeDiff = (newCoords.timestamp - lastCoord.timestamp) / 1000; // 转换为秒
+              const speed = distance / timeDiff * 3.6; // 转换为km/h
+
+              // 如果距离小于10米或速度小于1km/h，不记录新点
+              if (distance < 0.01 || speed < 1) {
+                console.log('位置变化太小或速度太慢，忽略此次更新', {distance, speed});
                 return prevCoords;
               }
 
               return [...prevCoords, newCoords];
             });
+          },
+          error => {
+            console.error('位置更新错误:', error);
+            setErrorMsg('位置更新错误：' + error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            distanceFilter: 10,
+            interval: 2000,
+            timeout: 15000,
           }
         );
       } catch (error) {
@@ -152,43 +175,13 @@ export default function HomeScreen() {
     };
 
     if(isTracking) startLocationUpdates();
+
     return () => {
-      if (locationSubscription) {
-        locationSubscription.remove();
+      if (watchId !== null) {
+        Geolocation.clearWatch(watchId);
       }
     };
   }, [isTracking]);
-
-  useEffect(() => {
-    // 当地图引用可用时，移动到指定位置
-    // if (mapRef.current) {
-    //   mapRef.current.animateToRegion(INITIAL_REGION, 1000);
-    // }
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.BestForNavigation,
-      });
-      console.log(`location.coords===`, location.coords);
-      setLocation(location);
-      
-      // 设置初始地图区域为当前位置
-      setRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.002,
-        longitudeDelta: 0.002,
-      });
-    })();
-  }, []);
 
   const handleStartTracking = () => {
     if (!activityType) {
@@ -278,9 +271,15 @@ export default function HomeScreen() {
   };
 
   const calculateAverageSpeed = (coordinates, startTime) => {
-    const totalDistance = calculateTotalDistance(coordinates);
-    const duration = (new Date() - startTime) / 3600000;
-    return totalDistance / duration;
+    if (coordinates.length < 2) return 0;
+    
+    const distance = calculateTotalDistance(coordinates); // 公里
+    const duration = (new Date() - startTime) / 1000 / 3600; // 小时
+    
+    // 如果距离太小或时间太短，返回0
+    if (distance < 0.01 || duration < 0.001) return 0;
+    
+    return distance / duration; // km/h
   };
 
   // 添加缩放控制函数
@@ -366,38 +365,24 @@ export default function HomeScreen() {
 
   // 添加定位到当前位置的函数
   const handleLocateCurrentPosition = async () => {
-    try {
-      // 使用高精度定位
-      let location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.BestForNavigation,
-      });
+    if (!currentLocation) {
+      console.warn('无法获取位置或地图未准备好');
+      return;
+    }
 
-      if (location && mapRef.current) {
-        console.log('获取到新位置:', location.coords);
+    try {
+      if (mapRef.current) {
         const newRegion = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.002, // 放大一点以便更清楚地看到位置
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          latitudeDelta: 0.002,
           longitudeDelta: 0.002,
         };
-
-        // 更新当前位置状态
-        setCurrentLocation(location.coords);
         
-        // 使用动画移动到新位置
-        mapRef.current.animateToRegion(newRegion, 500);
-        setRegion(newRegion);
-      } else {
-        console.warn('无法获取位置或地图未准备好');
-        Alert.alert('定位失败', '无法获取当前位置，请确保已开启定位服务');
+        mapRef.current.animateToRegion(newRegion, 1000);
       }
     } catch (error) {
-      console.error('获取当前位置时出错:', error);
-      Alert.alert(
-        '定位错误',
-        '获取位置信息失败：' + (error.message || '未知错误'),
-        [{ text: '确定' }]
-      );
+      console.error('定位到当前位置时出错:', error);
     }
   };
 
