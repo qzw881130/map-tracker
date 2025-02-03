@@ -242,6 +242,86 @@ function generateFigureEightTrack(config = {}) {
   return points;
 }
 
+// 生成模拟骑行轨迹
+function generateBikeTrack(config = {}) {
+  const {
+    startLat = 40.42250217013889,
+    startLon = 115.51807183159723,
+    duration = 900,                    // 15分钟 = 900秒
+    interval = 1,                      // 每秒一个点
+    baseSpeed = 5,                     // 基础速度 5m/s (18km/h)
+    routeVariation = true             // 是否添加速度和方向变化
+  } = config;
+
+  const points = [];
+  const totalPoints = duration / interval;
+  const now = new Date().getTime();
+
+  let currentLat = startLat;
+  let currentLon = startLon;
+  let currentBearing = 45;  // 初始方向
+  let currentSpeed = baseSpeed;
+
+  // 每300秒（5分钟）改变一次路线特征
+  const segmentDuration = 300;
+  const segments = Math.ceil(duration / segmentDuration);
+
+  for (let segment = 0; segment < segments; segment++) {
+    const segmentPoints = Math.min(
+      segmentDuration / interval,
+      totalPoints - segment * (segmentDuration / interval)
+    );
+
+    // 每段设置不同的特征
+    const segmentCharacteristics = {
+      // 基础速度的变化范围（0.8-1.2倍）
+      speedMultiplier: 0.8 + Math.random() * 0.4,
+      // 方向变化的频率（每N个点改变一次）
+      directionChangeInterval: Math.floor(20 + Math.random() * 30),
+      // 方向变化的最大角度
+      maxDirectionChange: 30
+    };
+
+    for (let i = 0; i < segmentPoints; i++) {
+      const globalIndex = segment * (segmentDuration / interval) + i;
+      
+      if (routeVariation) {
+        // 速度变化：模拟地形和路况的影响
+        if (i % 10 === 0) {  // 每10秒可能变化一次速度
+          const speedVariation = 0.9 + Math.random() * 0.2;  // 0.9-1.1倍变化
+          currentSpeed = baseSpeed * segmentCharacteristics.speedMultiplier * speedVariation;
+        }
+
+        // 方向变化：模拟转弯
+        if (i % segmentCharacteristics.directionChangeInterval === 0) {
+          const directionChange = (Math.random() - 0.5) * 2 * segmentCharacteristics.maxDirectionChange;
+          currentBearing = (currentBearing + directionChange + 360) % 360;
+        }
+      }
+
+      // 计算新位置
+      const distance = currentSpeed * interval;
+      const newPos = calculateNewPosition(
+        currentLat,
+        currentLon,
+        distance,
+        currentBearing
+      );
+
+      points.push({
+        latitude: newPos.latitude,
+        longitude: newPos.longitude,
+        timestamp: now + globalIndex * interval * 1000
+      });
+
+      currentLat = newPos.latitude;
+      currentLon = newPos.longitude;
+    }
+  }
+
+  return points;
+}
+
 // 主函数
 async function main() {
   const mode = process.argv[2] || 'straight';
@@ -250,7 +330,7 @@ async function main() {
   const config = {
     startLat: 40.42250217013889,
     startLon: 115.51807183159723,
-    duration: 30,                   // 30秒
+    duration: 30,
     interval: 1
   };
 
@@ -271,6 +351,14 @@ async function main() {
       points = generateBackAndForthTrack({
         ...config,
         distance: 100             // 增加到100米距离
+      });
+      break;
+    case 'bike':
+      points = generateBikeTrack({
+        ...config,
+        duration: 900,          // 15分钟
+        baseSpeed: 5,          // 5m/s (18km/h)
+        routeVariation: true
       });
       break;
     default: // 'straight'
