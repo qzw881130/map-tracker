@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Box,
   Text,
@@ -8,7 +7,9 @@ import {
   HStack,
   Pressable,
 } from '@gluestack-ui/themed';
-import { ACTIVITY_TYPES, getActivityLabel } from '../config/activityTypes';
+import { getActivityLabel } from '../config/activityTypes';
+import { formatElapsedTime, formatDistance, formatSpeed, formatDate } from '../utils/formatUtils';
+import { getAllActivities } from '../utils/storageUtils';
 
 export default function HistoryScreen({ navigation }) {
   const [activities, setActivities] = useState([]);
@@ -16,65 +17,22 @@ export default function HistoryScreen({ navigation }) {
 
   useEffect(() => {
     loadActivities();
-
-    // 添加焦点监听器，每次进入页面时重新加载数据
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadActivities();
-    });
-
+    const unsubscribe = navigation.addListener('focus', loadActivities);
     return unsubscribe;
   }, [navigation]);
 
   const loadActivities = async () => {
     try {
       setIsLoading(true);
-      const jsonValue = await AsyncStorage.getItem('activities');
-      if (jsonValue != null) {
-        const loadedActivities = JSON.parse(jsonValue);
-        // 按时间倒序排序
-        loadedActivities.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
-        setActivities(loadedActivities);
-      }
-    } catch (e) {
-      console.error('Error loading activities:', e);
+      const loadedActivities = await getAllActivities();
+      // 按时间倒序排序
+      loadedActivities.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+      setActivities(loadedActivities);
+    } catch (error) {
+      console.error('Error loading activities:', error);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  // 格式化距离显示
-  const formatDistance = (distanceInM) => {
-    const distanceInKm = distanceInM / 1000; // 将米转换为公里
-    if (distanceInM < 1000) {
-      return `${distanceInM.toFixed(0)}米`;
-    } else {
-      return `${distanceInKm.toFixed(2)}公里`;
-    }
-  };
-
-  const formatDuration = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (hours > 0) {
-      return `${hours}小时${minutes}分`;
-    }
-    if (minutes > 0) {
-      return `${minutes}分${remainingSeconds}秒`;
-    }
-    return `${remainingSeconds}秒`;
   };
 
   const renderItem = ({ item }) => (
@@ -116,13 +74,13 @@ export default function HistoryScreen({ navigation }) {
             </VStack>
             <VStack alignItems="center" space="$1">
               <Text size="$lg" bold color="$gray800">
-                {formatDuration(item.duration)}
+                {formatElapsedTime(item.duration)}
               </Text>
               <Text size="$sm" color="$gray500">时长</Text>
             </VStack>
             <VStack alignItems="center" space="$1">
               <Text size="$lg" bold color="$gray800">
-                {item.averageSpeed.toFixed(1)}
+                {formatSpeed(item.averageSpeed, true).split(' ')[0]}
               </Text>
               <Text size="$sm" color="$gray500">平均速度</Text>
             </VStack>

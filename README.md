@@ -25,6 +25,11 @@
 ## Troubleshooting
 * expo-location 不适用于中国，定位偏差过大
 
+## Debug
+```
+#clear ios cache
+/Users/qianzhiwei/Library/Developer/Xcode/DerivedData
+```
 
 ## Links
 - [高德地图开发者平台](https://console.amap.com/dev/key/app)
