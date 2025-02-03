@@ -146,13 +146,13 @@ export default function ActivityDetailScreen({ route }) {
                 <HStack justifyContent="space-between">
                   <Text size="$sm" color="$gray500">最大速度</Text>
                   <Text size="$sm" color="$gray800">
-                    {formatSpeed(activity.maxSpeed, true)}
+                    {formatSpeed(activity.maxSpeed || 0, true)}
                   </Text>
                 </HStack>
                 <HStack justifyContent="space-between">
                   <Text size="$sm" color="$gray500">GPS精度范围</Text>
                   <Text size="$sm" color="$gray800">
-                    {activity.minAccuracy.toFixed(1)}米 - {activity.maxAccuracy.toFixed(1)}米
+                    {activity.minAccuracy != null ? `${activity.minAccuracy.toFixed(1)}米` : '未知'} - {activity.maxAccuracy != null ? `${activity.maxAccuracy.toFixed(1)}米` : '未知'}
                   </Text>
                 </HStack>
                 <HStack justifyContent="space-between">

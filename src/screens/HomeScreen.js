@@ -63,6 +63,7 @@ export default function HomeScreen() {
   const [watchId, setWatchId] = useState(null);
   const lastLocationRef = useRef(null);  // 用于存储最后一次有效的位置更新
   const [isAppActive, setIsAppActive] = useState(true);  // 添加应用状态跟踪
+  const startTimeRef = useRef(null);  // 添加 ref 存储开始时间
 
   useEffect(() => {
     (async () => {
@@ -95,42 +96,58 @@ export default function HomeScreen() {
         setWatchId(null);
       }
 
-      const endTime = Date.now();
-      const duration = Math.floor((endTime - startTime) / 1000);
-      const distance = calculateTotalDistance(routeCoordinates);
-      
-      console.log('[运动追踪] 轨迹记录完成', {
-        startTime: new Date(startTime).toLocaleString('zh-CN'),
-        endTime: new Date(endTime).toLocaleString('zh-CN'),
-        duration: `${Math.floor(duration / 60)}分${duration % 60}秒`,
-        totalDistance: distance.toFixed(2) + '米',
-        pointsCount: routeCoordinates.length
-      });
+      if (!startTimeRef.current || routeCoordinates.length < 2) {
+        console.log('[运动追踪] 无效的追踪数据:', {
+          hasStartTime: !!startTimeRef.current,
+          pointsCount: routeCoordinates.length
+        });
+        setIsTracking(false);
+        setStartTime(null);
+        startTimeRef.current = null;
+        setElapsedTime(0);
+        Alert.alert('提示', '轨迹点数据不足，无法保存活动');
+        return;
+      }
 
-      setIsTracking(false);
-      setStartTime(null);
+      const endTime = Date.now();
+      const duration = Math.floor((endTime - startTimeRef.current) / 1000);
       
       // 保存轨迹数据
       if (routeCoordinates.length > 0) {
-        const filteredCoordinates = routeCoordinates.filter(coord => coord.accuracy <= 50);
+        const filteredCoordinates = routeCoordinates.filter(coord => 
+          coord && coord.accuracy != null && coord.accuracy <= 50
+        );
         
         if (filteredCoordinates.length < 2) {
           Alert.alert('提示', '有效轨迹点太少，无法保存');
           return;
         }
 
+        const totalDistance = calculateTotalDistance(filteredCoordinates);
+        const avgSpeed = calculateAverageSpeed(filteredCoordinates, startTimeRef.current);
+        
+        console.log('[运动追踪] 轨迹统计:', {
+          起点时间: new Date(startTimeRef.current).toLocaleString(),
+          终点时间: new Date(endTime).toLocaleString(),
+          持续时间: formatElapsedTime(duration),
+          总距离: totalDistance.toFixed(2) + '米',
+          平均速度: avgSpeed.toFixed(2) + ' km/h',
+          轨迹点数: filteredCoordinates.length,
+          原始点数: routeCoordinates.length
+        });
+
         const activity = {
           id: Date.now().toString(),
           type: activityType,
-          startTime: new Date(startTime).toISOString(),
+          startTime: new Date(startTimeRef.current).toISOString(),
           endTime: new Date(endTime).toISOString(),
-          duration,
-          distance,
-          averageSpeed: calculateAverageSpeed(filteredCoordinates, startTime),
+          duration: Math.max(0, duration),
+          distance: Math.max(0, totalDistance),
+          averageSpeed: avgSpeed >= 0 ? avgSpeed : 0,
           coordinates: filteredCoordinates,
-          maxSpeed: Math.max(...filteredCoordinates.map(c => c.speed || 0)),
-          minAccuracy: Math.min(...filteredCoordinates.map(c => c.accuracy)),
-          maxAccuracy: Math.max(...filteredCoordinates.map(c => c.accuracy)),
+          maxSpeed: Math.max(0, ...filteredCoordinates.map(c => c.speed || 0)),
+          minAccuracy: Math.min(...filteredCoordinates.map(c => c.accuracy || 999)),
+          maxAccuracy: Math.max(...filteredCoordinates.map(c => c.accuracy || 0)),
         };
 
         try {
@@ -149,6 +166,11 @@ export default function HomeScreen() {
           Alert.alert('错误', '保存活动失败：' + error.message);
         }
       }
+
+      setIsTracking(false);
+      setStartTime(null);
+      startTimeRef.current = null;
+      setElapsedTime(0);
     } catch (error) {
       console.error('[运动追踪] 停止追踪失败:', error);
       setErrorMsg('停止追踪失败: ' + error.message);
@@ -167,8 +189,18 @@ export default function HomeScreen() {
         longitude: location.longitude,
         timestamp: location.timestamp,
         accuracy: location.accuracy,
-        speed: location.speed >= 0 ? location.speed : null // 只接受有效的速度值
+        speed: location.speed >= 0 ? location.speed : null
       };
+
+      // 检查时间戳的有效性
+      if (!startTimeRef.current) {
+        startTimeRef.current = location.timestamp;
+        setStartTime(location.timestamp);
+        console.log('[时间初始化] 使用首次位置更新时间:', {
+          timestamp: location.timestamp,
+          时间: new Date(location.timestamp).toLocaleString()
+        });
+      }
 
       // 更新 GPS 速度显示（如果在前台）
       if (isAppActive) {
@@ -190,10 +222,9 @@ export default function HomeScreen() {
           newCoords.longitude
         );
         
-        const timeDiff = (newCoords.timestamp - lastLocationRef.current.timestamp) / 1000; // 转换为秒
+        const timeDiff = Math.max((newCoords.timestamp - lastLocationRef.current.timestamp) / 1000, 0.1);
         
-        // 如果位置变化小于精度值，或时间差为0，则忽略此次更新
-        if (distance < location.accuracy || timeDiff === 0) {
+        if (distance < location.accuracy || timeDiff < 0.1) {
           console.log('[位置追踪] 位置变化不显著，忽略此次更新:', {
             distance,
             accuracy: location.accuracy,
@@ -202,35 +233,38 @@ export default function HomeScreen() {
           return;
         }
 
-        // 计算实时速度 (米/秒)
         const calculatedSpeed = distance / timeDiff;
         const currentSpeed = isNaN(calculatedSpeed) ? 0 : calculatedSpeed;
         
-        // 记录速度计算详情
         console.log('[速度计算] 详情:', {
           距离: distance.toFixed(2) + '米',
           时间差: timeDiff.toFixed(2) + '秒',
           计算速度: currentSpeed.toFixed(2) + '米/秒',
           GPS速度: (location.speed >= 0 ? location.speed : 0).toFixed(2) + '米/秒'
         });
+
+        const elapsed = Math.max(0, Math.floor((location.timestamp - startTimeRef.current) / 1000));
         
-        // 只在前台时更新UI
+        console.log('[时间计算] 详情:', {
+          当前时间戳: location.timestamp,
+          开始时间戳: startTimeRef.current,
+          计算结果: elapsed,
+          格式化时间: formatElapsedTime(elapsed)
+        });
+
         if (isAppActive) {
           setCurrentSpeed(currentSpeed);
           setGpsSpeed(location.speed >= 0 ? location.speed : 0);
           setCurrentDistance(prev => prev + distance);
-          setElapsedTime(Math.floor((newCoords.timestamp - startTime) / 1000));
+          setElapsedTime(elapsed);
         } else {
-          // 在后台时只更新累计距离
           setCurrentDistance(prev => prev + distance);
-          setElapsedTime(Math.floor((newCoords.timestamp - startTime) / 1000));
+          setElapsedTime(elapsed);
         }
       }
 
-      // 更新最后一次有效位置
       lastLocationRef.current = newCoords;
       
-      // 只在前台时更新路线坐标
       if (isAppActive) {
         setRouteCoordinates(prev => [...prev, newCoords]);
       }
@@ -253,15 +287,21 @@ export default function HomeScreen() {
 
         await configureLocationTracking();
         
-        setStartTime(Date.now());
+        // 获取初始位置以设置正确的开始时间
+        const initialPosition = await getCurrentPosition();
+        const initialTime = initialPosition.timestamp;
+        
+        startTimeRef.current = initialTime;
+        setStartTime(initialTime);
         setIsTracking(true);
         setRouteCoordinates([]);
         setCurrentSpeed(0);
         setElapsedTime(0);
         
         console.log('[运动追踪] 开始记录新轨迹', {
-          startTime: new Date().toLocaleString('zh-CN'),
-          isTracking: true
+          startTime: new Date(initialTime).toLocaleString('zh-CN'),
+          isTracking: true,
+          initialTimestamp: initialTime
         });
 
         watchId = startLocationWatch(

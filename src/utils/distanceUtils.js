@@ -113,11 +113,26 @@ export const calculateTotalDistance = (coordinates) => {
 
 // 计算平均速度（公里/小时）
 export const calculateAverageSpeed = (coordinates, startTime) => {
-  if (!coordinates || coordinates.length < 2 || !startTime) return 0;
+  if (!coordinates || coordinates.length < 2 || !startTime) {
+    console.log('[平均速度] 无效输入:', { 
+      coordinatesLength: coordinates?.length || 0,
+      hasStartTime: !!startTime 
+    });
+    return 0;
+  }
   
   const distance = calculateTotalDistance(coordinates); // 单位：米
-  const duration = (new Date() - startTime) / 1000 / 3600; // 小时
+  const endTime = coordinates[coordinates.length - 1].timestamp;
+  const duration = (endTime - startTime) / 1000 / 3600; // 小时
   
-  if (duration === 0) return 0;
+  console.log('[平均速度计算] 详情:', {
+    距离_米: distance.toFixed(2),
+    开始时间: new Date(startTime).toLocaleString(),
+    结束时间: new Date(endTime).toLocaleString(),
+    持续时间_小时: duration.toFixed(2),
+    平均速度_公里每小时: duration > 0 ? ((distance / 1000) / duration).toFixed(2) : 0
+  });
+
+  if (duration <= 0) return 0;
   return (distance / 1000) / duration; // 转换为公里/小时
 };
