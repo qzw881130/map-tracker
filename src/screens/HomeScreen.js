@@ -601,6 +601,7 @@ export default function HomeScreen() {
               selectedValue={activityType}
               onValueChange={setActivityType}
               flex={1}
+              isDisabled={isTracking}
             >
               <SelectTrigger variant="outline" size="md">
                 <SelectInput placeholder="选择运动类型" />
