@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Map-tracker"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <wpt lat="40.42130554550738" lon="115.5117361111111">
+    <time>2025-02-03T08:47:04.694Z</time>
+  </wpt>
+  <wpt lat="40.42129695774502" lon="115.51177082868753">
+    <time>2025-02-03T08:47:05.694Z</time>
+  </wpt>
+  <wpt lat="40.421274474696474" lon="115.51179228531102">
+    <time>2025-02-03T08:47:06.694Z</time>
+  </wpt>
+  <wpt lat="40.4212466841305" lon="115.51179228528783">
+    <time>2025-02-03T08:47:07.694Z</time>
+  </wpt>
+  <wpt lat="40.42122420109876" lon="115.51177082865">
+    <time>2025-02-03T08:47:08.694Z</time>
+  </wpt>
+  <wpt lat="40.42121561334678" lon="115.5117361111111">
+    <time>2025-02-03T08:47:09.694Z</time>
+  </wpt>
+  <wpt lat="40.42122420109876" lon="115.51170139357221">
+    <time>2025-02-03T08:47:10.694Z</time>
+  </wpt>
+  <wpt lat="40.4212466841305" lon="115.5116799369344">
+    <time>2025-02-03T08:47:11.694Z</time>
+  </wpt>
+  <wpt lat="40.421274474696474" lon="115.5116799369112">
+    <time>2025-02-03T08:47:12.694Z</time>
+  </wpt>
+  <wpt lat="40.42129695774502" lon="115.5117013935347">
+    <time>2025-02-03T08:47:13.694Z</time>
+  </wpt>
+</gpx>

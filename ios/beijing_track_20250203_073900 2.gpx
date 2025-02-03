@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Map-tracker">
+  <trk>
+    <name>Beijing Olympic Park Track</name>
+    <trkseg>
+
+      <trkpt lat="40.02917057424469" lon="116.38780000308282">
+        <accuracy>6.586172953355151</accuracy>
+        <speed>93.08599450530862</speed>
+      </trkpt>
+      <trkpt lat="40.029859777459066" lon="116.38870109845756">
+        <accuracy>5.284967058695136</accuracy>
+        <speed>108.44067391364187</speed>
+      </trkpt>
+      <trkpt lat="40.0304724052498" lon="116.38945712631336">
+        <accuracy>9.94069273028504</accuracy>
+        <speed>93.72302558258629</speed>
+      </trkpt>
+      <trkpt lat="40.03107255244284" lon="116.39017796641062">
+        <accuracy>9.407745564616725</accuracy>
+        <speed>90.66456300855961</speed>
+      </trkpt>
+      <trkpt lat="40.031696322723796" lon="116.39092012511881">
+        <accuracy>8.242081765183476</accuracy>
+        <speed>93.82734745210604</speed>
+      </trkpt>
+      <trkpt lat="40.03235860139012" lon="116.39177322484136">
+        <accuracy>5.512717288420915</accuracy>
+        <speed>103.43463511354875</speed>
+      </trkpt>
+      <trkpt lat="40.03306064119632" lon="116.39267925635085">
+        <accuracy>8.886867935481206</accuracy>
+        <speed>109.74652908673059</speed>
+      </trkpt>
+      <trkpt lat="40.03378025417866" lon="116.3935275661246">
+        <accuracy>8.295772843866452</accuracy>
+        <speed>107.79172933013913</speed>
+      </trkpt>
+      <trkpt lat="40.034418780683005" lon="116.39438009647144">
+        <accuracy>8.650265754361648</accuracy>
+        <speed>101.53494270466885</speed>
+      </trkpt>
+      <trkpt lat="40.03502759886245" lon="116.39511523726989">
+        <accuracy>6.6989883286516445</accuracy>
+        <speed>92.19632035880679</speed>
+      </trkpt>
+      <trkpt lat="40.03560718645044" lon="116.39585994381301">
+        <accuracy>8.680703534596182</accuracy>
+        <speed>90.40568642504189</speed>
+      </trkpt>
+      <trkpt lat="40.036200713667746" lon="116.39659749053102">
+        <accuracy>7.523841141042848</accuracy>
+        <speed>91.09549270302637</speed>
+      </trkpt>
+      <trkpt lat="40.036848055852175" lon="116.39748700840244">
+        <accuracy>7.598604265757631</accuracy>
+        <speed>104.48034172524541</speed>
+      </trkpt>
+      <trkpt lat="40.037521150038636" lon="116.39841988121853">
+        <accuracy>6.5736218826754875</accuracy>
+        <speed>109.12886554032882</speed>
+      </trkpt>
+      <trkpt lat="40.03812482550415" lon="116.39928904100533">
+        <accuracy>7.336810826210711</accuracy>
+        <speed>99.90494691512095</speed>
+      </trkpt>
+      <trkpt lat="40.03874721320448" lon="116.4000968763294">
+        <accuracy>6.099216418382346</accuracy>
+        <speed>97.56652697178541</speed>
+      </trkpt>
+      <trkpt lat="40.03935047473217" lon="116.40089349393563">
+        <accuracy>6.668890483837362</accuracy>
+        <speed>95.3879331231111</speed>
+      </trkpt>
+      <trkpt lat="40.04000884013632" lon="116.40177538939692">
+        <accuracy>5.191674328309118</accuracy>
+        <speed>104.86046185289257</speed>
+      </trkpt>
+      <trkpt lat="40.040701722032225" lon="116.40267798332853">
+        <accuracy>8.375488595708832</accuracy>
+        <speed>108.8115823797009</speed>
+      </trkpt>
+      <trkpt lat="40.041312262245285" lon="116.40347229304743">
+        <accuracy>7.849502937189021</accuracy>
+        <speed>95.81869510658532</speed>
+      </trkpt>
+      <trkpt lat="40.041992969295684" lon="116.40428634944814">
+        <accuracy>9.489813633791176</accuracy>
+        <speed>102.62326512718407</speed>
+      </trkpt>
+      <trkpt lat="40.04259702087367" lon="116.40516081092397">
+        <accuracy>9.43770142234657</accuracy>
+        <speed>100.2640814393614</speed>
+      </trkpt>
+      <trkpt lat="40.04318978336813" lon="116.40588326593077">
+        <accuracy>8.268964620992252</accuracy>
+        <speed>90.14817663991155</speed>
+      </trkpt>
+      <trkpt lat="40.04378736784639" lon="116.40672779274712">
+        <accuracy>8.655422474601059</accuracy>
+        <speed>97.89650472182988</speed>
+      </trkpt>
+      <trkpt lat="40.04446278535768" lon="116.40765734130007">
+        <accuracy>5.507050348325336</accuracy>
+        <speed>109.0949128617409</speed>
+      </trkpt>
+      <trkpt lat="40.045128987345315" lon="116.40844643805215">
+        <accuracy>9.786292618340713</accuracy>
+        <speed>99.99790771415789</speed>
+      </trkpt>
+      <trkpt lat="40.04579928120354" lon="116.4092598415459">
+        <accuracy>9.194686056396618</accuracy>
+        <speed>101.73177545080894</speed>
+      </trkpt>
+      <trkpt lat="40.04637139642224" lon="116.41003721352891">
+        <accuracy>7.847631702053807</accuracy>
+        <speed>91.79200753728317</speed>
+      </trkpt>
+      <trkpt lat="40.046999822212975" lon="116.41085602825672">
+        <accuracy>8.908525024448386</accuracy>
+        <speed>98.69585158647709</speed>
+      </trkpt>
+      <trkpt lat="40.047616653896284" lon="116.4116434960461">
+        <accuracy>7.053171548676961</accuracy>
+        <speed>95.90327948754494</speed>
+      </trkpt>
+      <trkpt lat="40.04829635311293" lon="116.41245895795194">
+        <accuracy>7.065474876044268</accuracy>
+        <speed>102.61719421059237</speed>
+      </trkpt>
+      <trkpt lat="40.04896649943816" lon="116.41332923612464">
+        <accuracy>8.377515125912353</accuracy>
+        <speed>105.07268385896083</speed>
+      </trkpt>
+      <trkpt lat="40.049642358901544" lon="116.41420586586926">
+        <accuracy>5.75701034177241</accuracy>
+        <speed>105.90387597910052</speed>
+      </trkpt>
+      <trkpt lat="40.05022227318108" lon="116.41494476171195">
+        <accuracy>9.377875629907859</accuracy>
+        <speed>90.07602758021639</speed>
+      </trkpt>
+      <trkpt lat="40.0508017580384" lon="116.41577634452631">
+        <accuracy>6.0321811197376825</accuracy>
+        <speed>95.71866120869727</speed>
+      </trkpt>
+      <trkpt lat="40.05143527927785" lon="116.41664583735489">
+        <accuracy>7.661376408937281</accuracy>
+        <speed>102.17441815205814</speed>
+      </trkpt>
+      <trkpt lat="40.052049163549626" lon="116.41747733330241">
+        <accuracy>6.839802024211876</accuracy>
+        <speed>98.32804514980276</speed>
+      </trkpt>
+      <trkpt lat="40.0527124946951" lon="116.41843556776688">
+        <accuracy>8.343922901116189</accuracy>
+        <speed>109.9656018157791</speed>
+      </trkpt>
+      <trkpt lat="40.053352903136144" lon="116.41919876719112">
+        <accuracy>5.643712577587391</accuracy>
+        <speed>96.38755311374587</speed>
+      </trkpt>
+      <trkpt lat="40.05401042970352" lon="116.41998367358117">
+        <accuracy>7.762508949042111</accuracy>
+        <speed>99.03854909000418</speed>
+      </trkpt>
+      <trkpt lat="40.054631481958594" lon="116.42083486239137">
+        <accuracy>9.915821999677856</accuracy>
+        <speed>100.08757284755687</speed>
+      </trkpt>
+      <trkpt lat="40.05524681253401" lon="116.42165525773234">
+        <accuracy>5.171344846876876</accuracy>
+        <speed>97.76033401646428</speed>
+      </trkpt>
+      <trkpt lat="40.0558390057582" lon="116.42241046485707">
+        <accuracy>7.538654154354339</accuracy>
+        <speed>92.01917278985779</speed>
+      </trkpt>
+      <trkpt lat="40.05643789892768" lon="116.4231791426369">
+        <accuracy>7.720084069049296</accuracy>
+        <speed>93.35321844884965</speed>
+      </trkpt>
+      <trkpt lat="40.05704646455089" lon="116.42401762953997">
+        <accuracy>9.594715389017772</accuracy>
+        <speed>98.34554941850556</speed>
+      </trkpt>
+      <trkpt lat="40.05771000845207" lon="116.42484038660912">
+        <accuracy>6.4024475632707105</accuracy>
+        <speed>101.72124681230186</speed>
+      </trkpt>
+      <trkpt lat="40.058304080454626" lon="116.42560991206555">
+        <accuracy>8.869110694637557</accuracy>
+        <speed>93.02107352856311</speed>
+      </trkpt>
+      <trkpt lat="40.05898060346764" lon="116.42644234347009">
+        <accuracy>5.434378111155459</accuracy>
+        <speed>103.33472574140023</speed>
+      </trkpt>
+      <trkpt lat="40.059588083211295" lon="116.42719761908963">
+        <accuracy>5.272413732368429</accuracy>
+        <speed>93.24468252167416</speed>
+      </trkpt>
+      <trkpt lat="40.06025339957844" lon="116.42803857712438">
+        <accuracy>7.548858189341942</accuracy>
+        <speed>102.93344259247519</speed>
+      </trkpt>
+      <trkpt lat="40.06097268742283" lon="116.42891340027327">
+        <accuracy>5.370027302184127</accuracy>
+        <speed>109.27033987204612</speed>
+      </trkpt>
+      <trkpt lat="40.06160939557372" lon="116.42977351266705">
+        <accuracy>8.3835182035719</accuracy>
+        <speed>101.83575433882143</speed>
+      </trkpt>
+      <trkpt lat="40.062295681252394" lon="116.43069566197138">
+        <accuracy>6.700438289253492</accuracy>
+        <speed>109.46312895209704</speed>
+      </trkpt>
+      <trkpt lat="40.0628910383285" lon="116.43143651175177">
+        <accuracy>6.00670063396628</accuracy>
+        <speed>91.41973020033481</speed>
+      </trkpt>
+      <trkpt lat="40.06349348238436" lon="116.43224670146786">
+        <accuracy>9.15675236283258</accuracy>
+        <speed>96.13194673146154</speed>
+      </trkpt>
+      <trkpt lat="40.0640994135519" lon="116.43300264575043">
+        <accuracy>7.6861607436547</accuracy>
+        <speed>93.15636571320162</speed>
+      </trkpt>
+      <trkpt lat="40.06474645368543" lon="116.43378812676914">
+        <accuracy>9.91103273898149</accuracy>
+        <speed>98.20700353595278</speed>
+      </trkpt>
+      <trkpt lat="40.06531929131396" lon="116.43455157855553">
+        <accuracy>5.801163757463282</accuracy>
+        <speed>90.98482236036037</speed>
+      </trkpt>
+      <trkpt lat="40.06601452345503" lon="116.43545279864021">
+        <accuracy>5.743664284149739</accuracy>
+        <speed>108.89429732110713</speed>
+      </trkpt>
+      <trkpt lat="40.066585966996655" lon="116.43626740077788">
+        <accuracy>5.922015288074595</accuracy>
+        <speed>94.0366053578644</speed>
+      </trkpt>
+      <trkpt lat="40.06718663477658" lon="116.43702771381837">
+        <accuracy>7.8300320723583745</accuracy>
+        <speed>92.9902060369731</speed>
+      </trkpt>
+      <trkpt lat="40.06786691041485" lon="116.43783523245682">
+        <accuracy>8.921877960947118</accuracy>
+        <speed>102.19521051465132</speed>
+      </trkpt>
+      <trkpt lat="40.068535525894156" lon="116.43875647864091">
+        <accuracy>6.904777455696497</accuracy>
+        <speed>108.04153426189917</speed>
+      </trkpt>
+      <trkpt lat="40.06919429351477" lon="116.43961504105268">
+        <accuracy>9.521666297281419</accuracy>
+        <speed>103.45714733943746</speed>
+      </trkpt>
+      <trkpt lat="40.06990473862354" lon="116.44048127402847">
+        <accuracy>9.391147003743027</accuracy>
+        <speed>108.04600700654747</speed>
+      </trkpt>
+      <trkpt lat="40.07056396067316" lon="116.44126890421506">
+        <accuracy>7.310928152027567</accuracy>
+        <speed>99.3231285095965</speed>
+      </trkpt>
+      <trkpt lat="40.07123516744531" lon="116.44217473932419">
+        <accuracy>5.741332396861795</accuracy>
+        <speed>107.29183446946931</speed>
+      </trkpt>
+      <trkpt lat="40.071933813497644" lon="116.44308599815385">
+        <accuracy>7.148082211255692</accuracy>
+        <speed>109.76120863730114</speed>
+      </trkpt>
+      <trkpt lat="40.07253644181354" lon="116.44392413207386">
+        <accuracy>8.030967236696434</accuracy>
+        <speed>97.85873358587995</speed>
+      </trkpt>
+      <trkpt lat="40.0731891611805" lon="116.44476113930358">
+        <accuracy>7.899856215949784</accuracy>
+        <speed>101.68609476037098</speed>
+      </trkpt>
+      <trkpt lat="40.07375789671293" lon="116.44555978906705">
+        <accuracy>6.36461240754471</accuracy>
+        <speed>92.82979346407477</speed>
+      </trkpt>
+      <trkpt lat="40.07443039185001" lon="116.44649490577366">
+        <accuracy>9.071797090702614</accuracy>
+        <speed>109.1909372402938</speed>
+      </trkpt>
+      <trkpt lat="40.07508025720136" lon="116.44727664546325">
+        <accuracy>7.111548259684741</accuracy>
+        <speed>98.21462783528229</speed>
+      </trkpt>
+      <trkpt lat="40.07566625636238" lon="116.44803537355594">
+        <accuracy>9.511065791040162</accuracy>
+        <speed>91.72503723443448</speed>
+      </trkpt>
+      <trkpt lat="40.07624005620555" lon="116.44885679046354">
+        <accuracy>7.4512735984850025</accuracy>
+        <speed>94.63403748876765</speed>
+      </trkpt>
+      <trkpt lat="40.07690250825891" lon="116.44968267281585">
+        <accuracy>7.516088675796033</accuracy>
+        <speed>101.80299443136673</speed>
+      </trkpt>
+      <trkpt lat="40.07752616751018" lon="116.45049384313899">
+        <accuracy>9.813235346234245</accuracy>
+        <speed>97.83928065219358</speed>
+      </trkpt>
+      <trkpt lat="40.07825168125064" lon="116.45136363946541">
+        <accuracy>7.694198726821932</accuracy>
+        <speed>109.4757010933757</speed>
+      </trkpt>
+      <trkpt lat="40.07887773647835" lon="116.45212302335531">
+        <accuracy>7.842173303536385</accuracy>
+        <speed>94.9767746278152</speed>
+      </trkpt>
+      <trkpt lat="40.07951602729268" lon="116.45291685535956">
+        <accuracy>6.763061581184889</accuracy>
+        <speed>97.97501255712898</speed>
+      </trkpt>
+      <trkpt lat="40.0801486468571" lon="116.45367437813057">
+        <accuracy>6.354752828711926</accuracy>
+        <speed>95.40521392834663</speed>
+      </trkpt>
+      <trkpt lat="40.08074327081774" lon="116.45440421993656">
+        <accuracy>7.556737495244291</accuracy>
+        <speed>90.70562004219876</speed>
+      </trkpt>
+      <trkpt lat="40.08132296133124" lon="116.45518875838401">
+        <accuracy>8.70308828658774</accuracy>
+        <speed>92.79109489160122</speed>
+      </trkpt>
+      <trkpt lat="40.08201306659674" lon="116.45602901015575">
+        <accuracy>6.313463347436581</accuracy>
+        <speed>104.87546245140567</speed>
+      </trkpt>
+      <trkpt lat="40.082616993159576" lon="116.45679716831724">
+        <accuracy>7.464405334364268</accuracy>
+        <speed>93.70491790200424</speed>
+      </trkpt>
+      <trkpt lat="40.08321581860991" lon="116.45751546001385">
+        <accuracy>8.633414631324136</accuracy>
+        <speed>90.37789162384145</speed>
+      </trkpt>
+      <trkpt lat="40.08391604610591" lon="116.45836598756814">
+        <accuracy>7.3826191179936265</accuracy>
+        <speed>106.2936313167006</speed>
+      </trkpt>
+      <trkpt lat="40.084516171281734" lon="116.45911195404803">
+        <accuracy>7.867543573273046</accuracy>
+        <speed>92.09008963403892</speed>
+      </trkpt>
+      <trkpt lat="40.085183953617495" lon="116.46004367707309">
+        <accuracy>9.092835747759437</accuracy>
+        <speed>108.61265349373592</speed>
+      </trkpt>
+      <trkpt lat="40.08583190257156" lon="116.46081472117102">
+        <accuracy>6.431766215448903</accuracy>
+        <speed>97.43595007653809</speed>
+      </trkpt>
+      <trkpt lat="40.08654908311153" lon="116.46166561969335">
+        <accuracy>8.251035393201622</accuracy>
+        <speed>107.7014723610945</speed>
+      </trkpt>
+      <trkpt lat="40.08715197931401" lon="116.4624044208156">
+        <accuracy>7.2210486809065255</accuracy>
+        <speed>91.89393177160336</speed>
+      </trkpt>
+      <trkpt lat="40.087848515792956" lon="116.46324464528753">
+        <accuracy>9.142873322330233</accuracy>
+        <speed>105.39410511716068</speed>
+      </trkpt>
+      <trkpt lat="40.08846942380465" lon="116.46407949746038">
+        <accuracy>8.891297034998543</accuracy>
+        <speed>99.04927497082838</speed>
+      </trkpt>
+      <trkpt lat="40.08917854075943" lon="116.46494222686535">
+        <accuracy>7.6071276138661705</accuracy>
+        <speed>107.72054446446768</speed>
+      </trkpt>
+      <trkpt lat="40.08979616013866" lon="116.46583604581392">
+        <accuracy>7.000572097325966</accuracy>
+        <speed>102.45908236308068</speed>
+      </trkpt>
+      <trkpt lat="40.09049523308643" lon="116.46670644732271">
+        <accuracy>6.799318656692478</accuracy>
+        <speed>107.35385176505501</speed>
+      </trkpt>
+      <trkpt lat="40.09107426273493" lon="116.46753540022304">
+        <accuracy>8.079799536890274</accuracy>
+        <speed>95.48831691403295</speed>
+      </trkpt>
+      <trkpt lat="40.091705365898555" lon="116.46831483296583">
+        <accuracy>6.6421915531281055</accuracy>
+        <speed>96.54392231992912</speed>
+      </trkpt>
+      <trkpt lat="40.09229589222227" lon="116.46910599548295">
+        <accuracy>6.034621953499382</accuracy>
+        <speed>94.02692073527669</speed>
+      </trkpt>
+      <trkpt lat="40.09289010658601" lon="116.46992257634984">
+        <accuracy>8.845396160386354</accuracy>
+        <speed>95.86821499267431</speed>
+      </trkpt>
+      <trkpt lat="40.093574949282385" lon="116.47074902917417">
+        <accuracy>7.0704638095244885</accuracy>
+        <speed>103.6399804434596</speed>
+      </trkpt>
+      <trkpt lat="40.094270919961005" lon="116.47158737332137">
+        <accuracy>9.822278716030906</accuracy>
+        <speed>105.23485114006583</speed>
+      </trkpt>
+      <trkpt lat="40.094903821227405" lon="116.47245742843056">
+        <accuracy>7.181606464929229</accuracy>
+        <speed>102.12734178299753</speed>
+      </trkpt>
+      <trkpt lat="40.09553172625727" lon="116.47336173649323">
+        <accuracy>8.642885678020074</accuracy>
+        <speed>103.88337411170201</speed>
+      </trkpt>
+      <trkpt lat="40.0961509905589" lon="116.47422489005389">
+        <accuracy>5.29734032462556</accuracy>
+        <speed>100.65840718090581</speed>
+      </trkpt>
+      <trkpt lat="40.09674218486375" lon="116.47499315525738">
+        <accuracy>6.345786784200844</accuracy>
+        <speed>92.69242605155542</speed>
+      </trkpt>
+      <trkpt lat="40.09743657231723" lon="116.4758476204811">
+        <accuracy>7.097901441637529</accuracy>
+        <speed>106.0383290027129</speed>
+      </trkpt>
+      <trkpt lat="40.09814850316579" lon="116.47672431623694">
+        <accuracy>6.800240638797278</accuracy>
+        <speed>108.7542979197516</speed>
+      </trkpt>
+      <trkpt lat="40.09880293931677" lon="116.47759476932158">
+        <accuracy>6.885355276342678</accuracy>
+        <speed>103.81305808176238</speed>
+      </trkpt>
+      <trkpt lat="40.09949581629995" lon="116.47841063976445">
+        <accuracy>8.313785211604372</accuracy>
+        <speed>103.68949606864402</speed>
+      </trkpt>
+      <trkpt lat="40.10008745523918" lon="116.47924569025992">
+        <accuracy>9.823717764233999</accuracy>
+        <speed>96.81229147198307</speed>
+      </trkpt>
+      <trkpt lat="40.100731495151514" lon="116.48007153915891">
+        <accuracy>8.843134155914427</accuracy>
+        <speed>100.31233814883139</speed>
+      </trkpt>
+      <trkpt lat="40.10136723628621" lon="116.48083863296975">
+        <accuracy>6.928194882293016</accuracy>
+        <speed>96.19814058315295</speed>
+      </trkpt>
+      <trkpt lat="40.101928223778266" lon="116.481602360032">
+        <accuracy>9.041840134415818</accuracy>
+        <speed>90.05895095892032</speed>
+      </trkpt>
+      <trkpt lat="40.10263809010587" lon="116.48245944928598">
+        <accuracy>8.988882335073333</accuracy>
+        <speed>107.4456311706489</speed>
+      </trkpt>
+      <trkpt lat="40.10333880055412" lon="116.48331668014217">
+        <accuracy>7.1938458349026995</accuracy>
+        <speed>106.70765451382714</speed>
+      </trkpt>
+      <trkpt lat="40.10403058565905" lon="116.48418641279419">
+        <accuracy>8.834782397555529</accuracy>
+        <speed>106.718883425872</speed>
+      </trkpt>
+      <trkpt lat="40.10464370551966" lon="116.48492710493774">
+        <accuracy>9.90879520995043</accuracy>
+        <speed>92.82465934697322</speed>
+      </trkpt>
+      <trkpt lat="40.10529638230532" lon="116.48576605429085">
+        <accuracy>6.779539973042815</accuracy>
+        <speed>101.77492624924393</speed>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
