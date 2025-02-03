@@ -97,9 +97,9 @@ export default function HomeScreen() {
         // 配置定位
         if (Geolocation.setLocationMode) {
           await Geolocation.setLocationMode('Device_Sensors');  // 仅使用GPS
-          await Geolocation.setDistanceFilter(5);  // 降低到5米
+          await Geolocation.setDistanceFilter(0);  // 不设置距离过滤，让所有位置更新都能收到
           await Geolocation.setGpsFirstTimeout(3000);
-          await Geolocation.setInterval(2000);
+          await Geolocation.setInterval(1000);    // 每秒更新一次
           await Geolocation.setDesiredAccuracy('HightAccuracy');
         }
 
@@ -166,8 +166,9 @@ export default function HomeScreen() {
                 
                 setCurrentSpeed(calculatedSpeed);
 
-                // 降低距离阈值到1米，移除速度限制
-                if (distance < 0.001) {
+                // 降低距离阈值到0.1米，这样可以更精确地记录轨迹
+                console.log('位置变化distance===', {distance});
+                if (distance < 0.2) {
                   console.log('位置变化太小，忽略此次更新', {distance});
                   return prevCoords;
                 }
@@ -199,8 +200,8 @@ export default function HomeScreen() {
           },
           {
             enableHighAccuracy: true,
-            distanceFilter: 5, // 降低到5米
-            interval: 2000,
+            distanceFilter: 0, // 不设置距离过滤，让所有位置更新都能收到
+            interval: 1000,    // 每秒更新一次
             timeout: 15000,
           }
         );
@@ -210,7 +211,7 @@ export default function HomeScreen() {
       }
     };
 
-    startLocationUpdates();
+    if(isTracking) startLocationUpdates();
 
     return () => {
       console.log('清理位置更新');
@@ -433,47 +434,6 @@ export default function HomeScreen() {
     }
   };
 
-  const handleSaveActivity = async () => {
-    if (routeCoordinates.length < 2) {
-      console.log('No valid activity to save');
-      // return;
-    }
-
-    const activity = {
-      id: Date.now().toString(),
-      type: activityType,
-      startTime: startTime.toISOString(),
-      endTime: new Date().toISOString(),
-      duration: elapsedTime, // 使用计时器的时间
-      distance: calculateTotalDistance(routeCoordinates),
-      averageSpeed: calculateAverageSpeed(routeCoordinates, startTime),
-      coordinates: routeCoordinates,
-    };
-
-    try {
-      // 获取现有活动
-      const existingActivitiesJson = await AsyncStorage.getItem('activities');
-      const existingActivities = existingActivitiesJson ? JSON.parse(existingActivitiesJson) : [];
-
-      // 添加新活动
-      const updatedActivities = [activity, ...existingActivities];
-
-      // 保存更新后的活动列表
-      await AsyncStorage.setItem('activities', JSON.stringify(updatedActivities));
-      console.log('Activity saved successfully:', activity);
-
-      // 重置状态
-      setRouteCoordinates([]);
-      setStartTime(null);
-      setCurrentSpeed(0);
-      setCurrentDistance(0);
-      setElapsedTime(0);
-      
-      return activity; // 返回保存的活动数据
-    } catch (error) {
-      console.error('Error saving activity:', error);
-    }
-  };
 
   // 添加缩放控制函数
   const handleZoomIn = () => {
