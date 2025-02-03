@@ -40,6 +40,7 @@ import {
   formatSpeed 
 } from '../utils/formatUtils';
 import { saveActivity } from '../utils/storageUtils';
+import { locationFilter } from '../utils/locationUtils';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -50,6 +51,7 @@ export default function HomeScreen() {
   const [activityType, setActivityType] = useState('');
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [currentSpeed, setCurrentSpeed] = useState(0);
+  const [gpsSpeed, setGpsSpeed] = useState(0);
   const [startTime, setStartTime] = useState(null);
   const [region, setRegion] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -58,6 +60,27 @@ export default function HomeScreen() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
   const [watchId, setWatchId] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await initLocationService();
+        const position = await getCurrentPosition();
+        
+        setLocation(position);
+        setCurrentLocation(position);
+        setRegion({
+          latitude: position.latitude,
+          longitude: position.longitude,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
+        });
+      } catch (error) {
+        console.error('Error getting location:', error);
+        setErrorMsg('Error getting location: ' + error.message);
+      }
+    })();
+  }, []);
 
   // 停止追踪函数
   const stopTracking = async () => {
@@ -129,105 +152,34 @@ export default function HomeScreen() {
     }
   };
 
-  // 初始化位置服务
-  useEffect(() => {
-    (async () => {
-      try {
-        await initLocationService();
-        const position = await getCurrentPosition();
-        
-        setLocation(position);
-        setCurrentLocation(position);
-        setRegion({
-          latitude: position.latitude,
-          longitude: position.longitude,
-          latitudeDelta: 0.002,
-          longitudeDelta: 0.002,
-        });
-      } catch (error) {
-        console.error('Error getting location:', error);
-        setErrorMsg('Error getting location: ' + error.message);
-      }
-    })();
-  }, []);
-
   // 处理位置更新
   useEffect(() => {
     let watchId = null;
 
-    const handleLocationUpdate = (coords) => {
-      if (!isTracking) return;
-
-      const newCoords = {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        timestamp: coords.timestamp || new Date().getTime(),
-        accuracy: coords.accuracy,
-        speed: coords.speed || 0,
-      };
-
-      // 更新当前位置
-      setCurrentLocation(newCoords);
-
-      setRouteCoordinates(prevCoords => {
-        if (prevCoords.length === 0) {
-          console.log('[位置追踪] 记录起点:', newCoords);
-          return [newCoords];
-        }
+    const handleLocationUpdate = async (location) => {
+      try {
+        console.log('Raw location update:', location);
         
-        const lastCoord = prevCoords[prevCoords.length - 1];
-        const distance = calculateDistance(
-          lastCoord.latitude,
-          lastCoord.longitude,
-          newCoords.latitude,
-          newCoords.longitude
-        );
-
-        const timeDiff = (newCoords.timestamp - lastCoord.timestamp) / 1000;
-        const calculatedSpeed = distance / timeDiff;
-        
-        setCurrentSpeed(calculatedSpeed);
-
-        // 每次位置更新时记录应用状态
-        console.log(`[${new Date().toLocaleString('zh-CN')}] 应用状态:`, {
-          isTracking,
-          routeCoordinatesCount: prevCoords.length,
-          elapsedTime: Math.floor((Date.now() - startTime) / 1000),
-          currentSpeed: calculatedSpeed,
-          totalDistance: calculateTotalDistance([...prevCoords, newCoords]),
-          accuracy: newCoords.accuracy,
-        });
-
-        if (distance < 0.2) {
-          console.log('[位置追踪] 位置变化太小，忽略此次更新:', {
-            distance,
-            timeDiff,
-            lastCoord,
-            newCoords
-          });
-          return prevCoords;
+        // 检查必要的属性是否存在
+        if (typeof location.latitude !== 'number' || typeof location.longitude !== 'number') {
+          console.warn('Invalid location data received:', location);
+          return;
         }
 
-        // 更新地图区域以跟随用户
-        if (mapRef.current && allowMapUpdate) {
-          mapRef.current.animateToRegion({
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001
-          }, 1000);
+        // 过滤位置数据
+        const filteredLocation = await locationFilter.filterLocation(location);
+
+        // 使用过滤后的位置更新状态
+        setCurrentLocation(filteredLocation);
+
+        // 只有当设备真实移动时才更新轨迹
+        if (isTracking) {
+          updateTrack(filteredLocation);
         }
-
-        console.log('[位置追踪] 新增轨迹点:', {
-          distance,
-          timeDiff,
-          speed: calculatedSpeed,
-          totalPoints: prevCoords.length + 1,
-          totalDistance: calculateTotalDistance([...prevCoords, newCoords])
-        });
-
-        return [...prevCoords, newCoords];
-      });
+      } catch (error) {
+        console.error('Error handling location update:', error);
+        console.error('Location object:', location);
+      }
     };
 
     const startTracking = async () => {
@@ -283,6 +235,79 @@ export default function HomeScreen() {
       }
     };
   }, [isTracking, allowMapUpdate]);
+
+  const updateTrack = (newCoords) => {
+    const newCoordsObj = {
+      latitude: newCoords.latitude,
+      longitude: newCoords.longitude,
+      timestamp: newCoords.timestamp || new Date().getTime(),
+      accuracy: newCoords.accuracy,
+      speed: newCoords.speed || 0,
+    };
+
+    // 更新GPS速度显示
+    setGpsSpeed(newCoords.speed >= 0 ? newCoords.speed : 0);
+
+    setRouteCoordinates(prevCoords => {
+      if (prevCoords.length === 0) {
+        console.log('[位置追踪] 记录起点:', newCoordsObj);
+        return [newCoordsObj];
+      }
+      
+      const lastCoord = prevCoords[prevCoords.length - 1];
+      const distance = calculateDistance(
+        lastCoord.latitude,
+        lastCoord.longitude,
+        newCoordsObj.latitude,
+        newCoordsObj.longitude
+      );
+
+      const timeDiff = (newCoordsObj.timestamp - lastCoord.timestamp) / 1000;
+      const calculatedSpeed = distance / timeDiff;
+      
+      setCurrentSpeed(calculatedSpeed);
+
+      // 每次位置更新时记录应用状态
+      console.log(`[${new Date().toLocaleString('zh-CN')}] 应用状态:`, {
+        isTracking,
+        routeCoordinatesCount: prevCoords.length,
+        elapsedTime: Math.floor((Date.now() - startTime) / 1000),
+        currentSpeed: calculatedSpeed,
+        totalDistance: calculateTotalDistance([...prevCoords, newCoordsObj]),
+        accuracy: newCoordsObj.accuracy,
+      });
+
+      if (distance < 0.2) {
+        console.log('[位置追踪] 位置变化太小，忽略此次更新:', {
+          distance,
+          timeDiff,
+          lastCoord,
+          newCoords: newCoordsObj
+        });
+        return prevCoords;
+      }
+
+      // 更新地图区域以跟随用户
+      if (mapRef.current && allowMapUpdate) {
+        mapRef.current.animateToRegion({
+          latitude: newCoords.latitude,
+          longitude: newCoords.longitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.001
+        }, 1000);
+      }
+
+      console.log('[位置追踪] 新增轨迹点:', {
+        distance,
+        timeDiff,
+        speed: calculatedSpeed,
+        totalPoints: prevCoords.length + 1,
+        totalDistance: calculateTotalDistance([...prevCoords, newCoordsObj])
+      });
+
+      return [...prevCoords, newCoordsObj];
+    });
+  };
 
   // 更新距离
   useEffect(() => {
@@ -478,25 +503,19 @@ export default function HomeScreen() {
                   当前经度: {currentLocation.longitude.toFixed(6)}
                 </GText>
                 <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  GPS速度: {formatSpeed(currentLocation.speed || 0, true)}
+                  GPS速度: {formatSpeed(gpsSpeed, true)}
+                </GText>
+                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                  计算速度: {formatSpeed(currentSpeed, true)}
                 </GText>
               </>
             )}
-            {(
-              <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                计算速度: {formatSpeed(currentSpeed, true)}
+            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                里程: {formatDistance(currentDistance)}
               </GText>
-            )}
-            {isTracking && (
-              <>
-                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  里程: {formatDistance(currentDistance)}
-                </GText>
-                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  时间: {formatElapsedTime(elapsedTime)}
-                </GText>
-              </>
-            )}
+            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                时间: {formatElapsedTime(elapsedTime)}
+              </GText>
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
                 是否追踪: {isTracking ? '是' : '否'}
               </GText>
@@ -557,7 +576,7 @@ export default function HomeScreen() {
             <GText style={{ fontSize: 12, color: '#A0A0A0' }}>当前速度</GText>
             <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4 }}>
               <GText style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>
-                {formatSpeed(currentSpeed, true).split(' ')[0]}
+                {formatSpeed(gpsSpeed, true).split(' ')[0]}
               </GText>
               <GText style={{ fontSize: 12, color: '#A0A0A0' }}>km/h</GText>
             </View>
