@@ -100,23 +100,33 @@ export const configureLocationTracking = async () => {
   try {
     logLocationEvent('开始配置位置追踪参数');
     
+    const locationConfig = {
+      distanceFilter: 5,        // 每5米更新一次
+      interval: 500,            // 每500ms尝试获取一次位置
+      accuracy: {
+        ios: 'best',
+        android: 'high',
+      },
+      activityType: 'fitness',  // 针对运动场景优化
+    };
+
     if (Platform.OS === 'android') {
       logLocationEvent('Android: 配置位置追踪参数');
       await Geolocation.setLocationMode('Device_Sensors');
-      await Geolocation.setDistanceFilter(0);
+      await Geolocation.setDistanceFilter(locationConfig.distanceFilter);
       await Geolocation.setGpsFirstTimeout(3000);
-      await Geolocation.setInterval(1000);
-      await Geolocation.setDesiredAccuracy('HightAccuracy');
+      await Geolocation.setInterval(locationConfig.interval);
+      await Geolocation.setDesiredAccuracy(locationConfig.accuracy.android);
       await Geolocation.setNeedAddress(false);
       await Geolocation.setOnceLocation(false);
       await Geolocation.setSensorEnable(true);
     } else {
       logLocationEvent('iOS: 配置位置追踪参数');
       if (Geolocation.setDesiredAccuracy) {
-        await Geolocation.setDesiredAccuracy('HightAccuracy');
+        await Geolocation.setDesiredAccuracy(locationConfig.accuracy.ios);
       }
       if (Geolocation.setDistanceFilter) {
-        await Geolocation.setDistanceFilter(0);
+        await Geolocation.setDistanceFilter(locationConfig.distanceFilter);
       }
       if (Geolocation.setAllowsBackgroundLocationUpdates) {
         await Geolocation.setAllowsBackgroundLocationUpdates(true);
@@ -330,8 +340,7 @@ class LocationFilter {
     this.lastLocation = null;
     this.lastTimestamp = null;
   }
-  
-  // 过滤位置数据
+
   async filterLocation(location) {
     // 验证输入数据
     if (!location || typeof location.latitude !== 'number' || typeof location.longitude !== 'number') {
@@ -396,3 +405,55 @@ function getDistance(lat1, lon1, lat2, lon2) {
   
   return distance;
 }
+
+// 位置数据过滤器
+class LocationFilterNew {
+  constructor() {
+    this.lastValidLocation = null;
+    this.lastUpdateTime = 0;
+    this.MAX_TIME_GAP = 10000;  // 最大允许10秒没有新点
+  }
+
+  isValidLocation(location) {
+    const now = Date.now();
+    
+    // 基础检查
+    if (!location || !location.latitude || !location.longitude) {
+      return false;
+    }
+
+    // 第一个点总是接受
+    if (!this.lastValidLocation) {
+      this.lastValidLocation = location;
+      this.lastUpdateTime = now;
+      return true;
+    }
+
+    // 时间窗口检查：如果距离上一个点太久，即使accuracy不够好也接受
+    const timeGap = now - this.lastUpdateTime;
+    if (timeGap >= this.MAX_TIME_GAP) {
+      console.log('[位置过滤器] 距离上次更新超过10秒，接受新位置');
+      this.lastValidLocation = location;
+      this.lastUpdateTime = now;
+      return true;
+    }
+
+    // accuracy检查（放宽到10米）
+    if (location.accuracy > 10) {
+      return false;
+    }
+
+    // 速度检查（取消负速度检查，因为可能是设备问题）
+    if (location.speed < -1) {
+      return false;
+    }
+
+    // 通过所有检查
+    this.lastValidLocation = location;
+    this.lastUpdateTime = now;
+    return true;
+  }
+}
+
+// 导出位置过滤器实例
+export const locationFilterNew = new LocationFilterNew();

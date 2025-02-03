@@ -57,6 +57,23 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return distance;
 }
 
+// 计算两点之间的速度（米/秒）
+function calculateSpeed(loc1, loc2) {
+  if (!loc1 || !loc2) return 0;
+  
+  const distance = calculateDistance(
+    loc1.latitude,
+    loc1.longitude,
+    loc2.latitude,
+    loc2.longitude
+  );
+  
+  const timeDiff = (loc2.timestamp - loc1.timestamp) / 1000; // 转换为秒
+  if (timeDiff <= 0) return 0;
+  
+  return distance / timeDiff;
+}
+
 // 生成测试轨迹
 function generateTestTrack(config = {}) {
   const {
@@ -327,7 +344,8 @@ function generateSquareTrack(config = {}) {
   const {
     startLat = 39.9054,
     startLon = 116.3976,
-    sideLength = 3000
+    sideLength = 3000,
+    targetSpeed = 5 // 目标速度，米/秒（18km/h，适合自行车）
   } = config;
 
   const points = [];
@@ -352,17 +370,21 @@ function generateSquareTrack(config = {}) {
     { lat: startLat, lon: startLon }                    // 回到起点
   ];
   
-  // 在每条边上生成插值点（每100米一个点）
-  const pointsPerSide = Math.floor(sideLength / 100);
-  const startTime = Date.now();
+  // 在每条边上生成插值点
+  const pointInterval = 50; // 每50米一个点
+  const timeInterval = pointInterval / targetSpeed; // 根据目标速度计算时间间隔
   
+  const startTime = Date.now();
   let pointIndex = 0;
+  
   for (let i = 0; i < vertices.length - 1; i++) {
     const start = vertices[i];
     const end = vertices[i + 1];
+    const segmentDistance = calculateDistance(start.lat, start.lon, end.lat, end.lon);
+    const pointsCount = Math.floor(segmentDistance / pointInterval);
     
-    for (let j = 0; j <= pointsPerSide; j++) {
-      const ratio = j / pointsPerSide;
+    for (let j = 0; j <= pointsCount; j++) {
+      const ratio = j / pointsCount;
       const lat = start.lat + (end.lat - start.lat) * ratio;
       const lon = start.lon + (end.lon - start.lon) * ratio;
       
@@ -370,7 +392,7 @@ function generateSquareTrack(config = {}) {
         latitude: lat,
         longitude: lon,
         elevation: 0,
-        timestamp: startTime + (pointIndex * 5000) // 每个点间隔5秒
+        timestamp: startTime + (pointIndex * timeInterval * 1000) // 转换为毫秒
       });
       
       pointIndex++;
@@ -388,11 +410,16 @@ function generateGpx(points, mode = 'track') {
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">`;
 
-  points.forEach(point => {
+  // 添加速度信息
+  points.forEach((point, index) => {
     const timestamp = new Date(point.timestamp);
+    // 计算当前点的速度（使用与前一个点的距离和时间差）
+    const speed = index > 0 ? calculateSpeed(points[index - 1], point) : 0;
+    
     gpx += `
   <wpt lat="${point.latitude.toFixed(6)}" lon="${point.longitude.toFixed(6)}">
     <time>${timestamp.toISOString()}</time>
+    <speed>${speed.toFixed(2)}</speed>
   </wpt>`;
   });
 

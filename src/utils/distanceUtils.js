@@ -5,15 +5,63 @@ const toRad = (x) => {
 
 // 计算两点之间的距离（单位：米）
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  // 输入验证
+  if (typeof lat1 !== 'number' || typeof lon1 !== 'number' || 
+      typeof lat2 !== 'number' || typeof lon2 !== 'number') {
+    console.error('[距离计算] 无效的输入坐标:', { lat1, lon1, lat2, lon2 });
+    return 0;
+  }
+
+  // 如果坐标完全相同，直接返回0
+  if (lat1 === lat2 && lon1 === lon2) {
+    console.log('[距离计算] 坐标完全相同，距离为0');
+    return 0;
+  }
+
   const R = 6371000; // 地球半径，单位米
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+  
+  // 计算中间值，便于调试
+  const lat1Rad = toRad(lat1);
+  const lat2Rad = toRad(lat2);
+  const sinDLat = Math.sin(dLat / 2);
+  const sinDLon = Math.sin(dLon / 2);
+  const cosLat1 = Math.cos(lat1Rad);
+  const cosLat2 = Math.cos(lat2Rad);
+  
+  const a = sinDLat * sinDLat + 
+           cosLat1 * cosLat2 * sinDLon * sinDLon;
+  
+  // 确保a的值在有效范围内
+  const clampedA = Math.max(0, Math.min(1, a));
+  const c = 2 * Math.atan2(Math.sqrt(clampedA), Math.sqrt(1 - clampedA));
+  const distance = R * c;
+
+  // 记录详细计算过程
+  console.log('[距离计算] 详细过程:', {
+    输入: {
+      起点: { 纬度: lat1, 经度: lon1 },
+      终点: { 纬度: lat2, 经度: lon2 }
+    },
+    弧度值: {
+      dLat: dLat.toFixed(8),
+      dLon: dLon.toFixed(8),
+      lat1Rad: lat1Rad.toFixed(8),
+      lat2Rad: lat2Rad.toFixed(8)
+    },
+    中间计算值: {
+      sinDLat: sinDLat.toFixed(8),
+      sinDLon: sinDLon.toFixed(8),
+      cosLat1: cosLat1.toFixed(8),
+      cosLat2: cosLat2.toFixed(8),
+      a: a.toFixed(8),
+      c: c.toFixed(8)
+    },
+    结果_米: distance.toFixed(8)
+  });
+
+  return distance;
 };
 
 // 计算总距离（使用滑动窗口减少累积误差）
