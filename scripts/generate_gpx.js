@@ -10,33 +10,36 @@ function generateTimestampedFilename() {
   return `tests/beijing_track_${timestamp}.gpx`;  // 保存到 tests 目录
 }
 
-// 计算给定距离和方向的新坐标
-function calculateNewPoint(lat, lon, distanceInMeters, bearing) {
-  const R = 6371000; // 地球半径（米）
-  const d = distanceInMeters;
-  const brng = bearing * Math.PI / 180; // 转换为弧度
-  const lat1 = lat * Math.PI / 180;
-  const lon1 = lon * Math.PI / 180;
+// 坐标转换工具函数
+function calculateNewPosition(startLat, startLon, distanceMeters, bearing) {
+  // 地球半径（米）
+  const R = 6371000;
+  
+  // 将距离转换为弧度
+  const d = distanceMeters / R;
+  
+  // 将度数转换为弧度
+  const lat1 = startLat * Math.PI / 180;
+  const lon1 = startLon * Math.PI / 180;
+  const brng = bearing * Math.PI / 180;
 
+  // 计算新的纬度
   const lat2 = Math.asin(
-    Math.sin(lat1) * Math.cos(d/R) +
-    Math.cos(lat1) * Math.sin(d/R) * Math.cos(brng)
+    Math.sin(lat1) * Math.cos(d) +
+    Math.cos(lat1) * Math.sin(d) * Math.cos(brng)
   );
 
+  // 计算新的经度
   const lon2 = lon1 + Math.atan2(
-    Math.sin(brng) * Math.sin(d/R) * Math.cos(lat1),
-    Math.cos(d/R) - Math.sin(lat1) * Math.sin(lat2)
+    Math.sin(brng) * Math.sin(d) * Math.cos(lat1),
+    Math.cos(d) - Math.sin(lat1) * Math.sin(lat2)
   );
 
+  // 将弧度转换回度数
   return {
     latitude: lat2 * 180 / Math.PI,
     longitude: lon2 * 180 / Math.PI
   };
-}
-
-// 计算给定距离和方向的新坐标
-function calculateDestination(lat, lon, distanceInMeters, bearing) {
-  return calculateNewPoint(lat, lon, distanceInMeters, bearing);
 }
 
 // 计算两点之间的距离
@@ -83,7 +86,7 @@ function generateTestTrack(config = {}) {
 
     // 根据速度和方向计算新位置
     const distance = currentSpeed * interval;
-    const { latitude, longitude } = calculateDestination(currentLat, currentLon, distance, currentBearing);
+    const { latitude, longitude } = calculateNewPosition(currentLat, currentLon, distance, currentBearing);
 
     points.push({
       latitude,
@@ -121,7 +124,7 @@ function generateCircleTrack(config = {}) {
     const distance = radius;
     const bearing = (angle * 180 / Math.PI) % 360;
 
-    const { latitude, longitude } = calculateDestination(startLat, startLon, distance, bearing);
+    const { latitude, longitude } = calculateNewPosition(startLat, startLon, distance, bearing);
 
     points.push({
       latitude,
@@ -158,7 +161,7 @@ function generateBackAndForthTrack(config = {}) {
       distance * (1 - phase); // 返程
     
     const currentBearing = cycle % 2 === 0 ? bearing : (bearing + 180) % 360;
-    const { latitude, longitude } = calculateDestination(startLat, startLon, currentDistance, currentBearing);
+    const { latitude, longitude } = calculateNewPosition(startLat, startLon, currentDistance, currentBearing);
 
     points.push({
       latitude,
@@ -174,41 +177,105 @@ function generateBackAndForthTrack(config = {}) {
   return points;
 }
 
+// 生成直角8字型轨迹
+function generateFigureEightTrack(config = {}) {
+  const {
+    startLat = 40.42250217013889,
+    startLon = 115.51807183159723,
+    duration = 30,                    // 30秒完成一个8字
+    interval = 1,
+    sideLength = 20                   // 每条边20米
+  } = config;
+
+  const points = [];
+  const totalPoints = duration / interval;
+  const pointsPerCircle = totalPoints / 2;  // 每个圆使用一半的点
+  const now = new Date().getTime();
+
+  // 定义8字形的路径点（相对于起点的方位角和距离）
+  const path = [
+    { bearing: 0, distance: sideLength },     // 向北
+    { bearing: 90, distance: sideLength },    // 向东
+    { bearing: 180, distance: sideLength },   // 向南
+    { bearing: 270, distance: sideLength },   // 向西
+    { bearing: 180, distance: sideLength },   // 向南
+    { bearing: 270, distance: sideLength },   // 向西
+    { bearing: 0, distance: sideLength },     // 向北
+    { bearing: 90, distance: sideLength }     // 向东
+  ];
+
+  let currentLat = startLat;
+  let currentLon = startLon;
+  const pointsPerSegment = Math.floor(totalPoints / path.length);
+
+  // 生成每个段的点
+  path.forEach((segment, segmentIndex) => {
+    for (let i = 0; i < pointsPerSegment; i++) {
+      const progress = i / pointsPerSegment;
+      const segmentDistance = segment.distance * progress;
+      
+      const newPos = calculateNewPosition(
+        currentLat,
+        currentLon,
+        segmentDistance,
+        segment.bearing
+      );
+
+      points.push({
+        latitude: newPos.latitude,
+        longitude: newPos.longitude,
+        timestamp: now + (segmentIndex * pointsPerSegment + i) * interval * 1000
+      });
+    }
+
+    // 更新当前位置到段的终点
+    const endPos = calculateNewPosition(
+      currentLat,
+      currentLon,
+      segment.distance,
+      segment.bearing
+    );
+    currentLat = endPos.latitude;
+    currentLon = endPos.longitude;
+  });
+
+  return points;
+}
+
 // 主函数
 async function main() {
-  const mode = process.argv[2] || 'straight'; // 默认直线模式
+  const mode = process.argv[2] || 'straight';
   let points;
 
-  // 使用实际观察到的位置作为起点
   const config = {
-    startLat: 40.421260579427084,
-    startLon: 115.5117361111111,
-    duration: 120,
-    interval: 1,
-    baseSpeed: 5,          // 降低速度到5米/秒
-    bearing: 45,
-    accuracy: 5           // 使用实际的精度值
+    startLat: 40.42250217013889,
+    startLon: 115.51807183159723,
+    duration: 30,                   // 30秒
+    interval: 1
   };
 
   switch (mode) {
+    case 'figure8':
+      points = generateFigureEightTrack({
+        ...config,
+        sideLength: 20              // 每条边20米
+      });
+      break;
     case 'circle':
       points = generateCircleTrack({
         ...config,
-        duration: 10,    // 确保使用10秒
-        radius: 5
+        radius: 30                 // 增加到30米半径
       });
       break;
     case 'backforth':
       points = generateBackAndForthTrack({
         ...config,
-        duration: 10,    // 确保使用10秒
-        distance: 50
+        distance: 100             // 增加到100米距离
       });
       break;
     default: // 'straight'
       points = generateTestTrack({
-        ...config,
-        duration: 10     // 确保使用10秒
+        ...config
       });
   }
 
