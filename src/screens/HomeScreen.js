@@ -57,6 +57,77 @@ export default function HomeScreen() {
   const [currentDistance, setCurrentDistance] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef(null);
+  const [watchId, setWatchId] = useState(null);
+
+  // 停止追踪函数
+  const stopTracking = async () => {
+    try {
+      console.log('[运动追踪] 停止运动追踪');
+      
+      if (watchId) {
+        stopLocationWatch(watchId);
+        setWatchId(null);
+      }
+
+      const endTime = Date.now();
+      const duration = Math.floor((endTime - startTime) / 1000);
+      const distance = calculateTotalDistance(routeCoordinates);
+      
+      console.log('[运动追踪] 轨迹记录完成', {
+        startTime: new Date(startTime).toLocaleString('zh-CN'),
+        endTime: new Date(endTime).toLocaleString('zh-CN'),
+        duration: `${Math.floor(duration / 60)}分${duration % 60}秒`,
+        totalDistance: distance.toFixed(2) + '米',
+        pointsCount: routeCoordinates.length
+      });
+
+      setIsTracking(false);
+      setStartTime(null);
+      
+      // 保存轨迹数据
+      if (routeCoordinates.length > 0) {
+        const filteredCoordinates = routeCoordinates.filter(coord => coord.accuracy <= 50);
+        
+        if (filteredCoordinates.length < 2) {
+          Alert.alert('提示', '有效轨迹点太少，无法保存');
+          return;
+        }
+
+        const activity = {
+          id: Date.now().toString(),
+          type: activityType,
+          startTime: new Date(startTime).toISOString(),
+          endTime: new Date(endTime).toISOString(),
+          duration,
+          distance,
+          averageSpeed: calculateAverageSpeed(filteredCoordinates, startTime),
+          coordinates: filteredCoordinates,
+          maxSpeed: Math.max(...filteredCoordinates.map(c => c.speed || 0)),
+          minAccuracy: Math.min(...filteredCoordinates.map(c => c.accuracy)),
+          maxAccuracy: Math.max(...filteredCoordinates.map(c => c.accuracy)),
+        };
+
+        try {
+          const success = await saveActivity(activity);
+          if (success) {
+            setRouteCoordinates([]);
+            setCurrentSpeed(0);
+            setCurrentDistance(0);
+            setElapsedTime(0);
+            navigation.navigate('ActivityDetail', { activity });
+          } else {
+            Alert.alert('错误', '保存活动失败');
+          }
+        } catch (error) {
+          console.error('Error saving activity:', error);
+          Alert.alert('错误', '保存活动失败：' + error.message);
+        }
+      }
+    } catch (error) {
+      console.error('[运动追踪] 停止追踪失败:', error);
+      setErrorMsg('停止追踪失败: ' + error.message);
+    }
+  };
 
   // 初始化位置服务
   useEffect(() => {
@@ -85,78 +156,119 @@ export default function HomeScreen() {
     let watchId = null;
 
     const handleLocationUpdate = (coords) => {
-      console.log('位置更新 (精度:', coords.accuracy, '米):', coords);
-      
-      setCurrentLocation({
+      if (!isTracking) return;
+
+      const newCoords = {
         latitude: coords.latitude,
         longitude: coords.longitude,
+        timestamp: coords.timestamp || new Date().getTime(),
         accuracy: coords.accuracy,
         speed: coords.speed || 0,
-      });
+      };
 
-      if (isTracking) {
-        const newCoords = {
-          latitude: coords.latitude,
-          longitude: coords.longitude,
-          timestamp: new Date().getTime(),
-          accuracy: coords.accuracy,
-          speed: coords.speed || 0,
-        };
+      // 更新当前位置
+      setCurrentLocation(newCoords);
 
-        setRouteCoordinates(prevCoords => {
-          if (prevCoords.length === 0) {
-            setCurrentSpeed(0);
-            return [newCoords];
-          }
-          
-          const lastCoord = prevCoords[prevCoords.length - 1];
-          const distance = calculateDistance(
-            lastCoord.latitude,
-            lastCoord.longitude,
-            newCoords.latitude,
-            newCoords.longitude
-          );
+      setRouteCoordinates(prevCoords => {
+        if (prevCoords.length === 0) {
+          console.log('[位置追踪] 记录起点:', newCoords);
+          return [newCoords];
+        }
+        
+        const lastCoord = prevCoords[prevCoords.length - 1];
+        const distance = calculateDistance(
+          lastCoord.latitude,
+          lastCoord.longitude,
+          newCoords.latitude,
+          newCoords.longitude
+        );
 
-          const timeDiff = (newCoords.timestamp - lastCoord.timestamp) / 1000;
-          const calculatedSpeed = distance / timeDiff;
-          
-          setCurrentSpeed(calculatedSpeed);
+        const timeDiff = (newCoords.timestamp - lastCoord.timestamp) / 1000;
+        const calculatedSpeed = distance / timeDiff;
+        
+        setCurrentSpeed(calculatedSpeed);
 
-          if (distance < 0.2) {
-            console.log('位置变化太小，忽略此次更新', {distance});
-            return prevCoords;
-          }
-
-          // 更新地图区域以跟随用户
-          if (mapRef.current && allowMapUpdate) {
-            mapRef.current.animateToRegion({
-              latitude: coords.latitude,
-              longitude: coords.longitude,
-              latitudeDelta: 0.001,
-              longitudeDelta: 0.001
-            }, 1000);
-          }
-
-          return [...prevCoords, newCoords];
+        // 每次位置更新时记录应用状态
+        console.log(`[${new Date().toLocaleString('zh-CN')}] 应用状态:`, {
+          isTracking,
+          routeCoordinatesCount: prevCoords.length,
+          elapsedTime: Math.floor((Date.now() - startTime) / 1000),
+          currentSpeed: calculatedSpeed,
+          totalDistance: calculateTotalDistance([...prevCoords, newCoords]),
+          accuracy: newCoords.accuracy,
         });
-      }
+
+        if (distance < 0.2) {
+          console.log('[位置追踪] 位置变化太小，忽略此次更新:', {
+            distance,
+            timeDiff,
+            lastCoord,
+            newCoords
+          });
+          return prevCoords;
+        }
+
+        // 更新地图区域以跟随用户
+        if (mapRef.current && allowMapUpdate) {
+          mapRef.current.animateToRegion({
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.001
+          }, 1000);
+        }
+
+        console.log('[位置追踪] 新增轨迹点:', {
+          distance,
+          timeDiff,
+          speed: calculatedSpeed,
+          totalPoints: prevCoords.length + 1,
+          totalDistance: calculateTotalDistance([...prevCoords, newCoords])
+        });
+
+        return [...prevCoords, newCoords];
+      });
     };
 
     const startTracking = async () => {
       try {
+        console.log('[运动追踪] 开始运动追踪');
         const hasPermission = await requestLocationPermission();
         if (!hasPermission) {
           setErrorMsg('需要位置权限才能使用此功能');
           return;
         }
 
+        const success = await initLocationService();
+        if (!success) {
+          setErrorMsg('初始化位置服务失败');
+          return;
+        }
+
         await configureLocationTracking();
-        watchId = startLocationWatch(handleLocationUpdate, error => {
-          setErrorMsg('位置更新错误：' + error.message);
+        
+        setStartTime(Date.now());
+        setIsTracking(true);
+        setRouteCoordinates([]);
+        setCurrentSpeed(0);
+        setElapsedTime(0);
+        
+        console.log('[运动追踪] 开始记录新轨迹', {
+          startTime: new Date().toLocaleString('zh-CN'),
+          isTracking: true
         });
+
+        watchId = startLocationWatch(
+          handleLocationUpdate,
+          error => {
+            console.error('[运动追踪] 位置监听错误:', error);
+            setErrorMsg('位置监听出错: ' + error.message);
+          }
+        );
+        setWatchId(watchId);
       } catch (error) {
-        console.error('启动位置更新时出错:', error);
-        setErrorMsg('启动位置更新时出错：' + error.message);
+        console.error('[运动追踪] 启动追踪失败:', error);
+        setErrorMsg('启动追踪失败: ' + error.message);
       }
     };
 
@@ -167,6 +279,7 @@ export default function HomeScreen() {
     return () => {
       if (watchId) {
         stopLocationWatch(watchId);
+        setWatchId(null);
       }
     };
   }, [isTracking, allowMapUpdate]);
@@ -183,12 +296,25 @@ export default function HomeScreen() {
 
   // 清理计时器
   useEffect(() => {
+    if (isTracking && startTime) {
+      timerRef.current = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        setElapsedTime(elapsed);
+      }, 1000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
-  }, []);
+  }, [isTracking, startTime]);
 
   const handleStartTracking = async () => {
     try {
@@ -198,21 +324,6 @@ export default function HomeScreen() {
       }
 
       setIsTracking(true);
-      setStartTime(new Date());
-      setElapsedTime(0);
-      
-      timerRef.current = setInterval(() => {
-        setElapsedTime(prev => prev + 1);
-      }, 1000);
-
-      if (currentLocation && mapRef.current) {
-        mapRef.current.animateToRegion({
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001
-        }, 1000);
-      }
     } catch (error) {
       console.error('开始追踪时出错:', error);
       Alert.alert('错误', '开始追踪时出错：' + error.message);
@@ -220,54 +331,7 @@ export default function HomeScreen() {
   };
 
   const handleStopTracking = async () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-    setIsTracking(false);
-    
-    const filteredCoordinates = routeCoordinates.filter(coord => coord.accuracy <= 50);
-    
-    if (filteredCoordinates.length < 2) {
-      Alert.alert('提示', '有效轨迹点太少，无法保存');
-      return;
-    }
-
-    const totalDistance = calculateTotalDistance(filteredCoordinates);
-    if (totalDistance < 0.001) {
-      Alert.alert('提示', '运动距离太短，无法保存');
-      return;
-    }
-
-    const activity = {
-      id: Date.now().toString(),
-      type: activityType,
-      startTime: startTime.toISOString(),
-      endTime: new Date().toISOString(),
-      duration: elapsedTime,
-      distance: totalDistance,
-      averageSpeed: calculateAverageSpeed(filteredCoordinates, startTime),
-      coordinates: filteredCoordinates,
-      maxSpeed: Math.max(...filteredCoordinates.map(c => c.speed || 0)),
-      minAccuracy: Math.min(...filteredCoordinates.map(c => c.accuracy)),
-      maxAccuracy: Math.max(...filteredCoordinates.map(c => c.accuracy)),
-    };
-
-    try {
-      const success = await saveActivity(activity);
-      if (success) {
-        setRouteCoordinates([]);
-        setStartTime(null);
-        setCurrentSpeed(0);
-        setCurrentDistance(0);
-        setElapsedTime(0);
-        navigation.navigate('ActivityDetail', { activity });
-      } else {
-        Alert.alert('错误', '保存活动失败');
-      }
-    } catch (error) {
-      console.error('Error saving activity:', error);
-      Alert.alert('错误', '保存活动失败：' + error.message);
-    }
+    stopTracking();
   };
 
   // 添加缩放控制函数

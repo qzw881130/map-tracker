@@ -2,15 +2,27 @@ import { Platform, PermissionsAndroid } from 'react-native';
 import { init, Geolocation } from 'react-native-amap-geolocation';
 import { getAmapKey } from '../config/keys';
 
+const logLocationEvent = (event, data = {}) => {
+  const timestamp = new Date().toLocaleString('zh-CN');
+  console.log(`[${timestamp}] 位置事件: ${event}`, {
+    ...data,
+    platform: Platform.OS,
+    version: Platform.Version,
+  });
+};
+
 // 请求位置权限
 export const requestLocationPermission = async () => {
   try {
+    logLocationEvent('开始请求位置权限');
+    
     if (Platform.OS === 'ios') {
-      // iOS 权限由高德地图 SDK 处理
+      logLocationEvent('iOS: 使用高德地图 SDK 处理权限');
       return true;
     }
 
     // Android 需要同时请求前台和后台定位权限
+    logLocationEvent('Android: 请求前台位置权限');
     const foregroundGranted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
@@ -23,6 +35,7 @@ export const requestLocationPermission = async () => {
     );
 
     if (foregroundGranted === PermissionsAndroid.RESULTS.GRANTED) {
+      logLocationEvent('Android: 前台位置权限已授予，请求后台权限');
       const backgroundGranted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
         {
@@ -33,11 +46,16 @@ export const requestLocationPermission = async () => {
           buttonPositive: "确定"
         }
       );
-      return backgroundGranted === PermissionsAndroid.RESULTS.GRANTED;
+      
+      const result = backgroundGranted === PermissionsAndroid.RESULTS.GRANTED;
+      logLocationEvent('Android: 后台位置权限请求结果', { granted: result });
+      return result;
     }
+    
+    logLocationEvent('Android: 前台位置权限被拒绝');
     return false;
   } catch (err) {
-    console.warn("请求位置权限时出错:", err);
+    logLocationEvent('请求位置权限出错', { error: err.message });
     return false;
   }
 };
@@ -45,6 +63,8 @@ export const requestLocationPermission = async () => {
 // 初始化位置服务
 export const initLocationService = async () => {
   try {
+    logLocationEvent('开始初始化位置服务');
+    
     // 配置高德地图 SDK
     const options = {
       ios: getAmapKey(),
@@ -58,17 +78,19 @@ export const initLocationService = async () => {
       killProcess: false  // 进程被杀死时不退出定位
     };
 
+    logLocationEvent('初始化高德地图 SDK', { options });
     await init(options);
 
     // Android 特定配置
     if (Platform.OS === 'android' && Geolocation.setLocationMode) {
+      logLocationEvent('Android: 设置位置模式为 GPS');
       await Geolocation.setLocationMode('Device_Sensors');
     }
 
-    console.log('高德地图初始化成功');
+    logLocationEvent('位置服务初始化成功');
     return true;
   } catch (error) {
-    console.error('高德地图初始化失败:', error);
+    logLocationEvent('位置服务初始化失败', { error: error.message });
     return false;
   }
 };
@@ -76,18 +98,20 @@ export const initLocationService = async () => {
 // 配置位置追踪参数
 export const configureLocationTracking = async () => {
   try {
+    logLocationEvent('开始配置位置追踪参数');
+    
     if (Platform.OS === 'android') {
-      // Android 特定配置
-      await Geolocation.setLocationMode('Device_Sensors');  // 仅使用GPS
-      await Geolocation.setDistanceFilter(0);  // 不设置距离过滤
+      logLocationEvent('Android: 配置位置追踪参数');
+      await Geolocation.setLocationMode('Device_Sensors');
+      await Geolocation.setDistanceFilter(0);
       await Geolocation.setGpsFirstTimeout(3000);
-      await Geolocation.setInterval(1000);    // 每秒更新一次
+      await Geolocation.setInterval(1000);
       await Geolocation.setDesiredAccuracy('HightAccuracy');
-      await Geolocation.setNeedAddress(false);  // 不需要逆地理编码
-      await Geolocation.setOnceLocation(false); // 持续定位
-      await Geolocation.setSensorEnable(true);  // 使用传感器
+      await Geolocation.setNeedAddress(false);
+      await Geolocation.setOnceLocation(false);
+      await Geolocation.setSensorEnable(true);
     } else {
-      // iOS 特定配置
+      logLocationEvent('iOS: 配置位置追踪参数');
       if (Geolocation.setDesiredAccuracy) {
         await Geolocation.setDesiredAccuracy('HightAccuracy');
       }
@@ -98,9 +122,11 @@ export const configureLocationTracking = async () => {
         await Geolocation.setAllowsBackgroundLocationUpdates(true);
       }
     }
+    
+    logLocationEvent('位置追踪参数配置成功');
     return true;
   } catch (error) {
-    console.error('配置位置追踪参数失败:', error);
+    logLocationEvent('配置位置追踪参数失败', { error: error.message });
     return false;
   }
 };
@@ -108,6 +134,8 @@ export const configureLocationTracking = async () => {
 // 获取当前位置
 export const getCurrentPosition = () => {
   return new Promise((resolve, reject) => {
+    logLocationEvent('开始获取当前位置');
+    
     const options = {
       enableHighAccuracy: true,
       timeout: 15000,
@@ -120,16 +148,18 @@ export const getCurrentPosition = () => {
     Geolocation.getCurrentPosition(
       position => {
         const coords = position.coords || position;
-        resolve({
+        const result = {
           latitude: coords.latitude,
           longitude: coords.longitude,
           accuracy: coords.accuracy,
           speed: coords.speed || 0,
           timestamp: coords.timestamp || new Date().getTime(),
-        });
+        };
+        logLocationEvent('获取当前位置成功', { coords: result });
+        resolve(result);
       },
       error => {
-        console.error('获取当前位置失败:', error);
+        logLocationEvent('获取当前位置失败', { error: error.message });
         reject(error);
       },
       options
@@ -139,35 +169,56 @@ export const getCurrentPosition = () => {
 
 // 开始位置监听
 export const startLocationWatch = (onLocation, onError) => {
+  logLocationEvent('开始位置监听');
+  
   const options = {
     enableHighAccuracy: true,
     distanceFilter: 0,
     interval: 1000,
     timeout: 15000,
     reGeocode: false,
-    // 启用后台定位
     allowBackgroundLocationUpdates: true,
     pausesLocationUpdatesAutomatically: false,
-    locationMode: 1, // GPS_DEVICE_SENSORS
-    androidAllowBackgroundUpdates: true, // Android 特定
-    iosAllowBackgroundLocationUpdates: true, // iOS 特定
-    iosPausesLocationUpdatesAutomatically: false // iOS 特定
+    locationMode: 1,
+    androidAllowBackgroundUpdates: true,
+    iosAllowBackgroundLocationUpdates: true,
+    iosPausesLocationUpdatesAutomatically: false
   };
 
+  logLocationEvent('位置监听配置', { options });
+  
+  let updateCount = 0;
+  let lastLogTime = Date.now();
+  
   return Geolocation.watchPosition(
     location => {
       const coords = location.coords || location;
+      updateCount++;
+      
+      // 每30秒或每10次更新记录一次日志
+      const now = Date.now();
+      if (updateCount % 10 === 0 || now - lastLogTime > 30000) {
+        logLocationEvent('位置更新统计', {
+          updateCount,
+          timeSinceStart: Math.floor((now - lastLogTime) / 1000) + '秒',
+          accuracy: coords.accuracy,
+          speed: coords.speed,
+        });
+        lastLogTime = now;
+      }
+
       if (!coords.accuracy || coords.accuracy > 50) {
-        console.log('位置精度不足（误差超过50米），忽略此次更新:', coords.accuracy);
+        logLocationEvent('位置精度不足', { accuracy: coords.accuracy });
         return;
       }
+
       onLocation({
         ...coords,
         timestamp: coords.timestamp || new Date().getTime(),
       });
     },
     error => {
-      console.error('位置更新错误:', error);
+      logLocationEvent('位置监听错误', { error: error.message });
       onError(error);
     },
     options
@@ -178,9 +229,11 @@ export const startLocationWatch = (onLocation, onError) => {
 export const stopLocationWatch = (watchId) => {
   if (watchId !== null) {
     try {
+      logLocationEvent('停止位置监听', { watchId });
       Geolocation.clearWatch(watchId);
+      logLocationEvent('位置监听已停止');
     } catch (error) {
-      console.error('停止位置监听时出错:', error);
+      logLocationEvent('停止位置监听时出错', { error: error.message });
     }
   }
 };
