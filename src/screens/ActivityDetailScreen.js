@@ -34,30 +34,7 @@ export default function ActivityDetailScreen({ route }) {
         </Box>
       );
     }
-
-    return (
-      <Box
-        position="absolute"
-        left="$3"
-        top="$3"
-        bg="$backgroundLight800"
-        borderRadius="$md"
-        p="$3"
-        opacity={0.9}
-      >
-        <VStack space="$2">
-          <Text color="$textLight50" fontWeight="$medium" size="$xs">
-            起点: {formatCoordinate(activity.coordinates[0].latitude, activity.coordinates[0].longitude)}
-          </Text>
-          <Text color="$textLight50" fontWeight="$medium" size="$xs">
-            终点: {formatCoordinate(
-              activity.coordinates[activity.coordinates.length - 1].latitude,
-              activity.coordinates[activity.coordinates.length - 1].longitude
-            )}
-          </Text>
-        </VStack>
-      </Box>
-    );
+    return null;
   };
 
   return (
