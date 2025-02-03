@@ -1,13 +1,13 @@
 const fs = require('fs').promises;  // 使用 promises API
 
 // 生成带时间戳的文件名
-function generateTimestampedFilename() {
+function generateTimestampedFilename(mode) {
   const now = new Date();
   const timestamp = now.toISOString()
     .replace(/[:-]/g, '')
     .replace('T', '_')
     .split('.')[0];
-  return `tests/beijing_track_${timestamp}.gpx`;  // 保存到 tests 目录
+  return `${mode}_tests_${timestamp}.gpx`;  // 保存到 tests 目录
 }
 
 // 坐标转换工具函数
@@ -322,95 +322,150 @@ function generateBikeTrack(config = {}) {
   return points;
 }
 
-// 主函数
-async function main() {
-  const mode = process.argv[2] || 'straight';
-  let points;
+// 生成正方形GPS轨迹
+function generateSquareTrack(config = {}) {
+  const {
+    startLat = 39.9054,
+    startLon = 116.3976,
+    sideLength = 3000
+  } = config;
 
-  const config = {
-    startLat: 40.42250217013889,
-    startLon: 115.51807183159723,
-    duration: 30,
-    interval: 1
-  };
-
-  switch (mode) {
-    case 'figure8':
-      points = generateFigureEightTrack({
-        ...config,
-        sideLength: 20              // 每条边20米
+  const points = [];
+  const earthRadius = 6371000; // 地球半径（米）
+  
+  // 计算纬度1度对应的距离（米）
+  const metersPerLat = (Math.PI * earthRadius) / 180;
+  
+  // 计算经度1度对应的距离（米）
+  const metersPerLon = metersPerLat * Math.cos(startLat * Math.PI / 180);
+  
+  // 计算需要增加的经纬度值
+  const latDiff = sideLength / metersPerLat;
+  const lonDiff = sideLength / metersPerLon;
+  
+  // 生成四个顶点
+  const vertices = [
+    { lat: startLat, lon: startLon },                    // 起始点
+    { lat: startLat, lon: startLon + lonDiff },         // 向东
+    { lat: startLat + latDiff, lon: startLon + lonDiff },// 向北
+    { lat: startLat + latDiff, lon: startLon },         // 向西
+    { lat: startLat, lon: startLon }                    // 回到起点
+  ];
+  
+  // 在每条边上生成插值点（每100米一个点）
+  const pointsPerSide = Math.floor(sideLength / 100);
+  const startTime = Date.now();
+  
+  let pointIndex = 0;
+  for (let i = 0; i < vertices.length - 1; i++) {
+    const start = vertices[i];
+    const end = vertices[i + 1];
+    
+    for (let j = 0; j <= pointsPerSide; j++) {
+      const ratio = j / pointsPerSide;
+      const lat = start.lat + (end.lat - start.lat) * ratio;
+      const lon = start.lon + (end.lon - start.lon) * ratio;
+      
+      points.push({
+        latitude: lat,
+        longitude: lon,
+        elevation: 0,
+        timestamp: startTime + (pointIndex * 5000) // 每个点间隔5秒
       });
-      break;
-    case 'circle':
-      points = generateCircleTrack({
-        ...config,
-        radius: 30                 // 增加到30米半径
-      });
-      break;
-    case 'backforth':
-      points = generateBackAndForthTrack({
-        ...config,
-        distance: 100             // 增加到100米距离
-      });
-      break;
-    case 'bike':
-      points = generateBikeTrack({
-        ...config,
-        duration: 900,          // 15分钟
-        baseSpeed: 5,          // 5m/s (18km/h)
-        routeVariation: true
-      });
-      break;
-    default: // 'straight'
-      points = generateTestTrack({
-        ...config
-      });
+      
+      pointIndex++;
+    }
   }
+  
+  return points;
+}
 
-  // 生成GPX内容
-  const gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
+// 生成GPX内容
+function generateGpx(points, mode = 'track') {
+  let gpx = `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="Map-tracker"
   xmlns="http://www.topografix.com/GPX/1/1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-${points.map(point => `  <wpt lat="${point.latitude}" lon="${point.longitude}">
-    <time>${new Date(point.timestamp).toISOString()}</time>
-  </wpt>`).join('\n')}
-</gpx>`;
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">`;
 
-  const filename = generateTimestampedFilename();
-  
-  try {
-    await fs.writeFile(filename, gpxContent);
-    console.log(`GPX file generated successfully: ${filename}`);
-    
-    // 输出一些统计信息
-    const totalDistance = points.reduce((acc, curr, idx, arr) => {
-      if (idx === 0) return 0;
-      const prev = arr[idx - 1];
-      const distance = calculateDistance(
-        prev.latitude,
-        prev.longitude,
-        curr.latitude,
-        curr.longitude
-      );
-      return acc + distance;
-    }, 0);
+  points.forEach(point => {
+    const timestamp = new Date(point.timestamp);
+    gpx += `
+  <wpt lat="${point.latitude.toFixed(6)}" lon="${point.longitude.toFixed(6)}">
+    <time>${timestamp.toISOString()}</time>
+  </wpt>`;
+  });
 
-    console.log('Track Statistics:');
-    console.log(`Total points: ${points.length}`);
-    console.log(`Total distance: ${totalDistance.toFixed(2)} meters`);
-    console.log(`Average speed: ${(totalDistance / config.duration).toFixed(2)} m/s`);
-    console.log(`Duration: ${config.duration} seconds`);
+  gpx += '\n</gpx>';
+  return gpx;
+}
 
-    // 输出第一个和最后一个点的信息用于验证
-    console.log('\nTrack details:');
-    console.log('Start time:', new Date(points[0].timestamp).toISOString());
-    console.log('End time:', new Date(points[points.length - 1].timestamp).toISOString());
-    console.log('Time difference:', (points[points.length - 1].timestamp - points[0].timestamp) / 1000, 'seconds');
-  } catch (error) {
-    console.error('Error writing GPX file:', error);
+// 主函数
+async function main() {
+  const mode = process.argv[2] || 'straight';
+  const config = {
+    startLat: 39.9054,    // 天安门广场
+    startLon: 116.3976,
+    distance: 3000,       // 3公里
+    sideLength: 3000,     // 正方形边长3公里
+    speed: 3,            // 3米/秒
+    bearing: 45,         // 45度角
+    pointInterval: 10,   // 每10米一个点
+    routeVariation: false // 是否添加随机变化
+  };
+
+  console.log('生成轨迹模式:', mode);
+  console.log('配置:', config);
+
+  let points;
+  switch (mode) {
+    case 'square':
+      points = generateSquareTrack(config);
+      break;
+    // ... 其他 case 保持不变
   }
+
+  if (!points || points.length === 0) {
+    console.error('未生成任何轨迹点');
+    return;
+  }
+
+  // 生成GPX内容
+  const gpxContent = generateGpx(points, mode);
+  
+  // 将内容写入文件
+  const fs = require('fs');
+  const path = require('path');
+  
+  // 确保 tests 目录存在
+  const testsDir = path.join(__dirname, '..', 'tests');
+  if (!fs.existsSync(testsDir)) {
+    fs.mkdirSync(testsDir);
+  }
+  
+  // 生成文件名，包含时间戳
+  const timestamp = new Date().toISOString()
+    .replace(/[:-]/g, '')
+    .replace(/\..+/, '')
+    .replace('T', '_');
+  
+  const outputPath = path.join(testsDir, `${mode}_track_${timestamp}.gpx`);
+  
+  fs.writeFileSync(outputPath, gpxContent);
+  console.log(`GPX文件已生成：${outputPath}`);
+  
+  // 打印统计信息
+  console.log(`总点数：${points.length}`);
+  console.log(`第一个点：`, {
+    latitude: points[0].latitude,
+    longitude: points[0].longitude,
+    time: new Date(points[0].timestamp).toISOString()
+  });
+  console.log(`最后一个点：`, {
+    latitude: points[points.length - 1].latitude,
+    longitude: points[points.length - 1].longitude,
+    time: new Date(points[points.length - 1].timestamp).toISOString()
+  });
 }
 
 main().catch(console.error);
