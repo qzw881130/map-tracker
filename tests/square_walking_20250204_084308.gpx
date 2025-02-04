@@ -1,0 +1,1606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Map-tracker"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <wpt lat="39.905400" lon="116.397600">
+    <time>2025-02-04T08:43:08.771Z</time>
+    <speed>0.00</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397624">
+    <time>2025-02-04T08:43:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397647">
+    <time>2025-02-04T08:43:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397671">
+    <time>2025-02-04T08:43:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397695">
+    <time>2025-02-04T08:43:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397718">
+    <time>2025-02-04T08:43:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397742">
+    <time>2025-02-04T08:43:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397766">
+    <time>2025-02-04T08:43:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397789">
+    <time>2025-02-04T08:43:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397813">
+    <time>2025-02-04T08:43:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397837">
+    <time>2025-02-04T08:43:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397861">
+    <time>2025-02-04T08:43:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397884">
+    <time>2025-02-04T08:43:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397908">
+    <time>2025-02-04T08:43:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397932">
+    <time>2025-02-04T08:43:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397955">
+    <time>2025-02-04T08:43:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397979">
+    <time>2025-02-04T08:43:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398003">
+    <time>2025-02-04T08:43:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398026">
+    <time>2025-02-04T08:43:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398050">
+    <time>2025-02-04T08:43:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398074">
+    <time>2025-02-04T08:43:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398097">
+    <time>2025-02-04T08:43:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398121">
+    <time>2025-02-04T08:43:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398145">
+    <time>2025-02-04T08:43:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398168">
+    <time>2025-02-04T08:43:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398192">
+    <time>2025-02-04T08:43:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398216">
+    <time>2025-02-04T08:43:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398239">
+    <time>2025-02-04T08:43:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398263">
+    <time>2025-02-04T08:43:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398287">
+    <time>2025-02-04T08:43:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398311">
+    <time>2025-02-04T08:43:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398334">
+    <time>2025-02-04T08:44:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398358">
+    <time>2025-02-04T08:44:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398382">
+    <time>2025-02-04T08:44:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398405">
+    <time>2025-02-04T08:44:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398429">
+    <time>2025-02-04T08:44:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398453">
+    <time>2025-02-04T08:44:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398476">
+    <time>2025-02-04T08:44:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398500">
+    <time>2025-02-04T08:44:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398524">
+    <time>2025-02-04T08:44:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398547">
+    <time>2025-02-04T08:44:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398571">
+    <time>2025-02-04T08:44:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398595">
+    <time>2025-02-04T08:44:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398618">
+    <time>2025-02-04T08:44:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398642">
+    <time>2025-02-04T08:44:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398666">
+    <time>2025-02-04T08:44:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398689">
+    <time>2025-02-04T08:44:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398713">
+    <time>2025-02-04T08:44:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398737">
+    <time>2025-02-04T08:44:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398761">
+    <time>2025-02-04T08:44:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398784">
+    <time>2025-02-04T08:44:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398808">
+    <time>2025-02-04T08:44:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398832">
+    <time>2025-02-04T08:44:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398855">
+    <time>2025-02-04T08:44:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398879">
+    <time>2025-02-04T08:44:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398903">
+    <time>2025-02-04T08:44:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398926">
+    <time>2025-02-04T08:44:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398950">
+    <time>2025-02-04T08:44:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398974">
+    <time>2025-02-04T08:44:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.398997">
+    <time>2025-02-04T08:44:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399021">
+    <time>2025-02-04T08:44:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399045">
+    <time>2025-02-04T08:44:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399068">
+    <time>2025-02-04T08:44:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399092">
+    <time>2025-02-04T08:44:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399116">
+    <time>2025-02-04T08:44:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399139">
+    <time>2025-02-04T08:44:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399163">
+    <time>2025-02-04T08:44:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399187">
+    <time>2025-02-04T08:45:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399211">
+    <time>2025-02-04T08:45:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399234">
+    <time>2025-02-04T08:45:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399258">
+    <time>2025-02-04T08:45:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399282">
+    <time>2025-02-04T08:45:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399305">
+    <time>2025-02-04T08:45:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399329">
+    <time>2025-02-04T08:45:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399353">
+    <time>2025-02-04T08:45:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399376">
+    <time>2025-02-04T08:45:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399400">
+    <time>2025-02-04T08:45:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399424">
+    <time>2025-02-04T08:45:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399447">
+    <time>2025-02-04T08:45:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399471">
+    <time>2025-02-04T08:45:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399495">
+    <time>2025-02-04T08:45:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399518">
+    <time>2025-02-04T08:45:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399542">
+    <time>2025-02-04T08:45:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399566">
+    <time>2025-02-04T08:45:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399589">
+    <time>2025-02-04T08:45:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399613">
+    <time>2025-02-04T08:45:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399637">
+    <time>2025-02-04T08:45:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399661">
+    <time>2025-02-04T08:45:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399684">
+    <time>2025-02-04T08:45:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399708">
+    <time>2025-02-04T08:45:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399732">
+    <time>2025-02-04T08:45:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399755">
+    <time>2025-02-04T08:45:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399779">
+    <time>2025-02-04T08:45:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399803">
+    <time>2025-02-04T08:45:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399826">
+    <time>2025-02-04T08:45:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399850">
+    <time>2025-02-04T08:45:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399874">
+    <time>2025-02-04T08:45:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399897">
+    <time>2025-02-04T08:45:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399921">
+    <time>2025-02-04T08:45:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399945">
+    <time>2025-02-04T08:45:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.399945">
+    <time>2025-02-04T08:45:55.437Z</time>
+    <speed>0.00</speed>
+  </wpt>
+  <wpt lat="39.905418" lon="116.399945">
+    <time>2025-02-04T08:45:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905436" lon="116.399945">
+    <time>2025-02-04T08:45:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905455" lon="116.399945">
+    <time>2025-02-04T08:46:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905473" lon="116.399945">
+    <time>2025-02-04T08:46:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905491" lon="116.399945">
+    <time>2025-02-04T08:46:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905509" lon="116.399945">
+    <time>2025-02-04T08:46:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905527" lon="116.399945">
+    <time>2025-02-04T08:46:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905545" lon="116.399945">
+    <time>2025-02-04T08:46:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905564" lon="116.399945">
+    <time>2025-02-04T08:46:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905582" lon="116.399945">
+    <time>2025-02-04T08:46:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905600" lon="116.399945">
+    <time>2025-02-04T08:46:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905618" lon="116.399945">
+    <time>2025-02-04T08:46:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905636" lon="116.399945">
+    <time>2025-02-04T08:46:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905654" lon="116.399945">
+    <time>2025-02-04T08:46:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905673" lon="116.399945">
+    <time>2025-02-04T08:46:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905691" lon="116.399945">
+    <time>2025-02-04T08:46:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905709" lon="116.399945">
+    <time>2025-02-04T08:46:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905727" lon="116.399945">
+    <time>2025-02-04T08:46:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905745" lon="116.399945">
+    <time>2025-02-04T08:46:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905763" lon="116.399945">
+    <time>2025-02-04T08:46:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905782" lon="116.399945">
+    <time>2025-02-04T08:46:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905800" lon="116.399945">
+    <time>2025-02-04T08:46:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905818" lon="116.399945">
+    <time>2025-02-04T08:46:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905836" lon="116.399945">
+    <time>2025-02-04T08:46:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905854" lon="116.399945">
+    <time>2025-02-04T08:46:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905872" lon="116.399945">
+    <time>2025-02-04T08:46:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905891" lon="116.399945">
+    <time>2025-02-04T08:46:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905909" lon="116.399945">
+    <time>2025-02-04T08:46:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905927" lon="116.399945">
+    <time>2025-02-04T08:46:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905945" lon="116.399945">
+    <time>2025-02-04T08:46:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905963" lon="116.399945">
+    <time>2025-02-04T08:46:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905981" lon="116.399945">
+    <time>2025-02-04T08:46:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906000" lon="116.399945">
+    <time>2025-02-04T08:46:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906018" lon="116.399945">
+    <time>2025-02-04T08:46:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906036" lon="116.399945">
+    <time>2025-02-04T08:46:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906054" lon="116.399945">
+    <time>2025-02-04T08:46:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906072" lon="116.399945">
+    <time>2025-02-04T08:46:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906090" lon="116.399945">
+    <time>2025-02-04T08:46:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906109" lon="116.399945">
+    <time>2025-02-04T08:47:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906127" lon="116.399945">
+    <time>2025-02-04T08:47:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906145" lon="116.399945">
+    <time>2025-02-04T08:47:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906163" lon="116.399945">
+    <time>2025-02-04T08:47:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906181" lon="116.399945">
+    <time>2025-02-04T08:47:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906199" lon="116.399945">
+    <time>2025-02-04T08:47:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906218" lon="116.399945">
+    <time>2025-02-04T08:47:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906236" lon="116.399945">
+    <time>2025-02-04T08:47:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906254" lon="116.399945">
+    <time>2025-02-04T08:47:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906272" lon="116.399945">
+    <time>2025-02-04T08:47:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906290" lon="116.399945">
+    <time>2025-02-04T08:47:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906308" lon="116.399945">
+    <time>2025-02-04T08:47:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906327" lon="116.399945">
+    <time>2025-02-04T08:47:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906345" lon="116.399945">
+    <time>2025-02-04T08:47:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906363" lon="116.399945">
+    <time>2025-02-04T08:47:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906381" lon="116.399945">
+    <time>2025-02-04T08:47:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906399" lon="116.399945">
+    <time>2025-02-04T08:47:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906417" lon="116.399945">
+    <time>2025-02-04T08:47:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906436" lon="116.399945">
+    <time>2025-02-04T08:47:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906454" lon="116.399945">
+    <time>2025-02-04T08:47:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906472" lon="116.399945">
+    <time>2025-02-04T08:47:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906490" lon="116.399945">
+    <time>2025-02-04T08:47:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906508" lon="116.399945">
+    <time>2025-02-04T08:47:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906526" lon="116.399945">
+    <time>2025-02-04T08:47:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906545" lon="116.399945">
+    <time>2025-02-04T08:47:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906563" lon="116.399945">
+    <time>2025-02-04T08:47:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906581" lon="116.399945">
+    <time>2025-02-04T08:47:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906599" lon="116.399945">
+    <time>2025-02-04T08:47:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906617" lon="116.399945">
+    <time>2025-02-04T08:47:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906635" lon="116.399945">
+    <time>2025-02-04T08:47:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906654" lon="116.399945">
+    <time>2025-02-04T08:47:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906672" lon="116.399945">
+    <time>2025-02-04T08:47:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906690" lon="116.399945">
+    <time>2025-02-04T08:47:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906708" lon="116.399945">
+    <time>2025-02-04T08:47:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906726" lon="116.399945">
+    <time>2025-02-04T08:47:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906744" lon="116.399945">
+    <time>2025-02-04T08:47:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906763" lon="116.399945">
+    <time>2025-02-04T08:48:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906781" lon="116.399945">
+    <time>2025-02-04T08:48:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906799" lon="116.399945">
+    <time>2025-02-04T08:48:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906817" lon="116.399945">
+    <time>2025-02-04T08:48:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906835" lon="116.399945">
+    <time>2025-02-04T08:48:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906853" lon="116.399945">
+    <time>2025-02-04T08:48:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906872" lon="116.399945">
+    <time>2025-02-04T08:48:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906890" lon="116.399945">
+    <time>2025-02-04T08:48:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906908" lon="116.399945">
+    <time>2025-02-04T08:48:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906926" lon="116.399945">
+    <time>2025-02-04T08:48:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906944" lon="116.399945">
+    <time>2025-02-04T08:48:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906962" lon="116.399945">
+    <time>2025-02-04T08:48:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906981" lon="116.399945">
+    <time>2025-02-04T08:48:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906999" lon="116.399945">
+    <time>2025-02-04T08:48:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907017" lon="116.399945">
+    <time>2025-02-04T08:48:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907035" lon="116.399945">
+    <time>2025-02-04T08:48:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907053" lon="116.399945">
+    <time>2025-02-04T08:48:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907071" lon="116.399945">
+    <time>2025-02-04T08:48:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907090" lon="116.399945">
+    <time>2025-02-04T08:48:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907108" lon="116.399945">
+    <time>2025-02-04T08:48:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907126" lon="116.399945">
+    <time>2025-02-04T08:48:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907144" lon="116.399945">
+    <time>2025-02-04T08:48:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907162" lon="116.399945">
+    <time>2025-02-04T08:48:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907180" lon="116.399945">
+    <time>2025-02-04T08:48:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399945">
+    <time>2025-02-04T08:48:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399945">
+    <time>2025-02-04T08:48:42.104Z</time>
+    <speed>0.00</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399921">
+    <time>2025-02-04T08:48:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399897">
+    <time>2025-02-04T08:48:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399874">
+    <time>2025-02-04T08:48:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399850">
+    <time>2025-02-04T08:48:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399826">
+    <time>2025-02-04T08:48:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399803">
+    <time>2025-02-04T08:48:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399779">
+    <time>2025-02-04T08:48:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399755">
+    <time>2025-02-04T08:48:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399732">
+    <time>2025-02-04T08:48:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399708">
+    <time>2025-02-04T08:48:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399684">
+    <time>2025-02-04T08:49:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399661">
+    <time>2025-02-04T08:49:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399637">
+    <time>2025-02-04T08:49:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399613">
+    <time>2025-02-04T08:49:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399589">
+    <time>2025-02-04T08:49:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399566">
+    <time>2025-02-04T08:49:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399542">
+    <time>2025-02-04T08:49:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399518">
+    <time>2025-02-04T08:49:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399495">
+    <time>2025-02-04T08:49:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399471">
+    <time>2025-02-04T08:49:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399447">
+    <time>2025-02-04T08:49:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399424">
+    <time>2025-02-04T08:49:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399400">
+    <time>2025-02-04T08:49:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399376">
+    <time>2025-02-04T08:49:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399353">
+    <time>2025-02-04T08:49:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399329">
+    <time>2025-02-04T08:49:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399305">
+    <time>2025-02-04T08:49:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399282">
+    <time>2025-02-04T08:49:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399258">
+    <time>2025-02-04T08:49:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399234">
+    <time>2025-02-04T08:49:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399211">
+    <time>2025-02-04T08:49:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399187">
+    <time>2025-02-04T08:49:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399163">
+    <time>2025-02-04T08:49:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399139">
+    <time>2025-02-04T08:49:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399116">
+    <time>2025-02-04T08:49:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399092">
+    <time>2025-02-04T08:49:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399068">
+    <time>2025-02-04T08:49:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399045">
+    <time>2025-02-04T08:49:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.399021">
+    <time>2025-02-04T08:49:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398997">
+    <time>2025-02-04T08:49:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398974">
+    <time>2025-02-04T08:49:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398950">
+    <time>2025-02-04T08:49:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398926">
+    <time>2025-02-04T08:49:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398903">
+    <time>2025-02-04T08:49:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398879">
+    <time>2025-02-04T08:49:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398855">
+    <time>2025-02-04T08:49:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398832">
+    <time>2025-02-04T08:50:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398808">
+    <time>2025-02-04T08:50:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398784">
+    <time>2025-02-04T08:50:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398761">
+    <time>2025-02-04T08:50:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398737">
+    <time>2025-02-04T08:50:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398713">
+    <time>2025-02-04T08:50:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398689">
+    <time>2025-02-04T08:50:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398666">
+    <time>2025-02-04T08:50:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398642">
+    <time>2025-02-04T08:50:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398618">
+    <time>2025-02-04T08:50:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398595">
+    <time>2025-02-04T08:50:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398571">
+    <time>2025-02-04T08:50:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398547">
+    <time>2025-02-04T08:50:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398524">
+    <time>2025-02-04T08:50:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398500">
+    <time>2025-02-04T08:50:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398476">
+    <time>2025-02-04T08:50:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398453">
+    <time>2025-02-04T08:50:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398429">
+    <time>2025-02-04T08:50:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398405">
+    <time>2025-02-04T08:50:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398382">
+    <time>2025-02-04T08:50:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398358">
+    <time>2025-02-04T08:50:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398334">
+    <time>2025-02-04T08:50:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398311">
+    <time>2025-02-04T08:50:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398287">
+    <time>2025-02-04T08:50:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398263">
+    <time>2025-02-04T08:50:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398239">
+    <time>2025-02-04T08:50:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398216">
+    <time>2025-02-04T08:50:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398192">
+    <time>2025-02-04T08:50:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398168">
+    <time>2025-02-04T08:50:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398145">
+    <time>2025-02-04T08:50:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398121">
+    <time>2025-02-04T08:50:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398097">
+    <time>2025-02-04T08:50:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398074">
+    <time>2025-02-04T08:50:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398050">
+    <time>2025-02-04T08:50:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398026">
+    <time>2025-02-04T08:50:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.398003">
+    <time>2025-02-04T08:50:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397979">
+    <time>2025-02-04T08:51:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397955">
+    <time>2025-02-04T08:51:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397932">
+    <time>2025-02-04T08:51:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397908">
+    <time>2025-02-04T08:51:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397884">
+    <time>2025-02-04T08:51:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397861">
+    <time>2025-02-04T08:51:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397837">
+    <time>2025-02-04T08:51:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397813">
+    <time>2025-02-04T08:51:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397789">
+    <time>2025-02-04T08:51:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397766">
+    <time>2025-02-04T08:51:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397742">
+    <time>2025-02-04T08:51:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397718">
+    <time>2025-02-04T08:51:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397695">
+    <time>2025-02-04T08:51:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397671">
+    <time>2025-02-04T08:51:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397647">
+    <time>2025-02-04T08:51:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397624">
+    <time>2025-02-04T08:51:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397600">
+    <time>2025-02-04T08:51:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907199" lon="116.397600">
+    <time>2025-02-04T08:51:28.771Z</time>
+    <speed>0.00</speed>
+  </wpt>
+  <wpt lat="39.907180" lon="116.397600">
+    <time>2025-02-04T08:51:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907162" lon="116.397600">
+    <time>2025-02-04T08:51:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907144" lon="116.397600">
+    <time>2025-02-04T08:51:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907126" lon="116.397600">
+    <time>2025-02-04T08:51:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907108" lon="116.397600">
+    <time>2025-02-04T08:51:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907090" lon="116.397600">
+    <time>2025-02-04T08:51:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907071" lon="116.397600">
+    <time>2025-02-04T08:51:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907053" lon="116.397600">
+    <time>2025-02-04T08:51:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907035" lon="116.397600">
+    <time>2025-02-04T08:51:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.907017" lon="116.397600">
+    <time>2025-02-04T08:51:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906999" lon="116.397600">
+    <time>2025-02-04T08:51:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906981" lon="116.397600">
+    <time>2025-02-04T08:51:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906962" lon="116.397600">
+    <time>2025-02-04T08:51:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906944" lon="116.397600">
+    <time>2025-02-04T08:51:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906926" lon="116.397600">
+    <time>2025-02-04T08:51:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906908" lon="116.397600">
+    <time>2025-02-04T08:51:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906890" lon="116.397600">
+    <time>2025-02-04T08:51:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906872" lon="116.397600">
+    <time>2025-02-04T08:51:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906853" lon="116.397600">
+    <time>2025-02-04T08:52:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906835" lon="116.397600">
+    <time>2025-02-04T08:52:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906817" lon="116.397600">
+    <time>2025-02-04T08:52:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906799" lon="116.397600">
+    <time>2025-02-04T08:52:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906781" lon="116.397600">
+    <time>2025-02-04T08:52:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906763" lon="116.397600">
+    <time>2025-02-04T08:52:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906744" lon="116.397600">
+    <time>2025-02-04T08:52:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906726" lon="116.397600">
+    <time>2025-02-04T08:52:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906708" lon="116.397600">
+    <time>2025-02-04T08:52:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906690" lon="116.397600">
+    <time>2025-02-04T08:52:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906672" lon="116.397600">
+    <time>2025-02-04T08:52:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906654" lon="116.397600">
+    <time>2025-02-04T08:52:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906635" lon="116.397600">
+    <time>2025-02-04T08:52:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906617" lon="116.397600">
+    <time>2025-02-04T08:52:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906599" lon="116.397600">
+    <time>2025-02-04T08:52:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906581" lon="116.397600">
+    <time>2025-02-04T08:52:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906563" lon="116.397600">
+    <time>2025-02-04T08:52:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906545" lon="116.397600">
+    <time>2025-02-04T08:52:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906526" lon="116.397600">
+    <time>2025-02-04T08:52:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906508" lon="116.397600">
+    <time>2025-02-04T08:52:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906490" lon="116.397600">
+    <time>2025-02-04T08:52:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906472" lon="116.397600">
+    <time>2025-02-04T08:52:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906454" lon="116.397600">
+    <time>2025-02-04T08:52:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906436" lon="116.397600">
+    <time>2025-02-04T08:52:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906417" lon="116.397600">
+    <time>2025-02-04T08:52:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906399" lon="116.397600">
+    <time>2025-02-04T08:52:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906381" lon="116.397600">
+    <time>2025-02-04T08:52:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906363" lon="116.397600">
+    <time>2025-02-04T08:52:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906345" lon="116.397600">
+    <time>2025-02-04T08:52:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906327" lon="116.397600">
+    <time>2025-02-04T08:52:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906308" lon="116.397600">
+    <time>2025-02-04T08:52:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906290" lon="116.397600">
+    <time>2025-02-04T08:52:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906272" lon="116.397600">
+    <time>2025-02-04T08:52:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906254" lon="116.397600">
+    <time>2025-02-04T08:52:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906236" lon="116.397600">
+    <time>2025-02-04T08:52:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906218" lon="116.397600">
+    <time>2025-02-04T08:52:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906199" lon="116.397600">
+    <time>2025-02-04T08:53:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906181" lon="116.397600">
+    <time>2025-02-04T08:53:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906163" lon="116.397600">
+    <time>2025-02-04T08:53:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906145" lon="116.397600">
+    <time>2025-02-04T08:53:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906127" lon="116.397600">
+    <time>2025-02-04T08:53:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906109" lon="116.397600">
+    <time>2025-02-04T08:53:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906090" lon="116.397600">
+    <time>2025-02-04T08:53:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906072" lon="116.397600">
+    <time>2025-02-04T08:53:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906054" lon="116.397600">
+    <time>2025-02-04T08:53:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906036" lon="116.397600">
+    <time>2025-02-04T08:53:15.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906018" lon="116.397600">
+    <time>2025-02-04T08:53:17.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.906000" lon="116.397600">
+    <time>2025-02-04T08:53:18.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905981" lon="116.397600">
+    <time>2025-02-04T08:53:20.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905963" lon="116.397600">
+    <time>2025-02-04T08:53:22.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905945" lon="116.397600">
+    <time>2025-02-04T08:53:23.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905927" lon="116.397600">
+    <time>2025-02-04T08:53:25.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905909" lon="116.397600">
+    <time>2025-02-04T08:53:27.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905891" lon="116.397600">
+    <time>2025-02-04T08:53:28.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905872" lon="116.397600">
+    <time>2025-02-04T08:53:30.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905854" lon="116.397600">
+    <time>2025-02-04T08:53:32.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905836" lon="116.397600">
+    <time>2025-02-04T08:53:33.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905818" lon="116.397600">
+    <time>2025-02-04T08:53:35.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905800" lon="116.397600">
+    <time>2025-02-04T08:53:37.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905782" lon="116.397600">
+    <time>2025-02-04T08:53:38.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905763" lon="116.397600">
+    <time>2025-02-04T08:53:40.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905745" lon="116.397600">
+    <time>2025-02-04T08:53:42.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905727" lon="116.397600">
+    <time>2025-02-04T08:53:43.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905709" lon="116.397600">
+    <time>2025-02-04T08:53:45.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905691" lon="116.397600">
+    <time>2025-02-04T08:53:47.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905673" lon="116.397600">
+    <time>2025-02-04T08:53:48.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905654" lon="116.397600">
+    <time>2025-02-04T08:53:50.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905636" lon="116.397600">
+    <time>2025-02-04T08:53:52.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905618" lon="116.397600">
+    <time>2025-02-04T08:53:53.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905600" lon="116.397600">
+    <time>2025-02-04T08:53:55.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905582" lon="116.397600">
+    <time>2025-02-04T08:53:57.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905564" lon="116.397600">
+    <time>2025-02-04T08:53:58.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905545" lon="116.397600">
+    <time>2025-02-04T08:54:00.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905527" lon="116.397600">
+    <time>2025-02-04T08:54:02.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905509" lon="116.397600">
+    <time>2025-02-04T08:54:03.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905491" lon="116.397600">
+    <time>2025-02-04T08:54:05.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905473" lon="116.397600">
+    <time>2025-02-04T08:54:07.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905455" lon="116.397600">
+    <time>2025-02-04T08:54:08.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905436" lon="116.397600">
+    <time>2025-02-04T08:54:10.437Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905418" lon="116.397600">
+    <time>2025-02-04T08:54:12.104Z</time>
+    <speed>1.21</speed>
+  </wpt>
+  <wpt lat="39.905400" lon="116.397600">
+    <time>2025-02-04T08:54:13.771Z</time>
+    <speed>1.21</speed>
+  </wpt>
+</gpx>
