@@ -31,6 +31,7 @@ export const getAllActivities = async () => {
   }
 };
 
+
 // 删除活动数据
 export const deleteActivity = async (activityId) => {
   try {
