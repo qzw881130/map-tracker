@@ -39,7 +39,7 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const distance = R * c;
 
   // 记录详细计算过程
-  console.log('[距离计算] 详细过程:', {
+  if(false) console.log('[距离计算] 详细过程:', {
     输入: {
       起点: { 纬度: lat1, 经度: lon1 },
       终点: { 纬度: lat2, 经度: lon2 }
@@ -88,7 +88,7 @@ export const calculateTotalDistance = (coordinates) => {
       // 只有当距离大于最小阈值时才计入总距离
       if (distance > 0.001) { // 1米 = 0.001公里
         total += distance;
-        console.log('计算第', i, '段距离:', {
+        if(false) console.log('计算第', i, '段距离:', {
           distance: distance,
           start: {
             lat: window[0].latitude,
@@ -125,7 +125,7 @@ export const calculateAverageSpeed = (coordinates, startTime) => {
   const endTime = coordinates[coordinates.length - 1].timestamp;
   const duration = (endTime - startTime) / 1000 / 3600; // 小时
   
-  console.log('[平均速度计算] 详情:', {
+  if(false) console.log('[平均速度计算] 详情:', {
     距离_米: distance.toFixed(2),
     开始时间: new Date(startTime).toLocaleString(),
     结束时间: new Date(endTime).toLocaleString(),

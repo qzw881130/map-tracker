@@ -11,8 +11,8 @@ export const saveActivity = async (activity) => {
     const updatedActivities = [activity, ...existingActivities];
 
     // 保存更新后的活动列表
-    await AsyncStorage.setItem('activities', JSON.stringify(updatedActivities));
-    console.log('Activity saved successfully:', activity);
+    await AsyncStorage.setItem('activities', JSON.stringify(updatedActivities, null, 2));
+    console.log('Activity saved successfully:\n', JSON.stringify(activity, null, 2));
     return true;
   } catch (error) {
     console.error('Error saving activity:', error);
@@ -37,7 +37,7 @@ export const deleteActivity = async (activityId) => {
   try {
     const activities = await getAllActivities();
     const updatedActivities = activities.filter(activity => activity.id !== activityId);
-    await AsyncStorage.setItem('activities', JSON.stringify(updatedActivities));
+    await AsyncStorage.setItem('activities', JSON.stringify(updatedActivities, null, 2));
     return true;
   } catch (error) {
     console.error('Error deleting activity:', error);
@@ -48,7 +48,7 @@ export const deleteActivity = async (activityId) => {
 // 删除所有活动数据
 export const deleteAllActivities = async () => {
   try {
-    await AsyncStorage.setItem('activities', JSON.stringify([]));
+    await AsyncStorage.setItem('activities', JSON.stringify([], null, 2));
     console.log('[存储] 所有活动记录已删除');
     return true;
   } catch (error) {

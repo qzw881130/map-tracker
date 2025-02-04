@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { StyleSheet, View, Alert, Platform } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
@@ -54,6 +54,7 @@ export default function HomeScreen() {
   const [watchId, setWatchId] = useState(null);
   const lastLocationRef = useRef(null);  // 用于存储最后一次有效的位置更新
   const [isAppActive, setIsAppActive] = useState(true);  // 添加应用状态跟踪
+  const [appState, setAppState] = useState(AppState.currentState);  // 添加 appState 状态
   const startTimeRef = useRef(null);  // 添加 ref 存储开始时间
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export default function HomeScreen() {
         setStartTime(null);
         startTimeRef.current = null;
         setElapsedTime(0);
-        Alert.alert('提示', '轨迹点数据不足，无法保存活动');
+        Alert.alert('提示', '轨迹点数据不足，无法保存活动. routeCoordinates.length: ' + routeCoordinates.length);
         return;
       }
 
@@ -124,7 +125,8 @@ export default function HomeScreen() {
           总距离: totalDistance.toFixed(2) + '米',
           平均速度: avgSpeed.toFixed(2) + ' km/h',
           轨迹点数: filteredCoordinates.length,
-          原始点数: routeCoordinates.length
+          原始点数: routeCoordinates.length,
+          appState:appState
         });
 
         const activity = {
@@ -169,25 +171,37 @@ export default function HomeScreen() {
   };
 
   // 处理位置更新
-  useEffect(() => {
-    let watchId = null;
+  const handleLocationUpdate = useCallback((location) => {
+    if (!isTracking || !startTimeRef.current) return;
 
-    const handleLocationUpdate = async (location) => {
-      if (!startTimeRef.current || !isTracking) {
-        return;
-      }
+    console.log('[位置更新] 状态:', {
+      appState: appState,
+      是否前台: isAppActive,
+      位置时间戳: new Date(location.timestamp).toLocaleString(),
+      当前时间戳: new Date().toLocaleString(),
+    });
 
+    try {
       const newCoords = {
         latitude: location.latitude,
         longitude: location.longitude,
         accuracy: location.accuracy,
-        timestamp: location.timestamp
+        timestamp: location.timestamp,
+        appState: appState,
+        isActive: isAppActive,
+        systemTime: Date.now()
       };
 
-      // 记录位置更新
-      console.log('currentLocation===', {
-        ...location,
-        时间: new Date(location.timestamp).toLocaleString()
+      // 检查位置是否有效
+      if (!location.latitude || !location.longitude) {
+        console.log('[位置更新] 无效的位置数据:', location);
+        return;
+      }
+
+      console.log('[位置更新] 新位置:(', newCoords.latitude.toFixed(15), ',', newCoords.longitude.toFixed(15), ')', {
+        appState,
+        时间差: ((Date.now() - location.timestamp) / 1000).toFixed(1) + '秒',
+        精度: location.accuracy ? location.accuracy.toFixed(2) + '米' : '未知'
       });
 
       // 更新 GPS 速度显示
@@ -210,15 +224,15 @@ export default function HomeScreen() {
         
         const timeDiff = Math.max((newCoords.timestamp - lastLocationRef.current.timestamp) / 1000, 0.1);
         
-        if (distance < location.accuracy || timeDiff < 0.1) {
-          console.log('[位置追踪] 位置变化不显著，忽略此次更新:', {
-            distance,
-            accuracy: location.accuracy,
-            timeDiff,
-            isAppActive
-          });
-          return;
-        }
+        // if (distance < location.accuracy || timeDiff < 0.1) {
+        //   console.log('[位置追踪] 位置变化不显著，忽略此次更新:', {
+        //     distance,
+        //     accuracy: location.accuracy,
+        //     timeDiff,
+        //     isAppActive
+        //   });
+        //   return;
+        // }
 
         const calculatedSpeed = distance / timeDiff;
         const currentSpeed = isNaN(calculatedSpeed) ? 0 : calculatedSpeed;
@@ -228,7 +242,7 @@ export default function HomeScreen() {
           时间差: timeDiff.toFixed(2) + '秒',
           计算速度: currentSpeed.toFixed(2) + '米/秒',
           GPS速度: gpsSpeedValue.toFixed(2) + '米/秒',
-          应用状态: isAppActive ? '前台' : '后台'
+          appState
         });
 
         const elapsed = Math.max(0, Math.floor((location.timestamp - startTimeRef.current) / 1000));
@@ -238,7 +252,7 @@ export default function HomeScreen() {
           开始时间戳: startTimeRef.current,
           计算结果: elapsed,
           格式化时间: formatElapsedTime(elapsed),
-          应用状态: isAppActive ? '前台' : '后台'
+          appState
         });
 
         // 无论是否在前台，都更新所有状态
@@ -249,7 +263,13 @@ export default function HomeScreen() {
       }
 
       lastLocationRef.current = newCoords;
-    };
+    } catch (error) {
+      console.error('[位置更新] 处理位置更新时出错:', error);
+    }
+  }, [isTracking, appState, isAppActive]);
+
+  useEffect(() => {
+    let watchId = null;
 
     const startTracking = async () => {
       try {
@@ -316,6 +336,7 @@ export default function HomeScreen() {
     const subscription = AppState.addEventListener('change', nextAppState => {
       const wasBackground = !isAppActive && nextAppState === 'active';
       setIsAppActive(nextAppState === 'active');
+      setAppState(nextAppState);
       console.log('[应用状态] 切换到:', nextAppState);
 
       // 如果从后台恢复，且正在追踪，重置地图视图
@@ -439,6 +460,12 @@ export default function HomeScreen() {
 
     try {
       if (mapRef.current) {
+        console.log('currentLocation===', {
+          ...currentLocation,
+          appState,
+          isActive: isAppActive,
+          时间: new Date(currentLocation.timestamp).toLocaleString()
+        });
         const newRegion = {
           latitude: currentLocation.latitude,
           longitude: currentLocation.longitude,
@@ -464,7 +491,6 @@ export default function HomeScreen() {
 
   // 处理地图区域变化结束
   const handleRegionChangeComplete = (newRegion) => {
-    console.log('地图区域变化完成 (手动)', newRegion);
     if (!isTracking) {
       setRegion(newRegion);
     }
@@ -479,7 +505,7 @@ export default function HomeScreen() {
     );
   }
 
-  console.log('currentLocation===', currentLocation)
+  console.log('currentLocation===', currentLocation, 'appState====',appState)
 
   return (
     <Box flex={1}>

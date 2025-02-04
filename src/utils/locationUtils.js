@@ -76,7 +76,9 @@ export const initLocationService = async () => {
       needAddress: false, // 不需要详细地址信息
       distanceFilter: 0,  // 不设置距离过滤
       background: true,   // 允许后台定位
-      killProcess: false  // 进程被杀死时不退出定位
+      killProcess: false,  // 进程被杀死时不退出定位
+      allowsBackgroundLocationUpdates: true,  // iOS 后台定位
+      pausesLocationUpdatesAutomatically: false  // 防止自动暂停定位
     };
 
     logLocationEvent('初始化高德地图 SDK', { options });
@@ -219,10 +221,10 @@ export const startLocationWatch = (onLocation, onError) => {
         lastLogTime = now;
       }
 
-      if (!coords.accuracy || coords.accuracy > 50) {
-        logLocationEvent('位置精度不足', { accuracy: coords.accuracy });
-        return;
-      }
+      // if (!coords.accuracy || coords.accuracy > 50) {
+      //   logLocationEvent('位置精度不足', { accuracy: coords.accuracy });
+      //   return;
+      // }
 
       onLocation({
         ...coords,
