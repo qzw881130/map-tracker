@@ -44,3 +44,15 @@ export const deleteActivity = async (activityId) => {
     return false;
   }
 };
+
+// 删除所有活动数据
+export const deleteAllActivities = async () => {
+  try {
+    await AsyncStorage.setItem('activities', JSON.stringify([]));
+    console.log('[存储] 所有活动记录已删除');
+    return true;
+  } catch (error) {
+    console.error('[存储] 删除所有活动记录失败:', error);
+    return false;
+  }
+};

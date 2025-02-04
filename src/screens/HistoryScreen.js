@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Alert } from 'react-native';
 import {
   Box,
   Text,
   VStack,
   HStack,
   Pressable,
+  Button,
+  ButtonText,
 } from '@gluestack-ui/themed';
 import { getActivityLabel } from '../config/activityTypes';
 import { formatElapsedTime, formatDistance, formatSpeed, formatDate } from '../utils/formatUtils';
-import { getAllActivities } from '../utils/storageUtils';
+import { getAllActivities, deleteAllActivities } from '../utils/storageUtils';
 
 export default function HistoryScreen({ navigation }) {
   const [activities, setActivities] = useState([]);
@@ -20,6 +22,47 @@ export default function HistoryScreen({ navigation }) {
     loadActivities();
     const unsubscribe = navigation.addListener('focus', loadActivities);
     return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    // 设置导航栏右侧按钮
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          size="sm"
+          variant="outline"
+          borderColor="$red500"
+          backgroundColor="transparent"
+          mx="$2"
+          py="$1.5"
+          px="$3"
+          borderRadius="$full"
+          onPress={() => {
+            Alert.alert(
+              '删除所有记录',
+              '确定要删除所有运动记录吗？此操作不可恢复。',
+              [
+                { text: '取消', style: 'cancel' },
+                { 
+                  text: '删除',
+                  style: 'destructive',
+                  onPress: async () => {
+                    const success = await deleteAllActivities();
+                    if (success) {
+                      loadActivities(); // 重新加载列表
+                    } else {
+                      Alert.alert('错误', '删除记录失败');
+                    }
+                  }
+                }
+              ]
+            );
+          }}
+        >
+          <ButtonText color="$red500" fontSize="$sm">清空记录</ButtonText>
+        </Button>
+      ),
+    });
   }, [navigation]);
 
   const loadActivities = async () => {
