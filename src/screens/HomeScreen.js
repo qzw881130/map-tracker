@@ -19,6 +19,9 @@ import {
   HStack,
 } from '@gluestack-ui/themed';
 import { ACTIVITY_TYPES } from '../config/activityTypes';
+import ControlPanel from '../components/ControlPanel';
+import ZoomControls from '../components/ZoomControls';
+import CoordinatesOverlay from '../components/CoordinatesOverlay';
 
 // 导入工具函数
 import { 
@@ -532,171 +535,33 @@ export default function HomeScreen() {
       )}
 
       {/* 坐标显示浮层 */}
-      {region && (
-        <Box
-          position="absolute"
-          left="$3"
-          top="$3"
-          bg="$backgroundLight800"
-          borderRadius="$md"
-          p="$3"
-          style={styles.coordOverlay}
-        >
-          <VStack space="$2">
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-              中心点纬度: {region.latitude.toFixed(6)}
-            </GText>
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-              中心点经度: {region.longitude.toFixed(6)}
-            </GText>
-            {currentLocation && (
-              <>
-                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  当前纬度: {currentLocation.latitude.toFixed(6)}
-                </GText>
-                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  当前经度: {currentLocation.longitude.toFixed(6)}
-                </GText>
-                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  GPS速度: {formatSpeed(gpsSpeed, true)}
-                </GText>
-                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                  计算速度: {formatSpeed(currentSpeed, true)}
-                </GText>
-              </>
-            )}
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                里程: {formatDistance(currentDistance)}
-            </GText>
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                时间: {formatElapsedTime(elapsedTime)}
-            </GText>
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                是否追踪: {isTracking ? '是' : '否'}
-            </GText>
-            {isTracking && (
-              <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-                线段数: {routeCoordinates.length > 0 ? routeCoordinates.length - 1 : 0}
-              </GText>
-            )}
-          </VStack>
-        </Box>
-      )}
+      <CoordinatesOverlay
+        region={region}
+        currentLocation={currentLocation}
+        gpsSpeed={gpsSpeed}
+        currentSpeed={currentSpeed}
+        currentDistance={currentDistance}
+        elapsedTime={elapsedTime}
+        isTracking={isTracking}
+        routeCoordinates={routeCoordinates}
+      />
 
       {/* 缩放控制按钮 */}
-      <Box
-        position="absolute"
-        right={4}
-        top="50%"
-        style={{ transform: [{ translateY: -50 }] }}
-      >
-        <VStack space={2}>
-          <Button
-            size="sm"
-            variant="solid"
-            bg="$white"
-            onPress={handleZoomIn}
-            style={styles.zoomButton}
-          >
-            <ButtonText fontSize={16} color="$black" style={styles.buttonText}>+</ButtonText>
-          </Button>
-          <Button
-            size="sm"
-            variant="solid"
-            bg="$white"
-            onPress={handleZoomOut}
-            style={styles.zoomButton}
-          >
-            <ButtonText fontSize={16} color="$black" style={styles.buttonText}>−</ButtonText>
-          </Button>
-          <Button
-            size="sm"
-            variant="solid"
-            bg="$white"
-            onPress={handleLocateCurrentPosition}
-            style={styles.zoomButton}
-          >
-            <ButtonText fontSize={14} color="$black" style={styles.buttonText}>⌖</ButtonText>
-          </Button>
-        </VStack>
-      </Box>
-
-      {isTracking && (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 180,
-            left: 15,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            borderRadius: 16,
-            padding: 12,
-          }}
-        >
-          <View style={{ gap: 4 }}>
-            <GText style={{ fontSize: 12, color: '#A0A0A0' }}>当前速度</GText>
-            <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4 }}>
-              <GText style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>
-                {formatSpeed(gpsSpeed, true).split(' ')[0]}
-              </GText>
-              <GText style={{ fontSize: 12, color: '#A0A0A0' }}>km/h</GText>
-            </View>
-          </View>
-        </View>
-      )}
+      <ZoomControls
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onLocateCurrentPosition={handleLocateCurrentPosition}
+      />
 
       {/* 底部控制面板 */}
-      <Box
-        position="absolute"
-        bottom={20}
-        left={5}
-        right={5}
-        bg="$white"
-        borderTopRadius="$2xl"
-        shadow="2"
-        p={5}
-      >
-        <HStack space={8} alignItems="center" justifyContent="space-between">
-          <Box flex={1}>
-            <Select
-              selectedValue={activityType}
-              onValueChange={setActivityType}
-              flex={1}
-              isDisabled={isTracking}
-            >
-              <SelectTrigger variant="outline" size="md">
-                <SelectInput placeholder="选择运动类型" />
-              </SelectTrigger>
-              <SelectPortal>
-                <SelectBackdrop />
-                <SelectContent>
-                  <SelectDragIndicator />
-                  {ACTIVITY_TYPES.map((type) => (
-                    <SelectItem
-                      key={type.value}
-                      label={type.label}
-                      value={type.value}
-                    />
-                  ))}
-                </SelectContent>
-              </SelectPortal>
-            </Select>
-          </Box>
-
-          <Button
-            size="md"
-            variant="solid"
-            bgColor={isTracking ? "$red500" : "$green500"}
-            onPress={isTracking ? handleStopTracking : handleStartTracking}
-            style={{
-              minWidth: 90,
-              height: 36,
-              marginLeft: 16,
-            }}
-          >
-            <GText color="$white" bold>{isTracking ? '结束' : '开始'}</GText>
-          </Button>
-        </HStack>
-      </Box>
+      <ControlPanel
+        activityType={activityType}
+        setActivityType={setActivityType}
+        isTracking={isTracking}
+        onStartTracking={handleStartTracking}
+        onStopTracking={handleStopTracking}
+        activityTypes={ACTIVITY_TYPES}
+      />
     </Box>
   );
 }
@@ -716,29 +581,5 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     minWidth: 200,
-  },
-  zoomButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-  buttonText: {
-    lineHeight: 16,
-    textAlign: 'center',
-    width: '100%',
-    paddingLeft: 0,
-    paddingRight: 0,
   },
 });
