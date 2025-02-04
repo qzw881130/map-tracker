@@ -68,9 +68,11 @@ export default function HomeScreen() {
   useEffect(() => {
     (async () => {
       try {
+        // 初始化定位服务
         await initLocationService();
-        const position = await getCurrentPosition();
         
+        // 获取初始位置
+        const position = await getCurrentPosition();
         setLocation(position);
         setCurrentLocation(position);
         setRegion({
@@ -79,6 +81,26 @@ export default function HomeScreen() {
           latitudeDelta: 0.002,
           longitudeDelta: 0.002,
         });
+
+        // 开始监听位置更新
+        const id = startLocationWatch(
+          (location) => {
+            console.log('currentLocation===', location);
+            setCurrentLocation(location);
+          },
+          (error) => {
+            console.error('Location error:', error);
+            setErrorMsg('Location error: ' + error.message);
+          }
+        );
+        setWatchId(id);
+
+        // 组件卸载时清理
+        return () => {
+          if (id) {
+            stopLocationWatch(id);
+          }
+        };
       } catch (error) {
         console.error('Error getting location:', error);
         setErrorMsg('Error getting location: ' + error.message);
@@ -86,16 +108,49 @@ export default function HomeScreen() {
     })();
   }, []);
 
+  // 监听应用状态变化
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      const isActive = nextAppState === 'active';
+      setIsAppActive(isActive);
+      
+      if (!isActive && watchId) {
+        // 应用进入后台时，停止位置监听
+        stopLocationWatch(watchId);
+        setWatchId(null);
+      } else if (isActive && !watchId) {
+        // 应用回到前台时，重新开始位置监听
+        const id = startLocationWatch(
+          (location) => {
+            console.log('currentLocation===', location);
+            setCurrentLocation(location);
+          },
+          (error) => {
+            console.error('Location error:', error);
+            setErrorMsg('Location error: ' + error.message);
+          }
+        );
+        setWatchId(id);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [watchId]);
+
   // 停止追踪函数
   const stopTracking = async () => {
     try {
       console.log('[运动追踪] 停止运动追踪');
       
+      // 先停止位置监听
       if (watchId) {
         stopLocationWatch(watchId);
         setWatchId(null);
       }
 
+      // 如果没有有效的追踪数据，直接重置状态
       if (!startTimeRef.current || routeCoordinates.length < 2) {
         console.log('[运动追踪] 无效的追踪数据:', {
           hasStartTime: !!startTimeRef.current,
@@ -105,6 +160,7 @@ export default function HomeScreen() {
         setStartTime(null);
         startTimeRef.current = null;
         setElapsedTime(0);
+        setRouteCoordinates([]); // 清空路线数据
         Alert.alert('提示', '轨迹点数据不足，无法保存活动');
         return;
       }
