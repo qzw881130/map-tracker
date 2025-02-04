@@ -4,19 +4,7 @@ import MapView, { Polyline, Marker } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import {
   Box,
-  Text as GText,
-  Button,
-  ButtonText,
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectItem,
-  VStack,
-  HStack,
+  Text as GText
 } from '@gluestack-ui/themed';
 import { ACTIVITY_TYPES } from '../config/activityTypes';
 import ControlPanel from '../components/ControlPanel';
@@ -278,7 +266,7 @@ export default function HomeScreen() {
           return;
         }
 
-        await configureLocationTracking();
+        await configureLocationTracking(activityType);
         
         // 获取初始位置以设置正确的开始时间
         const initialPosition = await getCurrentPosition();

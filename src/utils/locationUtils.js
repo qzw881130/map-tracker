@@ -1,6 +1,7 @@
 import { Platform, PermissionsAndroid } from 'react-native';
 import { init, Geolocation } from 'react-native-amap-geolocation';
 import { getAmapKey } from '../config/keys';
+import { getActivityDistanceFilter } from '../config/activityTypes';
 
 const logLocationEvent = (event, data = {}) => {
   const timestamp = new Date().toLocaleString('zh-CN');
@@ -95,13 +96,14 @@ export const initLocationService = async () => {
   }
 };
 
-// 配置位置追踪参数
-export const configureLocationTracking = async () => {
+// 配置位置追踪
+export const configureLocationTracking = async (activityType) => {
   try {
     logLocationEvent('开始配置位置追踪参数');
+    const distanceFilter = getActivityDistanceFilter(activityType);
     
     const locationConfig = {
-      distanceFilter: 5,        // 每5米更新一次
+      distanceFilter: distanceFilter,        // 使用活动类型的距离过滤器
       interval: 500,            // 每500ms尝试获取一次位置
       accuracy: {
         ios: 'best',
