@@ -182,36 +182,31 @@ export default function HomeScreen() {
     let watchId = null;
 
     const handleLocationUpdate = async (location) => {
-      if (!isTracking) return;
+      if (!startTimeRef.current || !isTracking) {
+        return;
+      }
 
       const newCoords = {
         latitude: location.latitude,
         longitude: location.longitude,
-        timestamp: location.timestamp,
         accuracy: location.accuracy,
-        speed: location.speed >= 0 ? location.speed : null
+        timestamp: location.timestamp
       };
 
-      // 检查时间戳的有效性
-      if (!startTimeRef.current) {
-        startTimeRef.current = location.timestamp;
-        setStartTime(location.timestamp);
-        console.log('[时间初始化] 使用首次位置更新时间:', {
-          timestamp: location.timestamp,
-          时间: new Date(location.timestamp).toLocaleString()
-        });
-      }
+      // 记录位置更新
+      console.log('currentLocation===', {
+        ...location,
+        时间: new Date(location.timestamp).toLocaleString()
+      });
 
-      // 更新 GPS 速度显示（如果在前台）
-      if (isAppActive) {
-        const gpsSpeedValue = location.speed >= 0 ? location.speed : 0;
-        setGpsSpeed(gpsSpeedValue);
-        console.log('[速度追踪] GPS速度:', {
-          原始值: location.speed,
-          处理后: gpsSpeedValue,
-          单位: '米/秒'
-        });
-      }
+      // 更新 GPS 速度显示
+      const gpsSpeedValue = location.speed >= 0 ? location.speed : 0;
+      setGpsSpeed(gpsSpeedValue);
+      console.log('[速度追踪] GPS速度:', {
+        原始值: location.speed,
+        处理后: gpsSpeedValue,
+        单位: '米/秒'
+      });
 
       // 检查位置是否发生实质性变化
       if (lastLocationRef.current) {
@@ -228,7 +223,8 @@ export default function HomeScreen() {
           console.log('[位置追踪] 位置变化不显著，忽略此次更新:', {
             distance,
             accuracy: location.accuracy,
-            timeDiff
+            timeDiff,
+            isAppActive
           });
           return;
         }
@@ -240,7 +236,8 @@ export default function HomeScreen() {
           距离: distance.toFixed(2) + '米',
           时间差: timeDiff.toFixed(2) + '秒',
           计算速度: currentSpeed.toFixed(2) + '米/秒',
-          GPS速度: (location.speed >= 0 ? location.speed : 0).toFixed(2) + '米/秒'
+          GPS速度: gpsSpeedValue.toFixed(2) + '米/秒',
+          应用状态: isAppActive ? '前台' : '后台'
         });
 
         const elapsed = Math.max(0, Math.floor((location.timestamp - startTimeRef.current) / 1000));
@@ -249,25 +246,18 @@ export default function HomeScreen() {
           当前时间戳: location.timestamp,
           开始时间戳: startTimeRef.current,
           计算结果: elapsed,
-          格式化时间: formatElapsedTime(elapsed)
+          格式化时间: formatElapsedTime(elapsed),
+          应用状态: isAppActive ? '前台' : '后台'
         });
 
-        if (isAppActive) {
-          setCurrentSpeed(currentSpeed);
-          setGpsSpeed(location.speed >= 0 ? location.speed : 0);
-          setCurrentDistance(prev => prev + distance);
-          setElapsedTime(elapsed);
-        } else {
-          setCurrentDistance(prev => prev + distance);
-          setElapsedTime(elapsed);
-        }
+        // 无论是否在前台，都更新所有状态
+        setCurrentSpeed(currentSpeed);
+        setCurrentDistance(prev => prev + distance);
+        setElapsedTime(elapsed);
+        setRouteCoordinates(prev => [...prev, newCoords]);
       }
 
       lastLocationRef.current = newCoords;
-      
-      if (isAppActive) {
-        setRouteCoordinates(prev => [...prev, newCoords]);
-      }
     };
 
     const startTracking = async () => {
@@ -577,13 +567,18 @@ export default function HomeScreen() {
             )}
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
                 里程: {formatDistance(currentDistance)}
-              </GText>
+            </GText>
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
                 时间: {formatElapsedTime(elapsedTime)}
-              </GText>
+            </GText>
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
                 是否追踪: {isTracking ? '是' : '否'}
+            </GText>
+            {isTracking && (
+              <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                线段数: {routeCoordinates.length > 0 ? routeCoordinates.length - 1 : 0}
               </GText>
+            )}
           </VStack>
         </Box>
       )}
@@ -721,14 +716,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     minWidth: 200,
-  },
-  coordText: {
-    fontSize: 14,
-    fontFamily: Platform.select({
-      ios: 'Menlo',
-      android: 'monospace'
-    }),
-    textAlign: 'left',
   },
   zoomButton: {
     width: 40,
