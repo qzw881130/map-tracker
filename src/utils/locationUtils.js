@@ -181,13 +181,6 @@ export const getCurrentPosition = () => {
 export const startLocationWatch = (onLocation, onError) => {
   logLocationEvent('开始位置监听');
   
-  // 先停止之前的监听（如果有的话）
-  try {
-    Geolocation.stopUpdatingLocation();
-  } catch (error) {
-    logLocationEvent('停止之前的位置监听时出错', { error: error.message });
-  }
-  
   const options = {
     enableHighAccuracy: true,
     distanceFilter: 0,
@@ -231,7 +224,6 @@ export const startLocationWatch = (onLocation, onError) => {
 
       onLocation({
         ...coords,
-        speed: coords.speed >= 0 ? coords.speed : 0, // 修正负速度
         timestamp: coords.timestamp || new Date().getTime(),
       });
     },
@@ -245,25 +237,14 @@ export const startLocationWatch = (onLocation, onError) => {
 
 // 停止位置监听
 export const stopLocationWatch = (watchId) => {
-  try {
-    logLocationEvent('停止位置监听', { watchId });
-    
-    // 先移除特定的 watch
-    if (watchId !== null) {
+  if (watchId !== null) {
+    try {
+      logLocationEvent('停止位置监听', { watchId });
       Geolocation.clearWatch(watchId);
+      logLocationEvent('位置监听已停止');
+    } catch (error) {
+      logLocationEvent('停止位置监听时出错', { error: error.message });
     }
-    
-    // 停止所有位置更新
-    Geolocation.stopUpdatingLocation();
-    
-    // 移除所有监听器
-    if (Platform.OS === 'ios') {
-      Geolocation.removeAllListeners();
-    }
-    
-    logLocationEvent('位置监听已完全停止');
-  } catch (error) {
-    logLocationEvent('停止位置监听时出错', { error: error.message });
   }
 };
 

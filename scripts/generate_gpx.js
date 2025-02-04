@@ -7,7 +7,7 @@ function generateTimestampedFilename(mode) {
     .replace(/[:-]/g, '')
     .replace('T', '_')
     .split('.')[0];
-  return `${mode}_tests_${timestamp}.gpx`;  // 保存到 tests 目录
+  return `square_${mode}_${timestamp}.gpx`;  // 例如：square_walking_20250204_164244.gpx
 }
 
 // 坐标转换工具函数
@@ -344,8 +344,9 @@ function generateSquareTrack(config = {}) {
   const {
     startLat = 39.9054,
     startLon = 116.3976,
-    sideLength = 3000,
-    targetSpeed = 5 // 目标速度，米/秒（18km/h，适合自行车）
+    sideLength = 200,     // 默认200米
+    targetSpeed = 1.2,    // 默认步行速度1.2米/秒
+    pointInterval = 2     // 默认每2米一个点
   } = config;
 
   const points = [];
@@ -371,7 +372,6 @@ function generateSquareTrack(config = {}) {
   ];
   
   // 在每条边上生成插值点
-  const pointInterval = 50; // 每50米一个点
   const timeInterval = pointInterval / targetSpeed; // 根据目标速度计算时间间隔
   
   const startTime = Date.now();
@@ -392,7 +392,8 @@ function generateSquareTrack(config = {}) {
         latitude: lat,
         longitude: lon,
         elevation: 0,
-        timestamp: startTime + (pointIndex * timeInterval * 1000) // 转换为毫秒
+        timestamp: startTime + (pointIndex * timeInterval * 1000), // 转换为毫秒
+        speed: targetSpeed // 添加恒定速度
       });
       
       pointIndex++;
@@ -429,16 +430,13 @@ function generateGpx(points, mode = 'track') {
 
 // 主函数
 async function main() {
-  const mode = process.argv[2] || 'straight';
+  const mode = process.argv[2] || 'square';
   const config = {
     startLat: 39.9054,    // 天安门广场
     startLon: 116.3976,
-    distance: 3000,       // 3公里
-    sideLength: 3000,     // 正方形边长3公里
-    speed: 3,            // 3米/秒
-    bearing: 45,         // 45度角
-    pointInterval: 10,   // 每10米一个点
-    routeVariation: false // 是否添加随机变化
+    sideLength: 200,     // 正方形边长200米，总周长800米
+    targetSpeed: 1.2,    // 步行速度1.2米/秒
+    pointInterval: 2     // 每2米一个点，以获得更平滑的轨迹
   };
 
   console.log('生成轨迹模式:', mode);
@@ -449,7 +447,9 @@ async function main() {
     case 'square':
       points = generateSquareTrack(config);
       break;
-    // ... 其他 case 保持不变
+    default:
+      console.error('不支持的轨迹模式');
+      return;
   }
 
   if (!points || points.length === 0) {
@@ -458,7 +458,7 @@ async function main() {
   }
 
   // 生成GPX内容
-  const gpxContent = generateGpx(points, mode);
+  const gpxContent = generateGpx(points, 'walking');
   
   // 将内容写入文件
   const fs = require('fs');
@@ -470,13 +470,7 @@ async function main() {
     fs.mkdirSync(testsDir);
   }
   
-  // 生成文件名，包含时间戳
-  const timestamp = new Date().toISOString()
-    .replace(/[:-]/g, '')
-    .replace(/\..+/, '')
-    .replace('T', '_');
-  
-  const outputPath = path.join(testsDir, `${mode}_track_${timestamp}.gpx`);
+  const outputPath = path.join(testsDir, generateTimestampedFilename('walking'));
   
   fs.writeFileSync(outputPath, gpxContent);
   console.log(`GPX文件已生成：${outputPath}`);

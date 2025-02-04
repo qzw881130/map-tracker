@@ -36,4 +36,4 @@ node scripts/generate_gpx.js
 ## Links
 - [高德地图开发者平台](https://console.amap.com/dev/key/app)
 - [react-native-amap-geolocation](https://github.com/qiuxiang/react-native-amap-geolocation)
-- [测试gpx](https://www.gpsvisualizer.com/map?output_home)
+- [测试gpx](https://www.gpsvisualizer.com)
