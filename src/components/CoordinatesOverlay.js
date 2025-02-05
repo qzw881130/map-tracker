@@ -16,6 +16,7 @@ const CoordinatesOverlay = ({
   elapsedTime,
   isTracking,
   routeCoordinates,
+  realTimeCoords,
 }) => {
   if (!region) return null;
 
@@ -30,20 +31,24 @@ const CoordinatesOverlay = ({
       style={styles.coordOverlay}
     >
       <VStack space="$2">
-        <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+        {/* <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
           中心点纬度: {region.latitude.toFixed(15)}
         </GText>
         <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
           中心点经度: {region.longitude.toFixed(15)}
-        </GText>
+        </GText> */}
         {currentLocation && (
           <>
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-              当前纬度: {currentLocation.latitude.toFixed(15)}
-            </GText>
-            <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
-              当前经度: {currentLocation.longitude.toFixed(15)}
-            </GText>
+            {isTracking && (
+              <>
+                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                  当前纬度: {(realTimeCoords ? realTimeCoords.latitude : currentLocation.latitude).toFixed(15)}
+                </GText>
+                <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
+                  当前经度: {(realTimeCoords ? realTimeCoords.longitude : currentLocation.longitude).toFixed(15)}
+                </GText>
+              </>
+            )}
             <GText color="$textLight50" fontWeight="$medium" style={styles.coordText}>
               GPS速度: {formatSpeed(gpsSpeed, true)}
             </GText>

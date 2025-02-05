@@ -56,6 +56,7 @@ export default function HomeScreen() {
   const [isAppActive, setIsAppActive] = useState(true);  // 添加应用状态跟踪
   const [appState, setAppState] = useState(AppState.currentState);  // 添加 appState 状态
   const startTimeRef = useRef(null);  // 添加 ref 存储开始时间
+  const [realTimeCoords, setRealTimeCoords] = useState(null);  // 添加实时坐标状态
 
   useEffect(() => {
     (async () => {
@@ -175,7 +176,7 @@ export default function HomeScreen() {
     if (!isTracking || !startTimeRef.current) return;
 
     console.log('[位置更新] 状态:', {
-      appState: AppState.currentState,  // 直接从 AppState 获取当前状态
+      appState: AppState.currentState,
       是否前台: AppState.currentState === 'active',
       位置时间戳: new Date(location.timestamp).toLocaleString(),
       当前时间戳: new Date().toLocaleString(),
@@ -197,6 +198,8 @@ export default function HomeScreen() {
         console.log('[位置更新] 无效的位置数据:', location);
         return;
       }
+
+      setRealTimeCoords(newCoords);  // 更新实时坐标
 
       console.log('[位置更新] 新位置:(', newCoords.latitude.toFixed(15), ',', newCoords.longitude.toFixed(15), ')', {
         appState: AppState.currentState,
@@ -562,6 +565,7 @@ export default function HomeScreen() {
         elapsedTime={elapsedTime}
         isTracking={isTracking}
         routeCoordinates={routeCoordinates}
+        realTimeCoords={realTimeCoords}  // 传递实时坐标
       />
 
       {/* 缩放控制按钮 */}
