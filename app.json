@@ -23,7 +23,8 @@
         "buildNumber": "11",
         "UIBackgroundModes": [
           "location",
-          "fetch"
+          "fetch",
+          "processing"
         ],
         "NSLocationWhenInUseUsageDescription": "需要访问您的位置来记录运动轨迹。我们使用高精度定位来确保轨迹的准确性。",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "需要在后台访问您的位置来持续记录运动轨迹。即使应用在后台运行，我们也会保持轨迹记录的准确性。",
@@ -31,7 +32,12 @@
         "NSLocationTemporaryUsageDescriptionDictionary": {
           "Fitness": "在运动过程中需要高精度的位置信息来准确记录您的运动轨迹"
         },
-        "NSLocationDefaultAccuracyReduced": false
+        "NSLocationDefaultAccuracyReduced": false,
+        "UIRequiredDeviceCapabilities": [
+          "location-services",
+          "gps",
+          "armv7"
+        ]
       }
     },
     "android": {
@@ -49,7 +55,8 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE"
       ],
       "package": "com.qianzhiwei5921.Maptracker"
     },
@@ -58,18 +65,7 @@
       "output": "static",
       "favicon": "./assets/icon.512.png"
     },
-    "plugins": [
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "允许使用您的位置来记录运动轨迹",
-          "locationAlwaysPermission": "允许在后台使用您的位置来持续记录运动轨迹",
-          "locationWhenInUsePermission": "允许使用您的位置来记录运动轨迹",
-          "isIosBackgroundLocationEnabled": true,
-          "isAndroidBackgroundLocationEnabled": true
-        }
-      ]
-    ],
+    "plugins": [],
     "extra": {
       "eas": {
         "projectId": "bdb7bbcc-c355-4d03-9636-485f82a47c4e"
