@@ -175,8 +175,8 @@ export default function HomeScreen() {
     if (!isTracking || !startTimeRef.current) return;
 
     console.log('[位置更新] 状态:', {
-      appState: appState,
-      是否前台: isAppActive,
+      appState: AppState.currentState,  // 直接从 AppState 获取当前状态
+      是否前台: AppState.currentState === 'active',
       位置时间戳: new Date(location.timestamp).toLocaleString(),
       当前时间戳: new Date().toLocaleString(),
     });
@@ -187,8 +187,8 @@ export default function HomeScreen() {
         longitude: location.longitude,
         accuracy: location.accuracy,
         timestamp: location.timestamp,
-        appState: appState,
-        isActive: isAppActive,
+        appState: AppState.currentState,
+        isActive: AppState.currentState === 'active',
         systemTime: Date.now()
       };
 
@@ -199,7 +199,7 @@ export default function HomeScreen() {
       }
 
       console.log('[位置更新] 新位置:(', newCoords.latitude.toFixed(15), ',', newCoords.longitude.toFixed(15), ')', {
-        appState,
+        appState: AppState.currentState,
         时间差: ((Date.now() - location.timestamp) / 1000).toFixed(1) + '秒',
         精度: location.accuracy ? location.accuracy.toFixed(2) + '米' : '未知'
       });
@@ -242,7 +242,7 @@ export default function HomeScreen() {
           时间差: timeDiff.toFixed(2) + '秒',
           计算速度: currentSpeed.toFixed(2) + '米/秒',
           GPS速度: gpsSpeedValue.toFixed(2) + '米/秒',
-          appState
+          appState: AppState.currentState
         });
 
         const elapsed = Math.max(0, Math.floor((location.timestamp - startTimeRef.current) / 1000));
@@ -252,7 +252,7 @@ export default function HomeScreen() {
           开始时间戳: startTimeRef.current,
           计算结果: elapsed,
           格式化时间: formatElapsedTime(elapsed),
-          appState
+          appState: AppState.currentState
         });
 
         // 无论是否在前台，都更新所有状态
@@ -266,7 +266,7 @@ export default function HomeScreen() {
     } catch (error) {
       console.error('[位置更新] 处理位置更新时出错:', error);
     }
-  }, [isTracking, appState, isAppActive]);
+  }, [isTracking]);
 
   useEffect(() => {
     let watchId = null;
@@ -334,46 +334,50 @@ export default function HomeScreen() {
   // 添加应用状态监听
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
-      const wasBackground = !isAppActive && nextAppState === 'active';
-      setIsAppActive(nextAppState === 'active');
       setAppState(nextAppState);
-      console.log('[应用状态] 切换到:', nextAppState);
-
-      // 如果从后台恢复，且正在追踪，重置地图视图
-      if (wasBackground && isTracking && mapRef.current && routeCoordinates.length > 0) {
-        console.log('[应用状态] 从后台恢复，重置地图视图');
-        
-        // 计算当前轨迹的边界
-        const latitudes = routeCoordinates.map(coord => coord.latitude);
-        const longitudes = routeCoordinates.map(coord => coord.longitude);
-        
-        const minLat = Math.min(...latitudes);
-        const maxLat = Math.max(...latitudes);
-        const minLng = Math.min(...longitudes);
-        const maxLng = Math.max(...longitudes);
-        
-        // 计算中心点和适当的缩放级别
-        const centerLat = (minLat + maxLat) / 2;
-        const centerLng = (minLng + maxLng) / 2;
-        
-        // 添加一些边距确保轨迹完全可见
-        const padding = 0.0005; // 大约50米的边距
-        const latDelta = Math.max((maxLat - minLat) + padding * 2, 0.002);
-        const lngDelta = Math.max((maxLng - minLng) + padding * 2, 0.002);
-
-        // 使用动画平滑过渡到新的视图
-        mapRef.current.animateToRegion({
-          latitude: centerLat,
-          longitude: centerLng,
-          latitudeDelta: latDelta,
-          longitudeDelta: lngDelta
-        }, 1000);
-      }
+      setIsAppActive(nextAppState === 'active');
+      console.log('[应用状态] 状态变化:', {
+        从: appState,
+        到: nextAppState,
+        时间: new Date().toLocaleString()
+      });
     });
 
     return () => {
       subscription.remove();
     };
+  }, [appState]);
+
+  useEffect(() => {
+    if (isAppActive && isTracking && mapRef.current && routeCoordinates.length > 0) {
+      console.log('[应用状态] 从后台恢复，重置地图视图');
+      
+      // 计算当前轨迹的边界
+      const latitudes = routeCoordinates.map(coord => coord.latitude);
+      const longitudes = routeCoordinates.map(coord => coord.longitude);
+      
+      const minLat = Math.min(...latitudes);
+      const maxLat = Math.max(...latitudes);
+      const minLng = Math.min(...longitudes);
+      const maxLng = Math.max(...longitudes);
+      
+      // 计算中心点和适当的缩放级别
+      const centerLat = (minLat + maxLat) / 2;
+      const centerLng = (minLng + maxLng) / 2;
+      
+      // 添加一些边距确保轨迹完全可见
+      const padding = 0.0005; // 大约50米的边距
+      const latDelta = Math.max((maxLat - minLat) + padding * 2, 0.002);
+      const lngDelta = Math.max((maxLng - minLng) + padding * 2, 0.002);
+
+      // 使用动画平滑过渡到新的视图
+      mapRef.current.animateToRegion({
+        latitude: centerLat,
+        longitude: centerLng,
+        latitudeDelta: latDelta,
+        longitudeDelta: lngDelta
+      }, 1000);
+    }
   }, [isAppActive, isTracking, routeCoordinates]);
 
   // 更新距离
@@ -462,8 +466,8 @@ export default function HomeScreen() {
       if (mapRef.current) {
         console.log('currentLocation===', {
           ...currentLocation,
-          appState,
-          isActive: isAppActive,
+          appState: AppState.currentState,
+          isActive: AppState.currentState === 'active',
           时间: new Date(currentLocation.timestamp).toLocaleString()
         });
         const newRegion = {
