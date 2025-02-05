@@ -107,7 +107,7 @@ export const calculateTotalDistance = (coordinates) => {
     }
   }
   
-  console.log('总距离:', total, '米');
+  console.log('总距离:', total, '米', 'coordinates.length:', coordinates?.length || 0);
   return total;
 };
 
