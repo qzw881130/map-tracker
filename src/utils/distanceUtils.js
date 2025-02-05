@@ -14,7 +14,7 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
 
   // 如果坐标完全相同，直接返回0
   if (lat1 === lat2 && lon1 === lon2) {
-    console.log('[距离计算] 坐标完全相同，距离为0');
+    // console.log('[距离计算] 坐标完全相同，距离为0');
     return 0;
   }
 

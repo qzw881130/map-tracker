@@ -505,7 +505,7 @@ export default function HomeScreen() {
     );
   }
 
-  console.log('currentLocation===', currentLocation, 'appState====',appState)
+  // console.log('currentLocation===', currentLocation, 'appState====',appState)
 
   return (
     <Box flex={1}>

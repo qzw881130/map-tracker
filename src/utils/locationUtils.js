@@ -77,8 +77,8 @@ export const initLocationService = async () => {
       distanceFilter: 0,  // 不设置距离过滤
       background: true,   // 允许后台定位
       killProcess: false,  // 进程被杀死时不退出定位
-      allowsBackgroundLocationUpdates: true,  // iOS 后台定位
-      pausesLocationUpdatesAutomatically: false  // 防止自动暂停定位
+      allowsBackgroundLocationUpdates: true, // iOS 后台定位
+      pausesLocationUpdatesAutomatically: false // 防止自动暂停定位
     };
 
     logLocationEvent('初始化高德地图 SDK', { options });
@@ -135,6 +135,9 @@ export const configureLocationTracking = async (activityType) => {
       if (Geolocation.setAllowsBackgroundLocationUpdates) {
         await Geolocation.setAllowsBackgroundLocationUpdates(true);
       }
+      if (Geolocation.setPausesLocationUpdatesAutomatically) {
+        await Geolocation.setPausesLocationUpdatesAutomatically(false);
+      }
     }
     
     logLocationEvent('位置追踪参数配置成功');
@@ -156,7 +159,15 @@ export const getCurrentPosition = () => {
       maximumAge: 0,
       distanceFilter: 0,
       interval: 1000,
-      reGeocode: false
+      reGeocode: false,
+      allowBackgroundLocationUpdates: true,
+      pausesLocationUpdatesAutomatically: false,
+      locationMode: 1,
+      background: true,
+      needAddress: false,
+      androidAllowBackgroundUpdates: true,
+      iosAllowBackgroundLocationUpdates: true,
+      iosPausesLocationUpdatesAutomatically: false
     };
 
     Geolocation.getCurrentPosition(
@@ -194,6 +205,8 @@ export const startLocationWatch = (onLocation, onError) => {
     allowBackgroundLocationUpdates: true,
     pausesLocationUpdatesAutomatically: false,
     locationMode: 1,
+    background: true,
+    needAddress: false,
     androidAllowBackgroundUpdates: true,
     iosAllowBackgroundLocationUpdates: true,
     iosPausesLocationUpdatesAutomatically: false
