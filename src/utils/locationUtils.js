@@ -104,14 +104,33 @@ export const configureLocationTracking = async (activityType) => {
     logLocationEvent('开始配置位置追踪参数');
     const distanceFilter = getActivityDistanceFilter(activityType);
     
+    // 基础配置
     const locationConfig = {
       distanceFilter: distanceFilter,        // 使用活动类型的距离过滤器
-      interval: 500,            // 每500ms尝试获取一次位置
+      interval: 1000,            // 每秒尝试获取一次位置
       accuracy: {
         ios: 'best',
         android: 'high',
       },
       activityType: 'fitness',  // 针对运动场景优化
+      allowBackgroundLocationUpdates: true,  // 允许后台定位
+      pausesLocationUpdatesAutomatically: false,  // 防止自动暂停定位
+      significantUpdates: false,  // 禁用显著位置更新
+      saveBatteryOnBackground: false,  // 禁用后台电池优化
+      locationMode: 'Device_Sensors',  // 使用设备GPS传感器
+      isNeedAddress: false,    // 不需要地址信息
+      geoLanguage: 'none',     // 不需要地理编码
+      locationCacheEnable: false,  // 禁用位置缓存
+      onceLocation: false,     // 持续定位
+      sensorEnable: true,      // 使用传感器
+      wifiScan: false,         // 不使用WiFi扫描
+      locationProtocol: 'HTTP', // 使用HTTP协议
+      gpsFirst: true,          // GPS优先
+      httpTimeOut: 5000,       // HTTP超时时间
+      mockEnable: false,       // 禁用模拟位置
+      locationPurpose: 'SignificantChange',  // iOS的定位目的
+      desiredAccuracy: 'best',  // 最高精度
+      keepAlive: true          // 保持活跃状态
     };
 
     if (Platform.OS === 'android') {
@@ -124,19 +143,49 @@ export const configureLocationTracking = async (activityType) => {
       await Geolocation.setNeedAddress(false);
       await Geolocation.setOnceLocation(false);
       await Geolocation.setSensorEnable(true);
+      await Geolocation.setWifiScan(false);
+      await Geolocation.setLocationCacheEnable(false);
+      await Geolocation.setMockEnable(false);
+      await Geolocation.setGpsFirst(true);
+      await Geolocation.setHttpTimeOut(5000);
     } else {
       logLocationEvent('iOS: 配置位置追踪参数');
+      // 基础配置
       if (Geolocation.setDesiredAccuracy) {
         await Geolocation.setDesiredAccuracy(locationConfig.accuracy.ios);
       }
       if (Geolocation.setDistanceFilter) {
         await Geolocation.setDistanceFilter(locationConfig.distanceFilter);
       }
+      
+      // 后台定位配置
       if (Geolocation.setAllowsBackgroundLocationUpdates) {
         await Geolocation.setAllowsBackgroundLocationUpdates(true);
       }
       if (Geolocation.setPausesLocationUpdatesAutomatically) {
         await Geolocation.setPausesLocationUpdatesAutomatically(false);
+      }
+      if (Geolocation.setBackgroundLocationEnabled) {
+        await Geolocation.setBackgroundLocationEnabled(true);
+      }
+      
+      // 电池和性能配置
+      if (Geolocation.setSignificantUpdates) {
+        await Geolocation.setSignificantUpdates(false);
+      }
+      if (Geolocation.setSaveBatteryOnBackground) {
+        await Geolocation.setSaveBatteryOnBackground(false);
+      }
+      
+      // 额外的iOS配置
+      if (Geolocation.startUpdatingLocation) {
+        await Geolocation.startUpdatingLocation();
+      }
+      if (Geolocation.setLocationPurpose) {
+        await Geolocation.setLocationPurpose('SignificantChange');
+      }
+      if (Geolocation.setBackgroundLocationIndicator) {
+        await Geolocation.setBackgroundLocationIndicator(true);
       }
     }
     
@@ -154,20 +203,56 @@ export const getCurrentPosition = () => {
     logLocationEvent('开始获取当前位置');
     
     const options = {
+      // 基础配置
       enableHighAccuracy: true,
       timeout: 15000,
       maximumAge: 0,
       distanceFilter: 0,
       interval: 1000,
-      reGeocode: false,
+      
+      // 定位模式配置
+      locationMode: 1,
+      desiredAccuracy: 'best',
+      activityType: 'fitness',
+      coordinateType: 'WGS84',
+      
+      // 后台定位配置
       allowBackgroundLocationUpdates: true,
       pausesLocationUpdatesAutomatically: false,
-      locationMode: 1,
       background: true,
-      needAddress: false,
+      keepAlive: true,
+      allowsBackgroundLocationUpdates: true,
+      backgroundModes: ['location'],
+      startImmediately: true,
+      showsBackgroundLocationIndicator: true,
+      
+      // 电池和性能配置
+      significantUpdates: false,
+      saveBatteryOnBackground: false,
+      locationTimeout: 10000,
+      reStartTimeout: 5000,
+      httpTimeOut: 5000,
+      
+      // Android特定配置
       androidAllowBackgroundUpdates: true,
+      
+      // iOS特定配置
       iosAllowBackgroundLocationUpdates: true,
-      iosPausesLocationUpdatesAutomatically: false
+      iosPausesLocationUpdatesAutomatically: false,
+      locationPurpose: 'SignificantChange',
+      
+      // 其他配置
+      reGeocode: false,
+      needAddress: false,
+      needNewVersionReGeocode: false,
+      locationProtocol: 'HTTP',
+      sensorEnable: true,
+      wifiScan: false,
+      locationCacheEnable: false,
+      gpsFirst: true,
+      mockEnable: false,
+      onceLocation: false,
+      geoLanguage: 'none'
     };
 
     Geolocation.getCurrentPosition(
@@ -197,19 +282,56 @@ export const startLocationWatch = (onLocation, onError) => {
   logLocationEvent('开始位置监听');
   
   const options = {
+    // 基础配置
     enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 0,
     distanceFilter: 0,
     interval: 1000,
-    timeout: 15000,
-    reGeocode: false,
+    
+    // 定位模式配置
+    locationMode: 1,
+    desiredAccuracy: 'best',
+    activityType: 'fitness',
+    coordinateType: 'WGS84',
+    
+    // 后台定位配置
     allowBackgroundLocationUpdates: true,
     pausesLocationUpdatesAutomatically: false,
-    locationMode: 1,
     background: true,
-    needAddress: false,
+    keepAlive: true,
+    allowsBackgroundLocationUpdates: true,
+    backgroundModes: ['location'],
+    startImmediately: true,
+    showsBackgroundLocationIndicator: true,
+    
+    // 电池和性能配置
+    significantUpdates: false,
+    saveBatteryOnBackground: false,
+    locationTimeout: 10000,
+    reStartTimeout: 5000,
+    httpTimeOut: 5000,
+    
+    // Android特定配置
     androidAllowBackgroundUpdates: true,
+    
+    // iOS特定配置
     iosAllowBackgroundLocationUpdates: true,
-    iosPausesLocationUpdatesAutomatically: false
+    iosPausesLocationUpdatesAutomatically: false,
+    locationPurpose: 'SignificantChange',
+    
+    // 其他配置
+    reGeocode: false,
+    needAddress: false,
+    needNewVersionReGeocode: false,
+    locationProtocol: 'HTTP',
+    sensorEnable: true,
+    wifiScan: false,
+    locationCacheEnable: false,
+    gpsFirst: true,
+    mockEnable: false,
+    onceLocation: false,
+    geoLanguage: 'none'
   };
 
   logLocationEvent('位置监听配置', { options });
